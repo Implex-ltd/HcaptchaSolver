@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+.tmp
+*.json
+.idea/*
+assets/*
+.idea

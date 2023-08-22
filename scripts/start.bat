@@ -1,3 +1,4 @@
 @echo off
 cls
-cd ../cmd/hcsolver && go run .
+make run
+pause
