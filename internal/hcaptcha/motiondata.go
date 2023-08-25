@@ -150,7 +150,7 @@ func PlotPoints(points [][]int64) {
 
 	p.Add(s, l)
 
-	if err := p.Save(4*vg.Inch, 4*vg.Inch, fmt.Sprintf("%s.png", utils.RandomString(10))); err != nil {
+	if err := p.Save(4*vg.Inch, 4*vg.Inch, fmt.Sprintf("./.tmp/%s.png", utils.RandomString(10))); err != nil {
 		panic(err)
 	}
 
@@ -261,20 +261,26 @@ func genBoxToClick(answers map[string]string) []int {
  */
 func (c *Hcap) NewMotionData(m *Motion) string {
 	st := time.Now().UnixNano() / 1e6
-	duration := int64(utils.RandomNumber(1000, 5000))
+	duration := int64(utils.RandomNumber(4500, 6000))
 
 	if !m.IsCheck {
-		m.Answers = map[string]string{"x": "x", "y": "y", "z": "z"}
+		m.Answers = map[string]string{"x": "x", "y": "y", "z": "z", "d": "z", "a": "z", "i": "z"}
+	}
+
+	for i := 0; i < utils.RandomNumber(1, 3); i++ {
+		m.Answers[utils.RandomString(5)] = "x"
 	}
 
 	toClick := genBoxToClick(m.Answers)
 
 	// Generate all mouse curves
-	CaptchaPath := Click(toClick, st, duration, utils.RandomNumber(10, 30))
-	MdPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, int64(utils.RandomNumber(1000, 3000)), utils.RandomNumber(8, 16))
-	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, int64(utils.RandomNumber(1000, 3000)), utils.RandomNumber(3, 10))
-	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, int64(utils.RandomNumber(1000, 3000)), utils.RandomNumber(10, 20))
-	WnTime := time.Duration(utils.RandomNumber(100, 200)) * time.Millisecond
+	CaptchaPath := Click(toClick, st, duration, utils.RandomNumber(3, 6))
+	MdPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(8, 16))
+	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
+	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
+	WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
+
+	//PlotPoints(CaptchaPath)
 
 	topLevel := TopLevel{
 		St: st,
@@ -314,11 +320,11 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			UserAgentData: UserAgentData{
 				Brands: []Brand{
 					{
-						Brand:   "Chromium",
+						Brand:   "Google Chrome",
 						Version: c.Http.BaseHeader.UaInfo.UaVersion,
 					},
 					{
-						Brand:   "Google Chrome",
+						Brand:   "Chromium",
 						Version: c.Http.BaseHeader.UaInfo.UaVersion,
 					},
 					{

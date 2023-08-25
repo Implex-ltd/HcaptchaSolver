@@ -107,7 +107,7 @@ func HandlerSolve(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	logger.Info("new task",
-	//	zap.String("useragent", requestBody.UserAgent),
+		//	zap.String("useragent", requestBody.UserAgent),
 		zap.String("sitekey", requestBody.SiteKey),
 		zap.String("domain", requestBody.Domain),
 	//	zap.String("proxy", requestBody.Proxy),

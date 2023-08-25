@@ -67,7 +67,6 @@ func (c *Hcap) HeaderCheckCaptcha() http.Header {
 		`accept`:             {`*/*`},
 		`accept-language`:    {c.Http.BaseHeader.AcceptLanguage},
 		`content-type`:       {`application/json;charset=UTF-8`},
-		`cookie`:             {c.Http.FormatCookies()},
 		`origin`:             {`https://newassets.hcaptcha.com`},
 		`referer`:            {`https://newassets.hcaptcha.com/`},
 		`sec-ch-ua`:          {c.Http.BaseHeader.SecChUa},

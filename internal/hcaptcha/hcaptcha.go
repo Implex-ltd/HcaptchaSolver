@@ -10,12 +10,13 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+	tls_client "github.com/bogdanfinn/tls-client"
 )
 
 const (
-	VERSION = "490cab9"
-	LANG    = "en"
-	SUBMIT  = 3
+	VERSION = "d57019b"
+	LANG    = "fr"
+	SUBMIT  = 4
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
@@ -28,6 +29,8 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		Proxy:     config.Proxy,
 		BrowserFp: fp,
 		Timeout:   3,
+
+		Profil: &tls_client.Chrome_105,
 	})
 	if err != nil {
 		return nil, err
@@ -52,7 +55,7 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 	infos := cleanhttp.ParseUserAgent(config.UserAgent)
 
 	fp.Navigator.UserAgent = config.UserAgent
-	//fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1] // can crash
+	fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1] // can crash
 	fp.Navigator.Platform = infos.OSName
 
 	return fp, nil
@@ -100,8 +103,8 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 
 	pdc, _ := json.Marshal(&Pdc{
 		S:   st.UTC().UnixNano() / 1e6,
-		N:   1,
-		P:   1,
+		N:   0,
+		P:   0,
 		Gcs: int(time.Since(st).Milliseconds()),
 	})
 
@@ -194,7 +197,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 
 	motion := c.NewMotionData(&Motion{
 		IsCheck: true,
-		Answers: map[string]string{"x": "true", "y": "true", "z": "true"},
+		Answers: map[string]string{"x": "true", "y": "true", "z": "true", "b": "true", "d": "true"},
 	})
 
 	C, _ := json.Marshal(&C{

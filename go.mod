@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	git.sr.ht/~sbinet/gg v0.4.1 // indirect
-	github.com/Implex-ltd/cleanhttp v0.0.0-20230821101853-39283a14c9ec // indirect
+	github.com/Implex-ltd/cleanhttp v0.0.0-20230822061846-9d616913fb9b // indirect
 	github.com/Implex-ltd/fingerprint-client v0.0.0-20230813033749-fc63d297c0c3 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
