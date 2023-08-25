@@ -198,7 +198,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 
 	motion := c.NewMotionData(&Motion{
 		IsCheck: true,
-		Answers: map[string]string{"x": "true", "y": "true", "z": "true", "b": "true", "d": "true"},
+		Answers: map[string]string{"x": "true", "y": "true", "z": "true"},
 	})
 
 	C, _ := json.Marshal(&C{
@@ -220,7 +220,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	if err != nil {
 		return nil, err
 	}
-	//fmt.Println(string(payload))
+	//fmt.Println(answers)
 
 	time.Sleep((time.Second * SUBMIT) - time.Since(st))
 

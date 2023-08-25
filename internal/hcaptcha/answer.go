@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	RETRY = 0
+	RETRY   = 0
 )
 
 func (c *Hcap) SolveImages(captcha *Captcha) (map[string]string, error) {

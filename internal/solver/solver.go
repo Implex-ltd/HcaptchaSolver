@@ -16,9 +16,13 @@ import (
 	"github.com/cespare/xxhash"
 	"go.uber.org/zap"
 )
-
+const (
+	apikey = "rorm-8473d243-790d-9184-3fa2-76e4ff8424df"
+	proapi = "https://pro.nocaptchaai.com/solve"
+)
 var (
 	nocap = true
+	
 )
 
 func HashExists(prompt string, contentHash uint64) bool {
@@ -64,6 +68,7 @@ func ParallelHashExistsAllThreads(prompt string, contentHash uint64) bool {
 }
 
 func SolvePic(url, prompt string) (bool, error) {
+	fmt.Println(url, prompt)
 	resp, err := http.Get(url)
 	if err != nil {
 		return false, err
@@ -81,13 +86,15 @@ func SolvePic(url, prompt string) (bool, error) {
 		Images: map[string]string{
 			"0": encodedImage,
 		},
-		Target:  prompt,
+		Target: "Please click each image containing a "+ prompt,
 		Method:  "hcaptcha_base64",
 		Sitekey: "4c672d35-0701-42b2-88c3-78380b0db560",
 		Site:    "discord.com",
 		Ln:      "en",
 	}
 	jsonBody, _ := json.Marshal(base64_json)
+
+	//fmt.Println(string(jsonBody))
 
 	req, _ := http.NewRequest("POST", proapi, bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-type", "application/json")
@@ -103,6 +110,8 @@ func SolvePic(url, prompt string) (bool, error) {
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
 
+	fmt.Println(string(bodyBytes))
+
 	var answer NoCapAnswer
 	if err := json.Unmarshal(bodyBytes, &answer); err != nil {
 		return false, err
@@ -115,7 +124,7 @@ func SolvePic(url, prompt string) (bool, error) {
 	return false, nil
 }
 
-func DownloadAndClassify(url, key, prompt string, results chan<- Result, wg *sync.WaitGroup) {
+func DownloadAndClassify(url, key, prompt, fullprompt string, results chan<- Result, wg *sync.WaitGroup) {
 	defer wg.Done()
 	st := time.Now()
 
@@ -154,10 +163,8 @@ func DownloadAndClassify(url, key, prompt string, results chan<- Result, wg *syn
 	// if not solved
 	// start
 
-	var answer bool
-
 	if nocap {
-		answer, err = SolvePic(url, prompt)
+		answer, err := SolvePic(url, fullprompt)
 		if err != nil {
 			results <- Result{Hash: fmt.Sprintf("%x", contentHash), Match: false, Err: nil, Url: url, St: time.Since(st), Key: key}
 			return
@@ -191,26 +198,28 @@ func DownloadAndClassify(url, key, prompt string, results chan<- Result, wg *syn
 
 			file.WriteString(fmt.Sprintf("%s,not_%s", fmt.Sprintf("%x", contentHash), prompt) + "\n")
 		}
-	} else {
-		answer = false
+
+		results <- Result{Hash: fmt.Sprintf("%x", contentHash), Match: answer, Err: nil, Url: url, St: time.Since(st), Key: key}
+		return
 	}
 
-	results <- Result{Hash: fmt.Sprintf("%x", contentHash), Match: answer, Err: nil, Url: url, St: time.Since(st), Key: key}
+	results <- Result{Hash: fmt.Sprintf("%x", contentHash), Match: false, Err: nil, Url: url, St: time.Since(st), Key: key}
 }
 
 func Task(task *BodyNewSolveTask, logger *zap.Logger) *SolveRepsonse {
 	results := make(chan Result, len(task.TaskList))
 	t := time.Now()
 
+	var prompt string
 	if strings.Contains(task.Question, "Please click each image containing a ") {
-		task.Question = strings.ReplaceAll(strings.Split(task.Question, "Please click each image containing a ")[1], " ", "_")
+		prompt = strings.ReplaceAll(strings.Split(task.Question, "Please click each image containing a ")[1], " ", "_")
 	}
 
 	var wg sync.WaitGroup
 
 	for _, t := range task.TaskList {
 		wg.Add(1)
-		go DownloadAndClassify(t.DatapointURI, t.TaskKey, task.Question, results, &wg)
+		go DownloadAndClassify(t.DatapointURI, t.TaskKey, prompt, task.Question, results, &wg)
 	}
 
 	wg.Wait()
@@ -226,13 +235,13 @@ func Task(task *BodyNewSolveTask, logger *zap.Logger) *SolveRepsonse {
 			return nil
 		}
 
-		/*logger.Info("Image classified",
+		logger.Info("Image classified",
 			zap.String("hash", result.Hash),
 			zap.String("prompt", task.Question),
 			zap.Bool("match", result.Match),
 			zap.Int64("st", result.St.Milliseconds()),
 			//	zap.String("url", result.Url),
-		)*/
+		)
 	}
 
 	logger.Info("Task classified",

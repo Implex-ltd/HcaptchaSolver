@@ -5,11 +5,6 @@ import (
 	"time"
 )
 
-const (
-	apikey = "rorm-8473d243-790d-9184-3fa2-76e4ff8424df"
-	proapi = "https://pro.nocaptchaai.com/solve"
-)
-
 var (
 	pm            = sync.Mutex{}
 	hashlistMutex sync.RWMutex
@@ -17,7 +12,7 @@ var (
 
 type Base64JSON struct {
 	Images  map[string]string `json:"images"`
-	Target  string            `json:"targsync"`
+	Target  string            `json:"target"`
 	Method  string            `json:"method"`
 	Sitekey string            `json:"sitekey"`
 	Site    string            `json:"site"`
