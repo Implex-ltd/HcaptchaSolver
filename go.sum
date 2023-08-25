@@ -1,6 +1,8 @@
 git.sr.ht/~sbinet/gg v0.4.1 h1:YccqPPS57/TpqX2fFnSRlisrqQ43gEdqVm3JtabPrp0=
 git.sr.ht/~sbinet/gg v0.4.1/go.mod h1:xKrQ22W53kn8Hlq+gzYeyyohGMwR8yGgSMlVpY/mHGc=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8=
+github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/Implex-ltd/cleanhttp v0.0.0-20230819172856-3609e39c4dea h1:mg5OWGrqwt1/iQuMqYAZXYdRnADN56kuHvTqFKLhtDc=
 github.com/Implex-ltd/cleanhttp v0.0.0-20230819172856-3609e39c4dea/go.mod h1:L08uIj8QK0n46N3uoHol/0lckNififGHZg9Y0u8gU+k=
 github.com/Implex-ltd/cleanhttp v0.0.0-20230821101853-39283a14c9ec h1:1s5dt5hNRlgaqVXMO/Mz+5BXl9VnJNlfSrlX67SrSX0=
@@ -9,6 +11,7 @@ github.com/Implex-ltd/cleanhttp v0.0.0-20230822061846-9d616913fb9b h1:0usKLXhyUP
 github.com/Implex-ltd/cleanhttp v0.0.0-20230822061846-9d616913fb9b/go.mod h1:L08uIj8QK0n46N3uoHol/0lckNififGHZg9Y0u8gU+k=
 github.com/Implex-ltd/fingerprint-client v0.0.0-20230813033749-fc63d297c0c3 h1:Si/JxlJCzm3orIwds4QUi1ewBNHXTQQqZWf6L373tbo=
 github.com/Implex-ltd/fingerprint-client v0.0.0-20230813033749-fc63d297c0c3/go.mod h1:EpUCk9T3cIggc89ikNdwqTSYnlQ8wVgHah/jTBQukyQ=
+github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/ajstarks/deck v0.0.0-20200831202436-30c9fc6549a9/go.mod h1:JynElWSGnm/4RlzPXRlREEwqTHAN3T56Bv2ITsFT3gY=
 github.com/ajstarks/deck/generate v0.0.0-20210309230005-c3f852c02e19/go.mod h1:T13YZdzov6OU0A1+RfKZiZN9ca6VeKdBdyDV+BY97Tk=
 github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b h1:slYM766cy2nI3BwyRiyQj/Ud48djTMtMebDqepE95rw=
@@ -21,6 +24,8 @@ github.com/bogdanfinn/tls-client v1.5.0 h1:L/d4AL+8RRw+6o9wwhpii45I6RO2CEkgRV4Ne
 github.com/bogdanfinn/tls-client v1.5.0/go.mod h1:lgtqsHjoJYQMPz6H08bc8t30bmUaYnVjwtfVEzMGJDs=
 github.com/bogdanfinn/utls v1.5.16 h1:NhhWkegEcYETBMj9nvgO4lwvc6NcLH+znrXzO3gnw4M=
 github.com/bogdanfinn/utls v1.5.16/go.mod h1:mHeRCi69cUiEyVBkKONB1cAbLjRcZnlJbGzttmiuK4o=
+github.com/cespare/xxhash v1.1.0 h1:a6HrQnmkObjyL+Gs60czilIUGqrzKutQD6XZog3p+ko=
+github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 h1:y5HC9v93H5EPKqaS1UYVg1uYah5Xf51mBfIoWehClUQ=
 github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964/go.mod h1:Xd9hchkHSWYkEqJwUGisez3G1QY8Ryz0sdWrLPMGjLk=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -51,6 +56,7 @@ github.com/mssola/user_agent v0.6.0/go.mod h1:TTPno8LPY3wAIEKRpAtkdMT0f8SE24pLRG
 github.com/playwright-community/playwright-go v0.3500.0 h1:pWUwUa+JDibO3IOOjWsZ6d0gVehsLVCt6ZpJitePJXM=
 github.com/playwright-community/playwright-go v0.3500.0/go.mod h1:5BciqynTw2vyGwuMfhqfsc7hktCoZvoYQ+TBHRxvUME=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/tam7t/hpkp v0.0.0-20160821193359-2b70b4024ed5 h1:YqAladjX7xpA6BM04leXMWAEjS0mTZ5kUU9KRBriQJc=

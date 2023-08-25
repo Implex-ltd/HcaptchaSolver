@@ -118,6 +118,7 @@ func HandlerSolve(w http.ResponseWriter, r *http.Request) {
 		SiteKey:   requestBody.SiteKey,
 		Domain:    requestBody.Domain,
 		Proxy:     requestBody.Proxy,
+		Logger: logger,
 	})
 
 	if err != nil || !resp.Success {
@@ -137,14 +138,13 @@ func HandlerSolve(w http.ResponseWriter, r *http.Request) {
 	logger.Info("solved",
 		zap.String("key", resp.Data.Token.CAPTCHAKey[:15]),
 		zap.String("prompt", resp.Data.Task.TaskPrompt),
-		//zap.String("type", resp.Data.Task.TaskType),
 		zap.Int64("hsw_process", resp.Data.Metrics.HswProcess),
 		zap.Int64("img_process", resp.Data.Metrics.ImgProcess),
-		//zap.Int64("ttl_process", resp.Data.Metrics.TTLProcess),
 		zap.Int64("task_process", resp.Data.Metrics.TaskProcess),
 
+		//zap.String("type", resp.Data.Task.TaskType),
+		//zap.Int64("ttl_process", resp.Data.Metrics.TTLProcess),
 		//zap.Int64("retry", resp.Data.Err.Retry),
-
 		//zap.String("useragent", requestBody.UserAgent),
 		//zap.String("sitekey", requestBody.SiteKey),
 		//zap.String("domain", requestBody.Domain),

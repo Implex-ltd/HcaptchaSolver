@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Implex-ltd/hcsolver/internal/solver"
 	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -53,4 +54,19 @@ func LoadSettings() {
 	)
 
 	logger = zap.New(core)
+	count, err := solver.LoadHash("../../assets/hash.csv")
+	if err != nil {
+		panic(err)
+	}
+
+	logger.Info("Loaded hash csv",
+		zap.Int("count", count),
+	)
+
+	for k, v := range solver.Hashlist {
+		logger.Info("Loaded hash",
+			zap.String("prompt", k),
+			zap.Int("count", len(v)),
+		)
+	}
 }

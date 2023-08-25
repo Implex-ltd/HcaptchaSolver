@@ -5,6 +5,8 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+	"github.com/Implex-ltd/hcsolver/internal/solver"
+	"go.uber.org/zap"
 )
 
 type Config struct {
@@ -12,6 +14,8 @@ type Config struct {
 	SiteKey   string
 	Domain    string
 	Proxy     string
+
+	Logger *zap.Logger
 }
 
 type Hcap struct {
@@ -22,6 +26,8 @@ type Hcap struct {
 	// metrics
 	AnswerProcessing time.Duration
 	HswProcessing    time.Duration
+
+	Logger *zap.Logger
 }
 
 type Motion struct {
@@ -75,7 +81,7 @@ type Captcha struct {
 	RequestType              string            `json:"request_type"`
 	RequesterQuestion        RequesterQuestion `json:"requester_question"`
 	RequesterQuestionExample []string          `json:"requester_question_example"`
-	Tasklist                 []Tasklist        `json:"tasklist"`
+	Tasklist                 []solver.TaskList `json:"tasklist"`
 	BypassMessage            string            `json:"bypass-message"`
 
 	RequesterRestrictedAnswerSet map[string]map[string]string `json:"requester_restricted_answer_set"`
@@ -306,14 +312,14 @@ type AiSolverResponse struct {
 */
 
 type PayloadCheckChallenge struct {
-	V            string         `json:"v"`
-	JobMode      string         `json:"job_mode"`
-	Answers      map[string]any `json:"answers"`
-	Serverdomain string         `json:"serverdomain"`
-	Sitekey      string         `json:"sitekey"`
-	MotionData   string         `json:"motionData"`
-	N            string         `json:"n"`
-	C            string         `json:"c"`
+	V            string            `json:"v"`
+	JobMode      string            `json:"job_mode"`
+	Answers      map[string]string `json:"answers"`
+	Serverdomain string            `json:"serverdomain"`
+	Sitekey      string            `json:"sitekey"`
+	MotionData   string            `json:"motionData"`
+	N            string            `json:"n"`
+	C            string            `json:"c"`
 }
 
 type ResponseCheckCaptcha struct {

@@ -40,6 +40,7 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		Fingerprint: fp,
 		Config:      config,
 		Http:        c,
+		Logger:      config.Logger,
 	}, nil
 }
 
@@ -158,7 +159,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 }
 
 func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
-	var answers map[string]any
+	var answers map[string]string
 	var payload []byte
 	var pow string
 	var err error
@@ -219,6 +220,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	if err != nil {
 		return nil, err
 	}
+	//fmt.Println(string(payload))
 
 	time.Sleep((time.Second * SUBMIT) - time.Since(st))
 
