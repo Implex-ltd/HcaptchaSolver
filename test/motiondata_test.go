@@ -1,4 +1,4 @@
-package hcaptcha
+package test
 
 import (
 	"fmt"

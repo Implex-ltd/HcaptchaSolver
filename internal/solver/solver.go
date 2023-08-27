@@ -16,13 +16,14 @@ import (
 	"github.com/cespare/xxhash"
 	"go.uber.org/zap"
 )
+
 const (
 	apikey = "rorm-8473d243-790d-9184-3fa2-76e4ff8424df"
 	proapi = "https://pro.nocaptchaai.com/solve"
 )
+
 var (
 	nocap = true
-	
 )
 
 func HashExists(prompt string, contentHash uint64) bool {
@@ -68,7 +69,6 @@ func ParallelHashExistsAllThreads(prompt string, contentHash uint64) bool {
 }
 
 func SolvePic(url, prompt string) (bool, error) {
-	fmt.Println(url, prompt)
 	resp, err := http.Get(url)
 	if err != nil {
 		return false, err
@@ -80,37 +80,41 @@ func SolvePic(url, prompt string) (bool, error) {
 		return false, err
 	}
 
-	encodedImage := base64.StdEncoding.EncodeToString(body)
-
 	base64_json := Base64JSON{
 		Images: map[string]string{
-			"0": encodedImage,
+			"0": base64.StdEncoding.EncodeToString(body),
 		},
-		Target: "Please click each image containing a "+ prompt,
+		Target:  "Please click each image containing a " + prompt,
 		Method:  "hcaptcha_base64",
 		Sitekey: "4c672d35-0701-42b2-88c3-78380b0db560",
 		Site:    "discord.com",
 		Ln:      "en",
 	}
-	jsonBody, _ := json.Marshal(base64_json)
+	jsonBody, err := json.Marshal(base64_json)
+	if err != nil {
+		return false, err
+	}
 
-	//fmt.Println(string(jsonBody))
+	req, err := http.NewRequest("POST", proapi, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return false, err
+	}
 
-	req, _ := http.NewRequest("POST", proapi, bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-type", "application/json")
 	req.Header.Set("apikey", apikey)
 
 	client := &http.Client{}
+
 	resp, err = client.Do(req)
 	if err != nil {
-		fmt.Println(err)
 		return false, err
 	}
 	defer resp.Body.Close()
 
-	bodyBytes, _ := io.ReadAll(resp.Body)
-
-	fmt.Println(string(bodyBytes))
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false, err
+	}
 
 	var answer NoCapAnswer
 	if err := json.Unmarshal(bodyBytes, &answer); err != nil {
@@ -161,8 +165,6 @@ func DownloadAndClassify(url, key, prompt, fullprompt string, results chan<- Res
 	}
 
 	// if not solved
-	// start
-
 	if nocap {
 		answer, err := SolvePic(url, fullprompt)
 		if err != nil {
@@ -216,7 +218,6 @@ func Task(task *BodyNewSolveTask, logger *zap.Logger) *SolveRepsonse {
 	}
 
 	var wg sync.WaitGroup
-
 	for _, t := range task.TaskList {
 		wg.Add(1)
 		go DownloadAndClassify(t.DatapointURI, t.TaskKey, prompt, task.Question, results, &wg)
@@ -237,16 +238,16 @@ func Task(task *BodyNewSolveTask, logger *zap.Logger) *SolveRepsonse {
 
 		logger.Info("Image classified",
 			zap.String("hash", result.Hash),
-			zap.String("prompt", task.Question),
+			zap.String("prompt", prompt),
 			zap.Bool("match", result.Match),
 			zap.Int64("st", result.St.Milliseconds()),
-			//	zap.String("url", result.Url),
+			zap.String("url", result.Url),
 		)
 	}
 
 	logger.Info("Task classified",
 		zap.Int64("st", time.Since(t).Milliseconds()),
-		zap.String("prompt", task.Question),
+		zap.String("prompt", prompt),
 	)
 
 	return &SolveRepsonse{

@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/Implex-ltd/hcsolver/internal/solver"
 	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
@@ -13,8 +14,26 @@ import (
 )
 
 var (
-	logger *zap.Logger
+	Logger *zap.Logger
+	Config = Cfg{}
 )
+
+type Cfg struct {
+	API struct {
+		Port int `toml:"port"`
+	} `toml:"api"`
+	Ratelimit struct {
+		APIMax        int `toml:"api_max"`
+		APIExpiration int `toml:"api_expiration"`
+	} `toml:"ratelimit"`
+	Database struct {
+		Username string `toml:"username"`
+		Password string `toml:"password"`
+		IP       string `toml:"ip"`
+		Port     string `toml:"port"`
+		Dbname   string `toml:"dbname"`
+	} `toml:"database"`
+}
 
 func CreateLogFile() *os.File {
 	logFileName := fmt.Sprintf("../../assets/logs/%s", time.Now().Format("2006-01-02_15-04-05")+".json")
@@ -33,6 +52,10 @@ func CreateLogFile() *os.File {
 
 func LoadSettings() {
 	rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	if _, err := toml.DecodeFile("../../scripts/config.toml", &Config); err != nil {
+		panic(err)
+	}
 
 	encoder := zap.NewDevelopmentEncoderConfig()
 	encoder.EncodeLevel = zapcore.CapitalColorLevelEncoder
@@ -53,18 +76,18 @@ func LoadSettings() {
 		),
 	)
 
-	logger = zap.New(core)
+	Logger = zap.New(core)
 	count, err := solver.LoadHash("../../assets/hash.csv")
 	if err != nil {
 		panic(err)
 	}
 
-	logger.Info("Loaded hash csv",
+	Logger.Info("Loaded hash csv",
 		zap.Int("count", count),
 	)
 
 	for k, v := range solver.Hashlist {
-		logger.Info("Loaded hash",
+		Logger.Info("Loaded hash",
 			zap.String("prompt", k),
 			zap.Int("count", len(v)),
 		)

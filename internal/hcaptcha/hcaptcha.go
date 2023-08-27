@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	VERSION = "d57019b"
+	VERSION = "19148ad"
 	LANG    = "fr"
 	SUBMIT  = 4
 )
@@ -220,7 +220,6 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	if err != nil {
 		return nil, err
 	}
-	//fmt.Println(answers)
 
 	time.Sleep((time.Second * SUBMIT) - time.Since(st))
 
