@@ -1,7 +1,7 @@
 package task
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
@@ -32,6 +32,8 @@ func CreateTask(c *fiber.Ctx) error {
 		Domain:    taskData.Domain,
 		Proxy:     taskData.Proxy,
 		Logger:    config.Logger,
+		TaskType:  taskData.TaskType,
+		Invisible: taskData.Invisible,
 	})
 
 	if err := T.Create(); err != nil {
@@ -42,7 +44,6 @@ func CreateTask(c *fiber.Ctx) error {
 		})
 	}
 
-	//task.ID = T.ID
 	task.Status = T.Status.Status
 	task.Token = T.Status.Token
 
@@ -58,8 +59,6 @@ func CreateTask(c *fiber.Ctx) error {
 		panic(err)
 	}
 
-	fmt.Println(createTask)
-
 	go func(task *model.Task) {
 		captcha, err := T.Solve()
 
@@ -72,6 +71,12 @@ func CreateTask(c *fiber.Ctx) error {
 			if _, err = db.Change(createTask[0].ID, task); err != nil {
 				panic(err)
 			}
+
+			go func() {
+				time.Sleep(120 * time.Second)
+				database.DB.Delete(createTask[0].ID)
+			}()
+
 			return
 		}
 
@@ -83,6 +88,11 @@ func CreateTask(c *fiber.Ctx) error {
 		if _, err = db.Change(createTask[0].ID, task); err != nil {
 			panic(err)
 		}
+
+		go func() {
+			time.Sleep(time.Duration(task.Expiration) * time.Second)
+			database.DB.Delete(createTask[0].ID)
+		}()
 	}(task)
 
 	return c.Status(200).JSON(fiber.Map{

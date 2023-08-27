@@ -33,6 +33,9 @@ func (T *HcaptchaTask) Create() error {
 		zap.String("sitekey", T.Config.SiteKey),
 		zap.String("domain", T.Config.Domain),
 		zap.String("proxy", T.Config.Proxy),
+		zap.String("rqdata", T.Config.Rqdata),
+		zap.Bool("invisible", T.Config.Invisible),
+		zap.Int("task_type", T.Config.TaskType),
 	)
 
 	T.Captcha = hc
@@ -56,6 +59,33 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 	captcha, err := T.Captcha.GetChallenge(site)
 	if err != nil {
 		return nil, err
+	}
+
+	if captcha.GeneratedPassUUID != "" {
+		config.Logger.Info("solved (one-click)",
+			zap.String("key", captcha.GeneratedPassUUID),
+			zap.String("prompt", captcha.RequesterQuestion.En),
+			zap.Int64("hsw_process", T.Captcha.HswProcessing.Milliseconds()),
+			zap.Int64("img_process", T.Captcha.AnswerProcessing.Milliseconds()),
+			zap.Int64("task_process", time.Since(st).Milliseconds()),
+
+			zap.String("prompt_type", captcha.RequestType),
+			zap.String("rqdata", T.Config.Rqdata),
+			zap.Bool("invisible", T.Config.Invisible),
+			zap.Int("task_type", T.Config.TaskType),
+
+			zap.String("useragent", T.Config.UserAgent),
+			zap.String("sitekey", T.Config.SiteKey),
+			zap.String("domain", T.Config.Domain),
+			zap.String("proxy", T.Config.Proxy),
+		)
+
+		return &hcaptcha.ResponseCheckCaptcha{
+			C:                 captcha.C,
+			Pass:              captcha.Pass,
+			GeneratedPassUUID: captcha.GeneratedPassUUID,
+			Expiration:        captcha.Expiration,
+		}, nil
 	}
 
 	config.Logger.Info("GetChallenge",

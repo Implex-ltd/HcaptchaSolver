@@ -337,7 +337,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			},
 		},
 		DR:   "",
-		Inv:  false,
+		Inv:  c.Config.Invisible,
 		Exec: false,
 		Wn: [][]int64{
 			{

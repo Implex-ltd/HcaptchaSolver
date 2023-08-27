@@ -14,6 +14,9 @@ type Config struct {
 	SiteKey   string
 	Domain    string
 	Proxy     string
+	Rqdata    string
+	Invisible bool
+	TaskType  int
 
 	Logger *zap.Logger
 }
@@ -85,6 +88,11 @@ type Captcha struct {
 	BypassMessage            string            `json:"bypass-message"`
 
 	RequesterRestrictedAnswerSet map[string]map[string]string `json:"requester_restricted_answer_set"`
+
+	// one click
+	Pass              bool   `json:"pass"`
+	GeneratedPassUUID string `json:"generated_pass_UUID"`
+	Expiration        int    `json:"expiration"`
 }
 
 type RequestConfig struct {

@@ -101,6 +101,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 	if err != nil {
 		return nil, err
 	}
+	c.AnswerProcessing = time.Since(st)
 
 	pdc, _ := json.Marshal(&Pdc{
 		S:   st.UTC().UnixNano() / 1e6,
@@ -131,6 +132,10 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		`pst`:        `false`,
 	} {
 		payload.Set(name, value)
+	}
+
+	if c.Config.Rqdata != "" {
+		payload.Set("rqdata", c.Config.Rqdata)
 	}
 
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
