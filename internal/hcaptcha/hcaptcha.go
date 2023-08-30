@@ -63,11 +63,13 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 }
 
 func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
+	st := time.Now()
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=1", VERSION, c.Config.Domain, c.Config.SiteKey),
 		Header: c.HeaderCheckSiteConfig(),
 	})
+	c.SiteConfigProcessing = time.Since(st)
 	if err != nil {
 		return nil, err
 	}
@@ -143,12 +145,14 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		payload.Set("rqdata", c.Config.Rqdata)
 	}
 
+	t := time.Now()
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
 		Body:   strings.NewReader(payload.Encode()),
 		Header: c.HeaderGetCaptcha(),
 	})
+	c.GetProcessing = time.Since(t)
 	if err != nil {
 		return nil, err
 	}
@@ -238,12 +242,14 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 
 	time.Sleep((time.Second * SUBMIT) - time.Since(st))
 
+	t := time.Now()
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
 		Url:    fmt.Sprintf("https://hcaptcha.com/checkcaptcha/%s/%s", c.Config.SiteKey, captcha.Key),
 		Body:   strings.NewReader(string(payload)),
 		Method: "POST",
 		Header: c.HeaderCheckCaptcha(),
 	})
+	c.CheckProcessing = time.Since(t)
 
 	if err != nil {
 		return nil, err

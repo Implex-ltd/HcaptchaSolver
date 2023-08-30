@@ -27,8 +27,11 @@ type Hcap struct {
 	Fingerprint *fpclient.Fingerprint
 
 	// metrics
-	AnswerProcessing time.Duration
-	HswProcessing    time.Duration
+	AnswerProcessing     time.Duration
+	HswProcessing        time.Duration
+	CheckProcessing      time.Duration
+	GetProcessing        time.Duration
+	SiteConfigProcessing time.Duration
 
 	Logger *zap.Logger
 }

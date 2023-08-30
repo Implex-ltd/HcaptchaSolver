@@ -12,10 +12,11 @@ import (
 
 var (
 	ImMut, SmMut, AsMut sync.RWMutex
+	Client              *http.Client
 )
 
 var (
-	nocap  = true
+	nocap  = false
 	apikey = "rorm-8473d243-790d-9184-3fa2-76e4ff8424df"
 	proapi = "https://pro.nocaptchaai.com/solve"
 )
@@ -81,10 +82,8 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 	req.Header.Set("Content-type", "application/json")
 	req.Header.Set("apikey", apikey)
 
-	client := &http.Client{}
-
 	Ccm.Wait()
-	resp, err := client.Do(req)
+	resp, err := Client.Do(req)
 	Ccm.Done()
 	if err != nil {
 		return imgs, err
@@ -186,9 +185,7 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 	req.Header.Set("Content-type", "application/json")
 	req.Header.Set("apikey", apikey)
 
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
+	resp, err := Client.Do(req)
 	if err != nil {
 		return out, err
 	}
@@ -210,7 +207,7 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 	}
 
 	if len(answer.Answers) == 0 {
-		return out, fmt.Errorf("cant solve")
+		return out, fmt.Errorf("cant solve answers, (0 found)")
 	}
 
 	i := 0

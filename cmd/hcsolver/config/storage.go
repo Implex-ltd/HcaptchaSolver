@@ -3,10 +3,12 @@ package config
 import (
 	"fmt"
 	"math/rand"
+	"net/http"
 	"os"
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
@@ -107,5 +109,21 @@ func LoadSettings() {
 			zap.String("prompt", k),
 			zap.Int("count", len(v)),
 		)
+	}
+
+	// hsw client
+	t := http.DefaultTransport.(*http.Transport).Clone()
+	t.MaxIdleConns = 200
+	t.MaxConnsPerHost = 500
+	t.MaxIdleConnsPerHost = 200
+
+	hcaptcha.Client = &http.Client{
+		Timeout:   10 * time.Second,
+		Transport: t,
+	}
+
+	recognizer.Client = &http.Client{
+		Timeout:   10 * time.Second,
+		Transport: t,
 	}
 }

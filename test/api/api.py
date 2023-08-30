@@ -125,7 +125,7 @@ class Api:
         task_type: TASK_TYPE = TASK_TYPE.TYPE_NORMAL,
         domain: str = "accounts.hcaptcha.com",
         sitekey: str = "2eaf963b-eeab-4516-9599-9daa18cd5138",
-        useragent: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+        useragent: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
         proxy: str = "",
         invisible: bool = False,
         rqdata: str = "",
@@ -162,10 +162,10 @@ def task():
 
     task = wrapper.new_task(
         task_type=TASK_TYPE.TYPE_ENTERPRISE,
-        domain="www.habbo.fr",
-        sitekey="edc4ce89-8903-4906-80b1-7440ad9a69c8",
-        invisible=True,
-        proxy="http://brd-customer-hl_5ae0707e-zone-data_center-ip-158.46.167.209:s3a3gvzzhgt8@brd.superproxy.io:22225"
+        domain="discord.com",
+        sitekey="4c672d35-0701-42b2-88c3-78380b0db560",
+        invisible=False,
+        proxy="http://brd-customer-hl_5ae0707e-zone-data_center-ip-178.171.116.107:s3a3gvzzhgt8@brd.superproxy.io:22225"
     )
     print(task)
 

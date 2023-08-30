@@ -83,7 +83,7 @@ func (R *Recognizer) HashExistBinary(hashString string) (bool, error) {
 
 func (R *Recognizer) DownloadAndCheckBinary(Url string) (bool, string, error) {
 	Ccm.Wait()
-	resp, err := http.Get(Url)
+	resp, err := Client.Get(Url)
 	Ccm.Done()
 	if err != nil {
 		return false, "", err
@@ -136,36 +136,39 @@ func (R *Recognizer) LabelBinary() (*SolveRepsonse, error) {
 					continue
 				}
 
-				for {
-					Ccm.Wait()
-					resp, err := http.Get(t.DatapointURI)
-					Ccm.Done()
+				if err != nil {
+					if err.Error() == "hash not solved yet" && nocap {
+						for {
+							Ccm.Wait()
+							resp, err := http.Get(t.DatapointURI)
+							Ccm.Done()
 
-					if err != nil {
-						continue
-					}
-					defer func(Body io.ReadCloser) {
-						err := Body.Close()
-						if err != nil {
-							fmt.Println(err)
+							if err != nil {
+								continue
+							}
+							defer func(Body io.ReadCloser) {
+								err := Body.Close()
+								if err != nil {
+									fmt.Println(err)
+								}
+							}(resp.Body)
+
+							body, err := io.ReadAll(resp.Body)
+							if err != nil {
+								continue
+							}
+
+							R.TMut.Lock()
+							toResolve[t.TaskKey] = map[string]string{
+								"body": base64.StdEncoding.EncodeToString(body),
+								"hash": hash,
+								"key":  t.TaskKey,
+							}
+							R.TMut.Unlock()
+							break
 						}
-					}(resp.Body)
-
-					body, err := io.ReadAll(resp.Body)
-					if err != nil {
-						continue
 					}
-
-					R.TMut.Lock()
-					toResolve[t.TaskKey] = map[string]string{
-						"body": base64.StdEncoding.EncodeToString(body),
-						"hash": hash,
-						"key":  t.TaskKey,
-					}
-					R.TMut.Unlock()
-					break
 				}
-
 				break
 			}
 
@@ -179,16 +182,18 @@ func (R *Recognizer) LabelBinary() (*SolveRepsonse, error) {
 
 	c.WaitAllDone()
 
-	response, err := SolvePic(toResolve, R.Question, R.Target)
-	if err != nil {
-		return nil, err
-	}
+	if nocap {
+		response, err := SolvePic(toResolve, R.Question, R.Target)
+		if err != nil {
+			return nil, err
+		}
 
-	R.OMut.Lock()
-	for k, v := range response {
-		out[k] = v
+		R.OMut.Lock()
+		for k, v := range response {
+			out[k] = v
+		}
+		R.OMut.Unlock()
 	}
-	R.OMut.Unlock()
 
 	return &SolveRepsonse{
 		Success: true,
@@ -200,7 +205,13 @@ func (R *Recognizer) HashExistSelect(hashString string) (*HashData, error) {
 	HMut.Lock()
 	defer HMut.Unlock()
 
-	hash, exist := Selectlist[R.Target]
+	// opti ?
+	copiedSelectlist := make(map[string][]HashData)
+	for key, value := range Selectlist {
+		copiedSelectlist[key] = value
+	}
+
+	hash, exist := copiedSelectlist[R.Target]
 	if exist {
 		for _, k := range hash {
 			if hashString == k.Hash {
@@ -209,7 +220,7 @@ func (R *Recognizer) HashExistSelect(hashString string) (*HashData, error) {
 		}
 	}
 
-	for prompt, hash := range Selectlist {
+	for prompt, hash := range copiedSelectlist {
 		if prompt != R.Target {
 			for _, k := range hash {
 				if hashString == k.Hash {
@@ -224,7 +235,7 @@ func (R *Recognizer) HashExistSelect(hashString string) (*HashData, error) {
 
 func (R *Recognizer) DownloadAndCheckSelect(Url string) (*HashData, string, error) {
 	Ccm.Wait()
-	resp, err := http.Get(Url)
+	resp, err := Client.Get(Url)
 	Ccm.Done()
 
 	if err != nil {
@@ -278,34 +289,39 @@ func (R *Recognizer) LabelAreaSelect() (*SolveRepsonse, error) {
 					continue
 				}
 
-				for {
-					Ccm.Wait()
-					resp, err := http.Get(t.DatapointURI)
-					Ccm.Done()
-					if err != nil {
-						continue
-					}
-					defer func(Body io.ReadCloser) {
-						err := Body.Close()
-						if err != nil {
-							fmt.Println(err)
+				if err != nil {
+					if err.Error() == "hash not solved yet" && nocap {
+						for {
+							Ccm.Wait()
+							resp, err := http.Get(t.DatapointURI)
+							Ccm.Done()
+							if err != nil {
+								continue
+							}
+							defer func(Body io.ReadCloser) {
+								err := Body.Close()
+								if err != nil {
+									fmt.Println(err)
+								}
+							}(resp.Body)
+
+							body, err := io.ReadAll(resp.Body)
+							if err != nil {
+								continue
+							}
+
+							R.TMut.Lock()
+							toResolve[t.TaskKey] = map[string]string{
+								"body": base64.StdEncoding.EncodeToString(body),
+								"hash": hash,
+								"key":  t.TaskKey,
+							}
+							R.TMut.Unlock()
+							break
 						}
-					}(resp.Body)
-
-					body, err := io.ReadAll(resp.Body)
-					if err != nil {
-						continue
 					}
-
-					R.TMut.Lock()
-					toResolve[t.TaskKey] = map[string]string{
-						"body": base64.StdEncoding.EncodeToString(body),
-						"hash": hash,
-						"key":  t.TaskKey,
-					}
-					R.TMut.Unlock()
-					break
 				}
+
 				break
 			}
 
@@ -328,31 +344,33 @@ func (R *Recognizer) LabelAreaSelect() (*SolveRepsonse, error) {
 
 	c.WaitAllDone()
 
-	response, err := SolvePicSelect(toResolve, R.Question, R.Target)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(response) < 1 {
-		return &SolveRepsonse{
-			Success: false,
-		}, fmt.Errorf("cant recognize")
-	}
-
-	R.OMut.Lock()
-	for k, v := range response {
-		out[k] = []map[string]interface{}{
-			{
-				"entity_name": 0,
-				"entity_type": R.EntityType,
-				"entity_coords": []int{
-					v.X,
-					v.Y,
-				},
-			},
+	if nocap {
+		response, err := SolvePicSelect(toResolve, R.Question, R.Target)
+		if err != nil {
+			return nil, err
 		}
+
+		if len(response) < 1 {
+			return &SolveRepsonse{
+				Success: false,
+			}, fmt.Errorf("cant recognize")
+		}
+
+		R.OMut.Lock()
+		for k, v := range response {
+			out[k] = []map[string]interface{}{
+				{
+					"entity_name": 0,
+					"entity_type": R.EntityType,
+					"entity_coords": []int{
+						v.X,
+						v.Y,
+					},
+				},
+			}
+		}
+		R.OMut.Unlock()
 	}
-	R.OMut.Unlock()
 
 	return &SolveRepsonse{
 		Success: true,

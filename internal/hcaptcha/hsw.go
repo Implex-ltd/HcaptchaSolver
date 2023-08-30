@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"time"
 )
 
 const (
@@ -19,11 +18,9 @@ var (
 	NORMAL_ADDR     = "http://127.0.0.1:4321"
 )
 
-func (c *Hcap) GetHsw(jwt string) (string, error) {
-	client := http.Client{
-		Timeout: 10 * time.Second,
-	}
+var Client *http.Client
 
+func (c *Hcap) GetHsw(jwt string) (string, error) {
 	var req *http.Request
 	var err error
 
@@ -42,7 +39,7 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		}
 	}
 
-	resp, err := client.Do(req)
+	resp, err := Client.Do(req)
 	if err != nil {
 		return "", err
 	}

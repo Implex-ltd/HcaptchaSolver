@@ -53,9 +53,6 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 	if !site.Pass {
 		return nil, fmt.Errorf("checksiteconfig wont pass")
 	}
-
-	fmt.Println(site)
-
 	captcha, err := T.Captcha.GetChallenge(site)
 	if err != nil {
 		return nil, err
@@ -68,6 +65,8 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 			zap.Int64("hsw_process", T.Captcha.HswProcessing.Milliseconds()),
 			zap.Int64("img_process", T.Captcha.AnswerProcessing.Milliseconds()),
 			zap.Int64("task_process", time.Since(st).Milliseconds()),
+			zap.Int64("get_process", T.Captcha.GetProcessing.Milliseconds()),
+			zap.Int64("siteconfig_process", T.Captcha.SiteConfigProcessing.Milliseconds()),
 
 			zap.String("prompt_type", captcha.RequestType),
 			zap.String("rqdata", T.Config.Rqdata),
@@ -117,6 +116,9 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		zap.Int64("hsw_process", T.Captcha.HswProcessing.Milliseconds()),
 		zap.Int64("img_process", T.Captcha.AnswerProcessing.Milliseconds()),
 		zap.Int64("task_process", time.Since(st).Milliseconds()),
+		zap.Int64("check_process", T.Captcha.CheckProcessing.Milliseconds()),
+		zap.Int64("get_process", T.Captcha.GetProcessing.Milliseconds()),
+		zap.Int64("siteconfig_process", T.Captcha.SiteConfigProcessing.Milliseconds()),
 
 		zap.String("type", captcha.RequestType),
 
