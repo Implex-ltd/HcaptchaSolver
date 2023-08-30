@@ -11,3 +11,7 @@ Hcaptcha enterprise challenge solver
 		port: 4321
 		endpoint: /n?req=jwt	
 ```
+
+```
+docker run --rm --pull always -p 8000:8000 -v /mydata:/mydata surrealdb/surrealdb:latest start --log trace --user root --pass root
+```

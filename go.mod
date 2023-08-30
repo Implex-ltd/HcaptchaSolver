@@ -12,10 +12,10 @@ require (
 	github.com/gofiber/fiber/v2 v2.49.0
 	github.com/google/uuid v1.3.1
 	github.com/mattn/go-colorable v0.1.13
+	github.com/surrealdb/surrealdb.go v0.2.1
+	github.com/zenthangplus/goccm v1.1.3
 	go.uber.org/zap v1.25.0
 	gonum.org/v1/plot v0.13.0
-	gorm.io/driver/postgres v1.5.2
-	gorm.io/gorm v1.25.4
 )
 
 require (
@@ -31,11 +31,6 @@ require (
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
-	github.com/jackc/pgx/v5 v5.3.1 // indirect
-	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
@@ -43,7 +38,6 @@ require (
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/playwright-community/playwright-go v0.3500.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/surrealdb/surrealdb.go v0.2.1 // indirect
 	github.com/tam7t/hpkp v0.0.0-20160821193359-2b70b4024ed5 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

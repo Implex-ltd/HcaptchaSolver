@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
-	"github.com/Implex-ltd/hcsolver/internal/solver"
+	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -77,7 +77,7 @@ func LoadSettings() {
 	)
 
 	Logger = zap.New(core)
-	count, err := solver.LoadHash("../../assets/hash.csv")
+	count, err := recognizer.LoadHash("../../assets/hash.csv")
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +86,23 @@ func LoadSettings() {
 		zap.Int("count", count),
 	)
 
-	for k, v := range solver.Hashlist {
+	for k, v := range recognizer.Hashlist {
+		Logger.Info("Loaded hash",
+			zap.String("prompt", k),
+			zap.Int("count", len(v)),
+		)
+	}
+
+	selectCount, err := recognizer.LoadHashSelect("../../assets/area_hash.csv")
+	if err != nil {
+		panic(err)
+	}
+
+	Logger.Info("Loaded select hash csv",
+		zap.Int("count", selectCount),
+	)
+
+	for k, v := range recognizer.Selectlist {
 		Logger.Info("Loaded hash",
 			zap.String("prompt", k),
 			zap.Int("count", len(v)),

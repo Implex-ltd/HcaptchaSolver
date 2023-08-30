@@ -161,10 +161,11 @@ def task():
     wrapper = Api()
 
     task = wrapper.new_task(
-        task_type=TASK_TYPE.TYPE_NORMAL,
+        task_type=TASK_TYPE.TYPE_ENTERPRISE,
         domain="www.habbo.fr",
         sitekey="edc4ce89-8903-4906-80b1-7440ad9a69c8",
         invisible=True,
+        proxy="http://brd-customer-hl_5ae0707e-zone-data_center-ip-158.46.167.209:s3a3gvzzhgt8@brd.superproxy.io:22225"
     )
     print(task)
 
@@ -182,12 +183,12 @@ def task():
             break
 
         else:
-            time.sleep(2)
+            time.sleep(1)
 
     if token != "":
         print(f"[+] Solved: {token[:50]}")
 
 
 if __name__ == "__main__":
-    for _ in range(10):
+    for _ in range(5):
         threading.Thread(target=task).start()

@@ -5,7 +5,7 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
-	"github.com/Implex-ltd/hcsolver/internal/solver"
+	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"go.uber.org/zap"
 )
 
@@ -77,15 +77,15 @@ type Features struct {
 */
 
 type Captcha struct {
-	C                        C                 `json:"c"`
-	ChallengeURI             string            `json:"challenge_uri"`
-	Key                      string            `json:"key"`
-	RequestConfig            RequestConfig     `json:"request_config"`
-	RequestType              string            `json:"request_type"`
-	RequesterQuestion        RequesterQuestion `json:"requester_question"`
-	RequesterQuestionExample []string          `json:"requester_question_example"`
-	Tasklist                 []solver.TaskList `json:"tasklist"`
-	BypassMessage            string            `json:"bypass-message"`
+	C                        C                     `json:"c"`
+	ChallengeURI             string                `json:"challenge_uri"`
+	Key                      string                `json:"key"`
+	RequestConfig            RequestConfig         `json:"request_config"`
+	RequestType              string                `json:"request_type"`
+	RequesterQuestion        RequesterQuestion     `json:"requester_question"`
+	RequesterQuestionExample []string              `json:"requester_question_example"`
+	Tasklist                 []recognizer.TaskList `json:"tasklist"`
+	BypassMessage            string                `json:"bypass-message"`
 
 	RequesterRestrictedAnswerSet map[string]map[string]string `json:"requester_restricted_answer_set"`
 
@@ -320,14 +320,14 @@ type AiSolverResponse struct {
 */
 
 type PayloadCheckChallenge struct {
-	V            string            `json:"v"`
-	JobMode      string            `json:"job_mode"`
-	Answers      map[string]string `json:"answers"`
-	Serverdomain string            `json:"serverdomain"`
-	Sitekey      string            `json:"sitekey"`
-	MotionData   string            `json:"motionData"`
-	N            string            `json:"n"`
-	C            string            `json:"c"`
+	V            string `json:"v"`
+	JobMode      string `json:"job_mode"`
+	Answers      any    `json:"answers"`
+	Serverdomain string `json:"serverdomain"`
+	Sitekey      string `json:"sitekey"`
+	MotionData   string `json:"motionData"`
+	N            string `json:"n"`
+	C            string `json:"c"`
 }
 
 type ResponseCheckCaptcha struct {

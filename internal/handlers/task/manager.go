@@ -94,10 +94,6 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		zap.String("prompt", captcha.RequesterQuestion.En),
 	)
 
-	if captcha.RequestType != "image_label_binary" {
-		return nil, fmt.Errorf("invalid request-type: %s", captcha.RequestType)
-	}
-
 	response, err := T.Captcha.CheckCaptcha(captcha)
 	if err != nil {
 		return nil, err

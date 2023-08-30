@@ -2,14 +2,14 @@ package hcaptcha
 
 import (
 	"fmt"
-	"github.com/Implex-ltd/hcsolver/internal/solver"
+	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 )
 
 var (
-	RETRY   = 0
+	RETRY = 0
 )
 
-func (c *Hcap) SolveImages(captcha *Captcha) (map[string]string, error) {
+func (c *Hcap) SolveImages(captcha *Captcha) (any, error) {
 	retry := 0
 
 	for retry <= RETRY {
@@ -17,11 +17,11 @@ func (c *Hcap) SolveImages(captcha *Captcha) (map[string]string, error) {
 			return nil, fmt.Errorf("no images found")
 		}
 
-		response := solver.Task(&solver.BodyNewSolveTask{
-			Question: captcha.RequesterQuestion.En,
-			TaskType: captcha.RequestType,
-			TaskList: captcha.Tasklist,
-		}, c.Logger)
+		r := recognizer.NewRecognizer(captcha.RequestType, captcha.RequesterQuestion.En, captcha.RequesterRestrictedAnswerSet, captcha.Tasklist)
+		response, err := r.Recognize()
+		if err != nil {
+			return map[string]any{}, err
+		}
 
 		if !response.Success {
 			retry++
