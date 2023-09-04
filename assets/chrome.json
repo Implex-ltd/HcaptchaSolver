@@ -3667,13 +3667,16 @@
 	},
 	"navigator": {
 		"languages": [
-			"fr-fr"
+			"fr-FR",
+			"fr",
+			"en-US",
+			"en"
 		],
-		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.92 Safari/537.36",
 		"appCodeName": "Mozilla",
 		"appMinorVersion": "_$obj!_undefined_//+_",
 		"appName": "Netscape",
-		"appVersion": "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+		"appVersion": "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.92 Safari/537.36",
 		"buildID": "_$obj!_undefined_//+_",
 		"platform": "Win32",
 		"product": "Gecko",
@@ -3692,7 +3695,7 @@
 		"storage": "_$obj!_//+_",
 		"requestMediaKeySystemAccess": "_$obj!_//+_",
 		"bluetooth": "_$obj!_//+_",
-		"language": "fr-fr",
+		"language": "fr-FR",
 		"systemLanguage": "_$obj!_undefined_//+_",
 		"userLanguage": "_$obj!_undefined_//+_"
 	},
@@ -3730,8 +3733,8 @@
 		"images": "_$obj!_//+_"
 	},
 	"screen": {
-		"availWidth": 1820,
-		"availHeight": 980,
+		"availWidth": 3440,
+		"availHeight": 1392,
 		"availLeft": 0,
 		"availTop": 0,
 		"width": 3440,
@@ -3743,7 +3746,6 @@
 		"clientWidth": 1168,
 		"clientHeight": 18
 	},
-	
 	"mediaDevices": [
 		{
 			"deviceId": "",

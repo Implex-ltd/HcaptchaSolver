@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/zenthangplus/goccm"
 )
 
 const (
@@ -16,6 +18,7 @@ const (
 var (
 	ENTERPRISE_ADDR = "http://127.0.0.1:1234"
 	NORMAL_ADDR     = "http://127.0.0.1:4321"
+	cc              = goccm.New(150)
 )
 
 var Client *http.Client
@@ -39,22 +42,32 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		}
 	}
 
-	resp, err := Client.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
+	for {
+		cc.Wait()
+		resp, err := Client.Do(req)
+		cc.Done()
 		if err != nil {
-			fmt.Println(err)
+			continue //return "", err
 		}
-	}(resp.Body)
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				fmt.Println("hsw", err)
+			}
+		}(resp.Body)
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			continue //return "", err
+		}
+
+		b := string(body)
+
+		if b == "Gay" {
+			return "", fmt.Errorf("cant get hsw")
+		}
+
+		return b, nil
 	}
-
-	return string(body), nil
 }

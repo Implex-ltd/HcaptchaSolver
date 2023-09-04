@@ -261,13 +261,13 @@ func genBoxToClick(answers map[string]string) []int {
  */
 func (c *Hcap) NewMotionData(m *Motion) string {
 	st := time.Now().UnixNano() / 1e6
-	duration := int64(utils.RandomNumber(4500, 6000))
+	duration := int64(utils.RandomNumber(100, 500))
 
 	if !m.IsCheck {
 		m.Answers = map[string]string{"x": "x", "y": "y", "z": "z", "d": "z", "a": "z", "i": "z"}
 	}
 
-	for i := 0; i < utils.RandomNumber(1, 3); i++ {
+	for i := 0; i < utils.RandomNumber(1, 5); i++ {
 		m.Answers[utils.RandomString(5)] = "x"
 	}
 
@@ -278,7 +278,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	MdPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(8, 16))
 	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
 	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
-	WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
+	//WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
 
 	//PlotPoints(CaptchaPath)
 
@@ -340,21 +340,21 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 		Inv:  c.Config.Invisible,
 		Exec: false,
 		Wn: [][]int64{
-			{
+			/*{
 				int64(c.Fingerprint.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
 				int64(c.Fingerprint.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
 				1,                                       // mt.System.dpr()
 				addTime(st, WnTime),                     // Date.now()
-			},
+			},*/
 		},
 		WnMp: 0,
 		Xy: [][]int64{
-			{
+			/*{
 				0, // mt.Browser.scrollX(),  // ---> return window.pageXOffset !== undefined ? window.pageXOffset : WnTime.isCSS1 ? document.documentElement.scrollLeft : document.body.scrollLeft;
 				0, // mt.Browser.scrollY(),  // ---> return window.pageYOffset !== undefined ? window.pageYOffset : WnTime.isCSS1 ? document.documentElement.scrollTop : document.body.scrollTop;
 				int64(c.Fingerprint.Screen.AvailWidth) / (int64(c.Fingerprint.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
 				addTime(st, WnTime), // Date.now()
-			},
+			},*/
 		},
 		XyMp: 0,
 		Mm:   MmPath,

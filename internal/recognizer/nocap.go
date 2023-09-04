@@ -16,8 +16,8 @@ var (
 )
 
 var (
-	nocap  = false
-	apikey = "rorm-8473d243-790d-9184-3fa2-76e4ff8424df"
+	nocap  = true
+	apikey = "rorm-5cd874d2-0d3b-e49c-f760-f1e74b316467"
 	proapi = "https://pro.nocaptchaai.com/solve"
 )
 
@@ -82,16 +82,14 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 	req.Header.Set("Content-type", "application/json")
 	req.Header.Set("apikey", apikey)
 
-	Ccm.Wait()
 	resp, err := Client.Do(req)
-	Ccm.Done()
 	if err != nil {
 		return imgs, err
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("nocap", err)
 		}
 	}(resp.Body)
 
@@ -121,7 +119,16 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 				SmMut.Lock()
 				defer SmMut.Unlock()
 
-				Hashlist[target] = append(Hashlist[target], v["hash"])
+				currentValue, _ := Hashlist.Load(target)
+
+				var updatedValue []string
+				if currentValue != nil {
+					updatedValue = append(currentValue.([]string), v["hash"])
+				} else {
+					updatedValue = []string{v["hash"]}
+				}
+
+				Hashlist.Store(target, updatedValue)
 
 				file, err := os.OpenFile("../../assets/hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
 				if err != nil {
@@ -133,7 +140,16 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 			} else {
 				SmMut.Lock()
 				defer SmMut.Unlock()
-				Hashlist["not_"+target] = append(Hashlist["not_"+target], v["hash"])
+				currentValue, _ := Hashlist.Load(target)
+
+				var updatedValue []string
+				if currentValue != nil {
+					updatedValue = append(currentValue.([]string), "noy_"+v["hash"])
+				} else {
+					updatedValue = []string{"noy_" + v["hash"]}
+				}
+
+				Hashlist.Store(target, updatedValue)
 
 				file, err := os.OpenFile("../../assets/hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
 				if err != nil {
@@ -146,7 +162,7 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 		}(v)
 
 		ImMut.Lock()
-		out[v["key"]] = fmt.Sprintf(`"%v"`, found)
+		out[v["key"]] = fmt.Sprintf(`%v`, found)
 		ImMut.Unlock()
 		i++
 	}
@@ -192,7 +208,7 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("nocap2", err)
 		}
 	}(resp.Body)
 
@@ -216,11 +232,19 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 			AsMut.Lock()
 			defer AsMut.Unlock()
 
-			Selectlist[target] = append(Selectlist[target], HashData{
+			currentValue, _ := Selectlist.Load(target)
+			newHashData := HashData{
 				Hash: v["hash"],
 				X:    answer.Answers[i][0],
 				Y:    answer.Answers[i][1],
-			})
+			}
+			var updatedValue []HashData
+			if currentValue != nil {
+				updatedValue = append(currentValue.([]HashData), newHashData)
+			} else {
+				updatedValue = []HashData{newHashData}
+			}
+			Selectlist.Store(target, updatedValue)
 
 			file, err := os.OpenFile("../../assets/area_hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
 			if err != nil {

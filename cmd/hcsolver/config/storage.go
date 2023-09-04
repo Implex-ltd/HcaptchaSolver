@@ -88,12 +88,17 @@ func LoadSettings() {
 		zap.Int("count", count),
 	)
 
-	for k, v := range recognizer.Hashlist {
+	recognizer.Hashlist.Range(func(key, value interface{}) bool {
+		prompt := key.(string)
+		hashes := value.([]string)
+
 		Logger.Info("Loaded hash",
-			zap.String("prompt", k),
-			zap.Int("count", len(v)),
+			zap.String("prompt", prompt),
+			zap.Int("count", len(hashes)),
 		)
-	}
+
+		return true
+	})
 
 	selectCount, err := recognizer.LoadHashSelect("../../assets/area_hash.csv")
 	if err != nil {
@@ -104,12 +109,22 @@ func LoadSettings() {
 		zap.Int("count", selectCount),
 	)
 
-	for k, v := range recognizer.Selectlist {
-		Logger.Info("Loaded hash",
-			zap.String("prompt", k),
-			zap.Int("count", len(v)),
+	recognizer.Selectlist.Range(func(key, value interface{}) bool {
+		prompt := key.(string)
+		hashDataList := value.([]recognizer.HashData)
+	
+		// Now you are working with a slice of HashData, not []string.
+		// You can log the loaded hash data or perform other operations as needed.
+	
+		Logger.Info("Loaded hash data",
+			zap.String("prompt", prompt),
+			zap.Int("count", len(hashDataList)),
 		)
-	}
+	
+		return true
+	})
+
+	recognizer.LoadAnswer("../../assets/questions.txt")
 
 	// hsw client
 	t := http.DefaultTransport.(*http.Transport).Clone()

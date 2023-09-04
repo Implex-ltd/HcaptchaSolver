@@ -87,24 +87,10 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		}, nil
 	}
 
-	config.Logger.Info("GetChallenge",
-		zap.String("req", captcha.C.Req),
-		zap.String("type", captcha.C.Type),
-		zap.String("prompt", captcha.RequesterQuestion.En),
-	)
-
 	response, err := T.Captcha.CheckCaptcha(captcha)
 	if err != nil {
 		return nil, err
 	}
-
-	config.Logger.Info("CheckCaptcha",
-		zap.Bool("pass", response.Pass),
-		zap.String("token", response.GeneratedPassUUID),
-		zap.String("req", response.C.Req),
-		zap.String("type", response.C.Type),
-		zap.Int("expiration", response.Expiration),
-	)
 
 	if !response.Pass {
 		return nil, fmt.Errorf("captcha wont pass")
@@ -120,7 +106,10 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		zap.Int64("get_process", T.Captcha.GetProcessing.Milliseconds()),
 		zap.Int64("siteconfig_process", T.Captcha.SiteConfigProcessing.Milliseconds()),
 
-		zap.String("type", captcha.RequestType),
+		zap.String("prompt_type", captcha.RequestType),
+		zap.String("rqdata", T.Config.Rqdata),
+		zap.Bool("invisible", T.Config.Invisible),
+		zap.Int("task_type", T.Config.TaskType),
 
 		zap.String("useragent", T.Config.UserAgent),
 		zap.String("sitekey", T.Config.SiteKey),

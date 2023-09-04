@@ -1,17 +1,14 @@
 package recognizer
 
 import (
+	"net/http"
 	"sync"
-
-	"github.com/zenthangplus/goccm"
 )
 
 var (
-	Hashlist   = map[string][]string{}
-	Selectlist = map[string][]HashData{}
-	HMut       sync.RWMutex
-
-	Ccm = goccm.New(5000)
+	Hashlist   = new(sync.Map)
+	Selectlist = new(sync.Map)
+	Answerlist = new(sync.Map)
 )
 
 type HashData struct {
@@ -21,6 +18,7 @@ type HashData struct {
 }
 
 type Recognizer struct {
+	Http       *http.Client
 	TaskType   string
 	Question   string
 	Target     string
@@ -33,9 +31,17 @@ type Recognizer struct {
 type TaskList struct {
 	DatapointURI string `json:"datapoint_uri"`
 	TaskKey      string `json:"task_key"`
+
+	// a11y_challenge
+	DatapointHash string            `json:"datapoint_hash"`
+	DatapointText map[string]string `json:"datapoint_text"`
 }
 
-type SolveRepsonse struct {
+type SolveResponse struct {
 	Success bool `json:"success"`
 	Data    any  `json:"data"`
+}
+
+type AnswerStruct struct {
+	Text string `json:"text"`
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/model"
 	"github.com/surrealdb/surrealdb.go"
+	"go.uber.org/zap"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,6 +20,7 @@ func CreateTask(c *fiber.Ctx) error {
 	var taskData BodyNewSolveTask
 	err := c.BodyParser(&taskData)
 	if err != nil {
+		config.Logger.Error("error-CreateTask", zap.Error(err))
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Review your input",
 			"data":    err.Error(),
@@ -27,16 +29,18 @@ func CreateTask(c *fiber.Ctx) error {
 	}
 
 	T, err := Newtask(&hcaptcha.Config{
-		UserAgent: taskData.UserAgent,
-		SiteKey:   taskData.SiteKey,
-		Domain:    taskData.Domain,
-		Proxy:     taskData.Proxy,
-		Logger:    config.Logger,
-		TaskType:  taskData.TaskType,
-		Invisible: taskData.Invisible,
+		UserAgent:     taskData.UserAgent,
+		SiteKey:       taskData.SiteKey,
+		Domain:        taskData.Domain,
+		Proxy:         taskData.Proxy,
+		Logger:        config.Logger,
+		TaskType:      taskData.TaskType,
+		Invisible:     taskData.Invisible,
+		FreeTextEntry: taskData.FreeTextEntry,
 	})
 
 	if err := T.Create(); err != nil {
+		config.Logger.Error("error-T.Create", zap.Error(err))
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
 			"message": "could not create new task",
@@ -49,6 +53,7 @@ func CreateTask(c *fiber.Ctx) error {
 
 	data, err := db.Create("task", task)
 	if err != nil {
+		config.Logger.Error("error-", zap.Error(err))
 		panic(err)
 	}
 
@@ -63,12 +68,15 @@ func CreateTask(c *fiber.Ctx) error {
 		captcha, err := T.Solve()
 
 		if err != nil {
+			config.Logger.Error("error-solve", zap.Error(err))
+
 			task.Status = STATUS_ERROR
 			task.Success = false
 			task.Error = err.Error()
 
 			// Update user
 			if _, err = db.Change(createTask[0].ID, task); err != nil {
+				config.Logger.Error("error-db.Change", zap.Error(err))
 				panic(err)
 			}
 
@@ -107,6 +115,7 @@ func GetTask(c *fiber.Ctx) error {
 
 	data, err := database.DB.Select(id)
 	if err != nil {
+		config.Logger.Error("error-GetTask", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": err.Error(),

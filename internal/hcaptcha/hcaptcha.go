@@ -16,7 +16,7 @@ import (
 const (
 	VERSION = "19148ad"
 	LANG    = "fr"
-	SUBMIT  = 4
+	SUBMIT  =  5
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
@@ -28,7 +28,7 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 	c, err := cleanhttp.NewCleanHttpClient(&cleanhttp.Config{
 		Proxy:     config.Proxy,
 		BrowserFp: fp,
-		Timeout:   3,
+		Timeout:   5,
 
 		Profil: &tls_client.Chrome_105,
 	})
@@ -77,7 +77,7 @@ func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("checksiteconfig", err)
 		}
 	}(resp.Body)
 
@@ -93,6 +93,10 @@ func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
 
 	if !config.Pass {
 		return &config, fmt.Errorf("checksiteconfig pass is false: %v", config)
+	}
+
+	if !config.Features.A11YChallenge && c.Config.FreeTextEntry {
+		return &config, fmt.Errorf("a11y_challenge is disabled on this website")
 	}
 
 	return &config, nil
@@ -145,6 +149,10 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		payload.Set("rqdata", c.Config.Rqdata)
 	}
 
+	if c.Config.FreeTextEntry {
+		payload.Set(`a11y_tfe`, `true`)
+	}
+
 	t := time.Now()
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
@@ -160,7 +168,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("checkcap", err)
 		}
 	}(resp.Body)
 
@@ -258,7 +266,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("checkcap2", err)
 		}
 	}(resp.Body)
 

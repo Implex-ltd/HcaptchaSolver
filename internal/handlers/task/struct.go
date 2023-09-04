@@ -23,11 +23,12 @@ type HcaptchaTask struct {
 }
 
 type BodyNewSolveTask struct {
-	Domain    string `json:"domain"`
-	SiteKey   string `json:"site_key"`
-	UserAgent string `json:"user_agent"`
-	Proxy     string `json:"proxy"`
-	TaskType  int    `json:"task_type"`
-	Invisible bool   `json:"invisible"`
-	Rqdata    string `json:"rqdata"`
+	Domain        string `json:"domain"`
+	SiteKey       string `json:"site_key"`
+	UserAgent     string `json:"user_agent"`
+	Proxy         string `json:"proxy"`
+	TaskType      int    `json:"task_type"`
+	Invisible     bool   `json:"invisible"`
+	Rqdata        string `json:"rqdata"`
+	FreeTextEntry bool   `json:"a11y_tfe"`
 }

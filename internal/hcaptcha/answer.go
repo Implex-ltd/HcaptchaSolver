@@ -17,7 +17,11 @@ func (c *Hcap) SolveImages(captcha *Captcha) (any, error) {
 			return nil, fmt.Errorf("no images found")
 		}
 
-		r := recognizer.NewRecognizer(captcha.RequestType, captcha.RequesterQuestion.En, captcha.RequesterRestrictedAnswerSet, captcha.Tasklist)
+		r, err := recognizer.NewRecognizer(c.Config.Proxy, captcha.RequestType, captcha.RequesterQuestion.En, captcha.RequesterRestrictedAnswerSet, captcha.Tasklist)
+		if err != nil {
+			return map[string]any{}, err
+		}
+
 		response, err := r.Recognize()
 		if err != nil {
 			return map[string]any{}, err

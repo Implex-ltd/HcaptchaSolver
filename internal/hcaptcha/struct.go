@@ -10,13 +10,14 @@ import (
 )
 
 type Config struct {
-	UserAgent string
-	SiteKey   string
-	Domain    string
-	Proxy     string
-	Rqdata    string
-	Invisible bool
-	TaskType  int
+	UserAgent     string
+	SiteKey       string
+	Domain        string
+	Proxy         string
+	Rqdata        string
+	Invisible     bool
+	TaskType      int
+	FreeTextEntry bool
 
 	Logger *zap.Logger
 }
@@ -96,6 +97,9 @@ type Captcha struct {
 	Pass              bool   `json:"pass"`
 	GeneratedPassUUID string `json:"generated_pass_UUID"`
 	Expiration        int    `json:"expiration"`
+
+	// a11y_challenge
+	Rq bool `json:"rq"`
 }
 
 type RequestConfig struct {
@@ -246,6 +250,7 @@ type Nv struct {
 	Permissions            Empty         `json:"permissions"`
 	Presentation           Empty         `json:"presentation"`
 	Serial                 Empty         `json:"serial"`
+	GPU                    Empty         `json:"gpu"`
 	USB                    Empty         `json:"usb"`
 	WindowControlsOverlay  Empty         `json:"windowControlsOverlay"`
 	Xr                     Empty         `json:"xr"`

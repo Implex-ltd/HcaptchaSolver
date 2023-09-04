@@ -4,7 +4,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -13,7 +15,24 @@ import (
 	"github.com/zenthangplus/goccm"
 )
 
-func NewRecognizer(Type, Question string, Requester map[string]map[string]string, Task []TaskList) *Recognizer {
+func NewRecognizer(Proxy, Type, Question string, Requester map[string]map[string]string, Task []TaskList) (*Recognizer, error) {
+	proxy, err := url.Parse(Proxy)
+	if err != nil {
+		return nil, err
+	}
+
+	t := http.DefaultTransport.(*http.Transport).Clone()
+	t.MaxIdleConns = 200
+	t.MaxConnsPerHost = 500
+	t.MaxIdleConnsPerHost = 200
+
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(proxy),
+		},
+	}
+
 	return &Recognizer{
 		TaskType:  Type,
 		Question:  Question,
@@ -21,11 +40,12 @@ func NewRecognizer(Type, Question string, Requester map[string]map[string]string
 		Requester: Requester,
 		OMut:      sync.RWMutex{},
 		TMut:      sync.RWMutex{},
-	}
+		Http:      client,
+	}, nil
 }
 
-func (R *Recognizer) Recognize() (*SolveRepsonse, error) {
-	var solved *SolveRepsonse
+func (R *Recognizer) Recognize() (*SolveResponse, error) {
+	var solved *SolveResponse
 	var err error
 
 	switch R.TaskType {
@@ -45,9 +65,13 @@ func (R *Recognizer) Recognize() (*SolveRepsonse, error) {
 				entity = value
 			}
 		}
+
 		R.Target = strings.ReplaceAll(strings.Split(R.Question, "Please click on the ")[1], " ", "_")
 		R.EntityType = entity
+
 		solved, err = R.LabelAreaSelect()
+	case "text_free_entry":
+		solved, err = R.TextFreeEntry()
 	default:
 		err = fmt.Errorf("invalid task-type: %v", R.TaskType)
 	}
@@ -56,42 +80,45 @@ func (R *Recognizer) Recognize() (*SolveRepsonse, error) {
 }
 
 func (R *Recognizer) HashExistBinary(hashString string) (bool, error) {
-	HMut.Lock()
-	defer HMut.Unlock()
+	// Load the hashlist value for the target prompt.
+	hashesInterface, _ := Hashlist.Load(R.Target)
 
-	hash, exist := Hashlist[R.Target]
-	if exist {
-		for _, h := range hash {
+	if hashesInterface != nil {
+		hashes := hashesInterface.([]string)
+		for _, h := range hashes {
 			if h == hashString {
 				return true, nil
 			}
 		}
 	}
 
-	for prompt, hash := range Hashlist {
+	// Iterate over the sync.Map to check other prompts.
+	Hashlist.Range(func(key, value interface{}) bool {
+		prompt := key.(string)
 		if prompt != R.Target {
-			for _, h := range hash {
+			hashes := value.([]string)
+			for _, h := range hashes {
 				if h == hashString {
-					return false, nil
+					return false
 				}
 			}
 		}
-	}
+		return true
+	})
 
 	return false, fmt.Errorf("hash not solved yet")
 }
 
 func (R *Recognizer) DownloadAndCheckBinary(Url string) (bool, string, error) {
-	Ccm.Wait()
-	resp, err := Client.Get(Url)
-	Ccm.Done()
+	resp, err := R.Http.Get(Url)
+
 	if err != nil {
 		return false, "", err
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("dl_and_check", err)
 		}
 	}(resp.Body)
 
@@ -112,7 +139,7 @@ func (R *Recognizer) DownloadAndCheckBinary(Url string) (bool, string, error) {
 	return exist, hashString, nil
 }
 
-func (R *Recognizer) LabelBinary() (*SolveRepsonse, error) {
+func (R *Recognizer) LabelBinary() (*SolveResponse, error) {
 	out := map[string]any{}
 	toResolve := map[string]map[string]string{}
 
@@ -139,9 +166,7 @@ func (R *Recognizer) LabelBinary() (*SolveRepsonse, error) {
 				if err != nil {
 					if err.Error() == "hash not solved yet" && nocap {
 						for {
-							Ccm.Wait()
-							resp, err := http.Get(t.DatapointURI)
-							Ccm.Done()
+							resp, err := R.Http.Get(t.DatapointURI)
 
 							if err != nil {
 								continue
@@ -149,7 +174,7 @@ func (R *Recognizer) LabelBinary() (*SolveRepsonse, error) {
 							defer func(Body io.ReadCloser) {
 								err := Body.Close()
 								if err != nil {
-									fmt.Println(err)
+									fmt.Println("xd1", err)
 								}
 							}(resp.Body)
 
@@ -182,7 +207,7 @@ func (R *Recognizer) LabelBinary() (*SolveRepsonse, error) {
 
 	c.WaitAllDone()
 
-	if nocap {
+	if nocap && len(toResolve) > 1 {
 		response, err := SolvePic(toResolve, R.Question, R.Target)
 		if err != nil {
 			return nil, err
@@ -195,48 +220,44 @@ func (R *Recognizer) LabelBinary() (*SolveRepsonse, error) {
 		R.OMut.Unlock()
 	}
 
-	return &SolveRepsonse{
+	return &SolveResponse{
 		Success: true,
 		Data:    out,
 	}, nil
 }
 
 func (R *Recognizer) HashExistSelect(hashString string) (*HashData, error) {
-	HMut.Lock()
-	defer HMut.Unlock()
+	// Load the Selectlist value for the target prompt.
+	value, _ := Selectlist.Load(R.Target)
 
-	// opti ?
-	copiedSelectlist := make(map[string][]HashData)
-	for key, value := range Selectlist {
-		copiedSelectlist[key] = value
-	}
-
-	hash, exist := copiedSelectlist[R.Target]
-	if exist {
-		for _, k := range hash {
+	if value != nil {
+		hashDataList := value.([]HashData)
+		for _, k := range hashDataList {
 			if hashString == k.Hash {
 				return &k, nil
 			}
 		}
 	}
 
-	for prompt, hash := range copiedSelectlist {
+	// Iterate over the sync.Map to check other prompts.
+	Selectlist.Range(func(key, value interface{}) bool {
+		prompt := key.(string)
 		if prompt != R.Target {
-			for _, k := range hash {
+			hashDataList := value.([]HashData)
+			for _, k := range hashDataList {
 				if hashString == k.Hash {
-					return &k, nil
+					return false
 				}
 			}
 		}
-	}
+		return true
+	})
 
 	return nil, fmt.Errorf("hash not solved yet")
 }
 
 func (R *Recognizer) DownloadAndCheckSelect(Url string) (*HashData, string, error) {
-	Ccm.Wait()
-	resp, err := Client.Get(Url)
-	Ccm.Done()
+	resp, err := R.Http.Get(Url)
 
 	if err != nil {
 		return nil, "", err
@@ -244,13 +265,14 @@ func (R *Recognizer) DownloadAndCheckSelect(Url string) (*HashData, string, erro
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("dl_and_check0", err)
 		}
 	}(resp.Body)
 
 	buff := make([]byte, 650)
 	_, err = io.ReadFull(resp.Body, buff)
 	if err != nil {
+		fmt.Println(resp.StatusCode)
 		return nil, "", err
 	}
 
@@ -265,7 +287,7 @@ func (R *Recognizer) DownloadAndCheckSelect(Url string) (*HashData, string, erro
 	return data, hashString, nil
 }
 
-func (R *Recognizer) LabelAreaSelect() (*SolveRepsonse, error) {
+func (R *Recognizer) LabelAreaSelect() (*SolveResponse, error) {
 	out := make(map[string][]map[string]interface{})
 	toResolve := map[string]map[string]string{}
 
@@ -281,8 +303,9 @@ func (R *Recognizer) LabelAreaSelect() (*SolveRepsonse, error) {
 			var err error
 			var hash string
 
-			data, hash, err = R.DownloadAndCheckSelect(t.DatapointURI)
 			for {
+				data, hash, err = R.DownloadAndCheckSelect(t.DatapointURI)
+
 				if err != nil && err.Error() != "hash not solved yet" {
 					fmt.Println("blank hash", err)
 					time.Sleep(time.Second)
@@ -291,17 +314,16 @@ func (R *Recognizer) LabelAreaSelect() (*SolveRepsonse, error) {
 
 				if err != nil {
 					if err.Error() == "hash not solved yet" && nocap {
+						fmt.Println("nocap")
 						for {
-							Ccm.Wait()
-							resp, err := http.Get(t.DatapointURI)
-							Ccm.Done()
+							resp, err := R.Http.Get(t.DatapointURI)
 							if err != nil {
 								continue
 							}
 							defer func(Body io.ReadCloser) {
 								err := Body.Close()
 								if err != nil {
-									fmt.Println(err)
+									fmt.Println("nocap2", err)
 								}
 							}(resp.Body)
 
@@ -344,14 +366,14 @@ func (R *Recognizer) LabelAreaSelect() (*SolveRepsonse, error) {
 
 	c.WaitAllDone()
 
-	if nocap {
+	if nocap && len(toResolve) > 1 {
 		response, err := SolvePicSelect(toResolve, R.Question, R.Target)
 		if err != nil {
 			return nil, err
 		}
 
 		if len(response) < 1 {
-			return &SolveRepsonse{
+			return &SolveResponse{
 				Success: false,
 			}, fmt.Errorf("cant recognize")
 		}
@@ -372,8 +394,31 @@ func (R *Recognizer) LabelAreaSelect() (*SolveRepsonse, error) {
 		R.OMut.Unlock()
 	}
 
-	return &SolveRepsonse{
+	return &SolveResponse{
 		Success: true,
 		Data:    out,
+	}, nil
+}
+
+func (R *Recognizer) TextFreeEntry() (*SolveResponse, error) {
+	answers := map[string]AnswerStruct{}
+	resp := []string{"oui", "non"}
+
+	for _, questions := range R.TaskList {
+		res := resp[rand.Int()%len(resp)]
+		question := strings.ReplaceAll(questions.DatapointText["fr"], " ", "_")
+
+		if val, ok := Answerlist.Load(question); ok {
+			res = val.(string)
+		}
+
+		answers[questions.TaskKey] = AnswerStruct{
+			Text: res,
+		}
+	}
+
+	return &SolveResponse{
+		Success: true,
+		Data:    answers,
 	}, nil
 }
