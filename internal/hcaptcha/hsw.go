@@ -9,12 +9,6 @@ import (
 	"github.com/zenthangplus/goccm"
 )
 
-const (
-	TYPE_ENTERPRISE = 0
-	TYPE_NORMAL     = 1
-	TYPE_TURBO      = 2
-)
-
 var (
 	ENTERPRISE_ADDR = "http://127.0.0.1:1234"
 	NORMAL_ADDR     = "http://127.0.0.1:4321"
@@ -28,14 +22,14 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 	var err error
 
 	switch c.Config.TaskType {
-	case TYPE_ENTERPRISE:
+	case 0: // ENTERPRISE
 		req, err = http.NewRequest("POST", fmt.Sprintf("%s/n", ENTERPRISE_ADDR), strings.NewReader(fmt.Sprintf(`{"jwt": "%s"}`, jwt)))
 		if err != nil {
 			return "", err
 		}
 
 		req.Header.Set("content-type", "application/json")
-	case TYPE_NORMAL:
+	case 1: // NORMAL
 		req, err = http.NewRequest("GET", fmt.Sprintf("%s/n?req=%s", NORMAL_ADDR, jwt), nil)
 		if err != nil {
 			return "", err

@@ -16,7 +16,6 @@ import (
 const (
 	VERSION = "19148ad"
 	LANG    = "fr"
-	SUBMIT  =  5
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
@@ -248,7 +247,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 		return nil, err
 	}
 
-	time.Sleep((time.Second * SUBMIT) - time.Since(st))
+	time.Sleep((time.Millisecond * time.Duration(c.Config.TurboSt)) - time.Since(st))
 
 	t := time.Now()
 	resp, err := c.Http.Do(cleanhttp.RequestOption{

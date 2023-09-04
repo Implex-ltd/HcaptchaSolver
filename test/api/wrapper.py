@@ -20,11 +20,6 @@ class TASK_TYPE:
     jsdom hsw sandboxing
     """
 
-    TYPE_TURBO = 2
-    """
-    fastest solve as possible [disabled]
-    """
-
 
 class Api:
     def __init__(self, api_key: str = None, user_id: str = None):
@@ -61,10 +56,36 @@ class Api:
         invisible: bool = False,
         rqdata: str = "",
         text_free_entry: bool = False,
-    ):
-        if task_type == TASK_TYPE.TYPE_TURBO:
-            return "invalid task type, use normal or enterprise"
+        turbo: bool = False,
+        turbo_st: int = 3000,
+    ) -> dict:
+        """
+        Create a new task for solving a captcha.
 
+        Args:
+            `task_type` (TASK_TYPE, optional): The type of captcha-solving task. Defaults to TASK_TYPE.TYPE_NORMAL.
+
+            `domain` (str, optional): The domain where the captcha is presented. Defaults to "accounts.hcaptcha.com".
+
+            `sitekey` (str, optional): The sitekey associated with the captcha. Defaults to "2eaf963b-eeab-4516-9599-9daa18cd5138".
+
+            `useragent` (str, optional): The user agent to use when making requests. Defaults to a common user agent string.
+
+            `proxy` (str, optional): The proxy to use for making requests. Defaults to an empty string.
+
+            `invisible` (bool, optional): Whether the captcha is invisible. Defaults to False.
+
+            `rqdata` (str, optional): Additional request data. Defaults to an empty string.
+
+            `text_free_entry` (bool, optional): Whether free text entry is allowed. Defaults to False.
+
+            `turbo` (bool, optional): Whether turbo mode is enabled. Defaults to False.
+
+            `turbo_st` (int, optional): The turbo mode submit time in milliseconds. Defaults to 3000 (3s).
+
+        Returns:
+            dict: A dictionary containing the task ID.
+        """
         response = self.check_response(
             self.client.post(
                 f"http://{__server__}/api/task/new",
@@ -77,6 +98,8 @@ class Api:
                     "invisible": invisible,
                     "rqdata": rqdata,
                     "a11y_tfe": text_free_entry,
+                    "turbo": turbo,
+                    "turbo_st": turbo_st,
                 },
             )
         )
@@ -100,8 +123,10 @@ def task():
         task_type=TASK_TYPE.TYPE_ENTERPRISE,
         domain="discord.com",
         sitekey="4c672d35-0701-42b2-88c3-78380b0db560",
+        turbo_st=100,
+        turbo=True,
+        proxy="http://brd-customer-hl_5ae0707e-zone-data_center-ip-45.134.115.190:s3a3gvzzhgt8@brd.superproxy.io:22225",
         text_free_entry=True,
-        proxy="http://brd-customer-hl_5ae0707e-zone-data_center-ip-178.171.116.107:s3a3gvzzhgt8@brd.superproxy.io:22225",
     )
     print(task)
 
@@ -126,5 +151,5 @@ def task():
 
 
 if __name__ == "__main__":
-    for _ in range(1):
+    for _ in range(10):
         threading.Thread(target=task).start()

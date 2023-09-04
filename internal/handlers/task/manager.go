@@ -8,6 +8,7 @@ import (
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func Newtask(config *hcaptcha.Config) (*HcaptchaTask, error) {
@@ -29,13 +30,16 @@ func (T *HcaptchaTask) Create() error {
 	}
 
 	config.Logger.Info("new task",
-		zap.String("useragent", T.Config.UserAgent),
-		zap.String("sitekey", T.Config.SiteKey),
-		zap.String("domain", T.Config.Domain),
+		zap.String("ua", T.Config.UserAgent),
+		zap.String("key", T.Config.SiteKey),
+		zap.String("dns", T.Config.Domain),
 		zap.String("proxy", T.Config.Proxy),
 		zap.String("rqdata", T.Config.Rqdata),
-		zap.Bool("invisible", T.Config.Invisible),
-		zap.Int("task_type", T.Config.TaskType),
+		zap.Bool("inv", T.Config.Invisible),
+		zap.Bool("a11y", T.Config.FreeTextEntry),
+		zap.Int("type", T.Config.TaskType),
+		zap.Bool("turbo", T.Config.Turbo),
+		zap.Int("st", T.Config.TurboSt),
 	)
 
 	T.Captcha = hc
@@ -59,24 +63,33 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 	}
 
 	if captcha.GeneratedPassUUID != "" {
-		config.Logger.Info("solved (one-click)",
-			zap.String("key", captcha.GeneratedPassUUID),
-			zap.String("prompt", captcha.RequesterQuestion.En),
-			zap.Int64("hsw_process", T.Captcha.HswProcessing.Milliseconds()),
-			zap.Int64("img_process", T.Captcha.AnswerProcessing.Milliseconds()),
-			zap.Int64("task_process", time.Since(st).Milliseconds()),
-			zap.Int64("get_process", T.Captcha.GetProcessing.Milliseconds()),
-			zap.Int64("siteconfig_process", T.Captcha.SiteConfigProcessing.Milliseconds()),
-
-			zap.String("prompt_type", captcha.RequestType),
-			zap.String("rqdata", T.Config.Rqdata),
-			zap.Bool("invisible", T.Config.Invisible),
-			zap.Int("task_type", T.Config.TaskType),
-
-			zap.String("useragent", T.Config.UserAgent),
-			zap.String("sitekey", T.Config.SiteKey),
-			zap.String("domain", T.Config.Domain),
-			zap.String("proxy", T.Config.Proxy),
+		config.Logger.Info("solved (oneclick)",
+			zap.Object("perf", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+				enc.AddInt64("hsw", T.Captcha.HswProcessing.Milliseconds())
+				enc.AddInt64("recognition", T.Captcha.AnswerProcessing.Milliseconds())
+				enc.AddInt64("task", time.Since(st).Milliseconds())
+				enc.AddInt64("cc", T.Captcha.CheckProcessing.Milliseconds())
+				enc.AddInt64("gc", T.Captcha.GetProcessing.Milliseconds())
+				enc.AddInt64("gs", T.Captcha.SiteConfigProcessing.Milliseconds())
+				return nil
+			})),
+			zap.Object("config", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+				enc.AddString("rqdata", T.Config.Rqdata)
+				enc.AddBool("inv", T.Config.Invisible)
+				enc.AddBool("a11y", T.Config.FreeTextEntry)
+				enc.AddInt("type", T.Config.TaskType)
+				enc.AddString("ua", T.Config.UserAgent)
+				enc.AddString("key", T.Config.SiteKey)
+				enc.AddString("dns", T.Config.Domain)
+				enc.AddString("proxy", T.Config.Proxy)
+				return nil
+			})),
+			zap.Object("captcha", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+				enc.AddString("key", captcha.GeneratedPassUUID)
+				enc.AddString("prompt", captcha.RequesterQuestion.En)
+				enc.AddString("type", captcha.RequestType)
+				return nil
+			})),
 		)
 
 		return &hcaptcha.ResponseCheckCaptcha{
@@ -97,24 +110,32 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 	}
 
 	config.Logger.Info("solved",
-		zap.String("key", response.GeneratedPassUUID),
-		zap.String("prompt", captcha.RequesterQuestion.En),
-		zap.Int64("hsw_process", T.Captcha.HswProcessing.Milliseconds()),
-		zap.Int64("img_process", T.Captcha.AnswerProcessing.Milliseconds()),
-		zap.Int64("task_process", time.Since(st).Milliseconds()),
-		zap.Int64("check_process", T.Captcha.CheckProcessing.Milliseconds()),
-		zap.Int64("get_process", T.Captcha.GetProcessing.Milliseconds()),
-		zap.Int64("siteconfig_process", T.Captcha.SiteConfigProcessing.Milliseconds()),
-
-		zap.String("prompt_type", captcha.RequestType),
-		zap.String("rqdata", T.Config.Rqdata),
-		zap.Bool("invisible", T.Config.Invisible),
-		zap.Int("task_type", T.Config.TaskType),
-
-		zap.String("useragent", T.Config.UserAgent),
-		zap.String("sitekey", T.Config.SiteKey),
-		zap.String("domain", T.Config.Domain),
-		zap.String("proxy", T.Config.Proxy),
+		zap.Object("perf", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+			enc.AddInt64("hsw", T.Captcha.HswProcessing.Milliseconds())
+			enc.AddInt64("recognition", T.Captcha.AnswerProcessing.Milliseconds())
+			enc.AddInt64("task", time.Since(st).Milliseconds())
+			enc.AddInt64("cc", T.Captcha.CheckProcessing.Milliseconds())
+			enc.AddInt64("gc", T.Captcha.GetProcessing.Milliseconds())
+			enc.AddInt64("gs", T.Captcha.SiteConfigProcessing.Milliseconds())
+			return nil
+		})),
+		zap.Object("config", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+			enc.AddString("rqdata", T.Config.Rqdata)
+			enc.AddBool("inv", T.Config.Invisible)
+			enc.AddBool("a11y", T.Config.FreeTextEntry)
+			enc.AddInt("type", T.Config.TaskType)
+			enc.AddString("ua", T.Config.UserAgent)
+			enc.AddString("key", T.Config.SiteKey)
+			enc.AddString("dns", T.Config.Domain)
+			enc.AddString("proxy", T.Config.Proxy)
+			return nil
+		})),
+		zap.Object("captcha", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+			enc.AddString("key", response.GeneratedPassUUID)
+			enc.AddString("prompt", captcha.RequesterQuestion.En)
+			enc.AddString("type", captcha.RequestType)
+			return nil
+		})),
 	)
 
 	return response, nil

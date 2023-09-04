@@ -18,6 +18,8 @@ type Config struct {
 	Invisible     bool
 	TaskType      int
 	FreeTextEntry bool
+	Turbo         bool
+	TurboSt       int
 
 	Logger *zap.Logger
 }

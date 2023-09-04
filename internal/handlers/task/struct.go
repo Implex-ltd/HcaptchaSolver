@@ -31,4 +31,6 @@ type BodyNewSolveTask struct {
 	Invisible     bool   `json:"invisible"`
 	Rqdata        string `json:"rqdata"`
 	FreeTextEntry bool   `json:"a11y_tfe"`
+	Turbo         bool   `json:"turbo"`
+	TurboSt       int    `json:"turbo_st"`
 }

@@ -13,6 +13,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const (
+	TYPE_ENTERPRISE = 0
+	TYPE_NORMAL     = 1
+
+	SUBMIT = 5000
+)
+
 func CreateTask(c *fiber.Ctx) error {
 	db := database.DB
 	task := new(model.Task)
@@ -28,6 +35,15 @@ func CreateTask(c *fiber.Ctx) error {
 		})
 	}
 
+	switch taskData.Turbo {
+	case true:
+		if taskData.TurboSt > 10000 {
+			taskData.TurboSt = 10000
+		}
+	case false:
+		taskData.TurboSt = SUBMIT
+	}
+
 	T, err := Newtask(&hcaptcha.Config{
 		UserAgent:     taskData.UserAgent,
 		SiteKey:       taskData.SiteKey,
@@ -37,6 +53,8 @@ func CreateTask(c *fiber.Ctx) error {
 		TaskType:      taskData.TaskType,
 		Invisible:     taskData.Invisible,
 		FreeTextEntry: taskData.FreeTextEntry,
+		Turbo:         taskData.Turbo,
+		TurboSt:       taskData.TurboSt,
 	})
 
 	if err := T.Create(); err != nil {
