@@ -36,6 +36,9 @@ type Hcap struct {
 	GetProcessing        time.Duration
 	SiteConfigProcessing time.Duration
 
+	// ip
+	//Infos *utils.IpInfos
+
 	Logger *zap.Logger
 }
 

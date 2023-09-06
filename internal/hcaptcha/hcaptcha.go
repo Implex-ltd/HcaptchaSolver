@@ -58,6 +58,12 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 	fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1] // can crash
 	fp.Navigator.Platform = infos.OSName
 
+	// get ipinfos
+	/*if config.Proxy != "" {
+		infos, err := utils.Lookup(Address)
+
+	}*/
+
 	return fp, nil
 }
 

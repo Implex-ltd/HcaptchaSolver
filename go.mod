@@ -36,6 +36,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mssola/user_agent v0.6.0 // indirect
+	github.com/oschwald/maxminddb-golang v1.12.0 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/playwright-community/playwright-go v0.3700.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

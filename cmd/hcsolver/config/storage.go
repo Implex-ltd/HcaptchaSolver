@@ -133,12 +133,12 @@ func LoadSettings() {
 	t.MaxIdleConnsPerHost = 200
 
 	hcaptcha.Client = &http.Client{
-		Timeout:   10 * time.Second,
+		Timeout:   5 * time.Second,
 		Transport: t,
 	}
 
 	recognizer.Client = &http.Client{
-		Timeout:   10 * time.Second,
+		Timeout:   5 * time.Second,
 		Transport: t,
 	}
 }

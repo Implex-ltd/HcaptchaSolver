@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/zenthangplus/goccm"
 )
@@ -12,7 +13,7 @@ import (
 var (
 	ENTERPRISE_ADDR = "http://127.0.0.1:1234"
 	NORMAL_ADDR     = "http://127.0.0.1:4321"
-	cc              = goccm.New(150)
+	cc              = goccm.New(30)
 )
 
 var Client *http.Client
@@ -36,11 +37,12 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		}
 	}
 
-	for {
+	for i := 0; i < 5; i++ {
 		cc.Wait()
 		resp, err := Client.Do(req)
 		cc.Done()
 		if err != nil {
+			time.Sleep(3 * time.Second)
 			continue //return "", err
 		}
 
@@ -59,9 +61,12 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		b := string(body)
 
 		if b == "Gay" {
+			time.Sleep(3 * time.Second)
 			return "", fmt.Errorf("cant get hsw")
 		}
 
 		return b, nil
 	}
+
+	return "", fmt.Errorf("hsw max retry reached")
 }
