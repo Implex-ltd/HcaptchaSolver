@@ -11,14 +11,14 @@ var (
 func ConnectDB() {
 	var err error
 
-	DB, err = surrealdb.New("ws://localhost:8000/rpc")
+	DB, err = surrealdb.New("ws://104.194.129.150:8000/rpc")
 	if err != nil {
 		panic(err)
 	}
 
 	if _, err = DB.Signin(map[string]interface{}{
 		"user": "root",
-		"pass": "root",
+		"pass": "vivithlerlmao",
 	}); err != nil {
 		panic(err)
 	}
