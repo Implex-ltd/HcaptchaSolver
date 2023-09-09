@@ -32,8 +32,7 @@ type Cfg struct {
 		Username string `toml:"username"`
 		Password string `toml:"password"`
 		IP       string `toml:"ip"`
-		Port     string `toml:"port"`
-		Dbname   string `toml:"dbname"`
+		Port     int    `toml:"port"`
 	} `toml:"database"`
 }
 
@@ -112,15 +111,15 @@ func LoadSettings() {
 	recognizer.Selectlist.Range(func(key, value interface{}) bool {
 		prompt := key.(string)
 		hashDataList := value.([]recognizer.HashData)
-	
+
 		// Now you are working with a slice of HashData, not []string.
 		// You can log the loaded hash data or perform other operations as needed.
-	
+
 		Logger.Info("Loaded hash data",
 			zap.String("prompt", prompt),
 			zap.Int("count", len(hashDataList)),
 		)
-	
+
 		return true
 	})
 

@@ -63,8 +63,8 @@
 		]
 	},
 	"gpu": {
-		"vendor": "Google Inc. (AMD)",
-		"renderer": "ANGLE (AMD, AMD Radeon RX 6950 XT Direct3D11 vs_5_0 ps_5_0, D3D11)"
+		"vendor": "Google Inc. (Intel)",
+		"renderer": "ANGLE (Intel, Intel(R) HD Graphics 620 Direct3D11 vs_5_0 ps_5_0, D3D11)"
 	},
 	"defaultCS": {
 		"0": "accent-color",
@@ -80,345 +80,353 @@
 		"10": "animation-iteration-count",
 		"11": "animation-name",
 		"12": "animation-play-state",
-		"13": "animation-timing-function",
-		"14": "app-region",
-		"15": "appearance",
-		"16": "backdrop-filter",
-		"17": "backface-visibility",
-		"18": "background-attachment",
-		"19": "background-blend-mode",
-		"20": "background-clip",
-		"21": "background-color",
-		"22": "background-image",
-		"23": "background-origin",
-		"24": "background-position",
-		"25": "background-repeat",
-		"26": "background-size",
-		"27": "baseline-shift",
-		"28": "baseline-source",
-		"29": "block-size",
-		"30": "border-block-end-color",
-		"31": "border-block-end-style",
-		"32": "border-block-end-width",
-		"33": "border-block-start-color",
-		"34": "border-block-start-style",
-		"35": "border-block-start-width",
-		"36": "border-bottom-color",
-		"37": "border-bottom-left-radius",
-		"38": "border-bottom-right-radius",
-		"39": "border-bottom-style",
-		"40": "border-bottom-width",
-		"41": "border-collapse",
-		"42": "border-end-end-radius",
-		"43": "border-end-start-radius",
-		"44": "border-image-outset",
-		"45": "border-image-repeat",
-		"46": "border-image-slice",
-		"47": "border-image-source",
-		"48": "border-image-width",
-		"49": "border-inline-end-color",
-		"50": "border-inline-end-style",
-		"51": "border-inline-end-width",
-		"52": "border-inline-start-color",
-		"53": "border-inline-start-style",
-		"54": "border-inline-start-width",
-		"55": "border-left-color",
-		"56": "border-left-style",
-		"57": "border-left-width",
-		"58": "border-right-color",
-		"59": "border-right-style",
-		"60": "border-right-width",
-		"61": "border-start-end-radius",
-		"62": "border-start-start-radius",
-		"63": "border-top-color",
-		"64": "border-top-left-radius",
-		"65": "border-top-right-radius",
-		"66": "border-top-style",
-		"67": "border-top-width",
-		"68": "bottom",
-		"69": "box-shadow",
-		"70": "box-sizing",
-		"71": "break-after",
-		"72": "break-before",
-		"73": "break-inside",
-		"74": "buffered-rendering",
-		"75": "caption-side",
-		"76": "caret-color",
-		"77": "clear",
-		"78": "clip",
-		"79": "clip-path",
-		"80": "clip-rule",
-		"81": "color",
-		"82": "color-interpolation",
-		"83": "color-interpolation-filters",
-		"84": "color-rendering",
-		"85": "column-count",
-		"86": "column-gap",
-		"87": "column-rule-color",
-		"88": "column-rule-style",
-		"89": "column-rule-width",
-		"90": "column-span",
-		"91": "column-width",
-		"92": "contain-intrinsic-block-size",
-		"93": "contain-intrinsic-height",
-		"94": "contain-intrinsic-inline-size",
-		"95": "contain-intrinsic-size",
-		"96": "contain-intrinsic-width",
-		"97": "container-name",
-		"98": "container-type",
-		"99": "content",
-		"100": "cursor",
-		"101": "cx",
-		"102": "cy",
-		"103": "d",
-		"104": "direction",
-		"105": "display",
-		"106": "dominant-baseline",
-		"107": "empty-cells",
-		"108": "fill",
-		"109": "fill-opacity",
-		"110": "fill-rule",
-		"111": "filter",
-		"112": "flex-basis",
-		"113": "flex-direction",
-		"114": "flex-grow",
-		"115": "flex-shrink",
-		"116": "flex-wrap",
-		"117": "float",
-		"118": "flood-color",
-		"119": "flood-opacity",
-		"120": "font-family",
-		"121": "font-kerning",
-		"122": "font-optical-sizing",
-		"123": "font-palette",
-		"124": "font-size",
-		"125": "font-stretch",
-		"126": "font-style",
-		"127": "font-synthesis-small-caps",
-		"128": "font-synthesis-style",
-		"129": "font-synthesis-weight",
-		"130": "font-variant",
-		"131": "font-variant-alternates",
-		"132": "font-variant-caps",
-		"133": "font-variant-east-asian",
-		"134": "font-variant-ligatures",
-		"135": "font-variant-numeric",
-		"136": "font-weight",
-		"137": "grid-auto-columns",
-		"138": "grid-auto-flow",
-		"139": "grid-auto-rows",
-		"140": "grid-column-end",
-		"141": "grid-column-start",
-		"142": "grid-row-end",
-		"143": "grid-row-start",
-		"144": "grid-template-areas",
-		"145": "grid-template-columns",
-		"146": "grid-template-rows",
-		"147": "height",
-		"148": "hyphenate-character",
-		"149": "hyphenate-limit-chars",
-		"150": "hyphens",
-		"151": "image-orientation",
-		"152": "image-rendering",
-		"153": "initial-letter",
-		"154": "inline-size",
-		"155": "inset-block-end",
-		"156": "inset-block-start",
-		"157": "inset-inline-end",
-		"158": "inset-inline-start",
-		"159": "isolation",
-		"160": "justify-content",
-		"161": "justify-items",
-		"162": "justify-self",
-		"163": "left",
-		"164": "letter-spacing",
-		"165": "lighting-color",
-		"166": "line-break",
-		"167": "line-height",
-		"168": "list-style-image",
-		"169": "list-style-position",
-		"170": "list-style-type",
-		"171": "margin-block-end",
-		"172": "margin-block-start",
-		"173": "margin-bottom",
-		"174": "margin-inline-end",
-		"175": "margin-inline-start",
-		"176": "margin-left",
-		"177": "margin-right",
-		"178": "margin-top",
-		"179": "marker-end",
-		"180": "marker-mid",
-		"181": "marker-start",
-		"182": "mask-type",
-		"183": "math-depth",
-		"184": "math-shift",
-		"185": "math-style",
-		"186": "max-block-size",
-		"187": "max-height",
-		"188": "max-inline-size",
-		"189": "max-width",
-		"190": "min-block-size",
-		"191": "min-height",
-		"192": "min-inline-size",
-		"193": "min-width",
-		"194": "mix-blend-mode",
-		"195": "object-fit",
-		"196": "object-position",
-		"197": "object-view-box",
-		"198": "offset-distance",
-		"199": "offset-path",
-		"200": "offset-rotate",
-		"201": "opacity",
-		"202": "order",
-		"203": "orphans",
-		"204": "outline-color",
-		"205": "outline-offset",
-		"206": "outline-style",
-		"207": "outline-width",
-		"208": "overflow-anchor",
-		"209": "overflow-clip-margin",
-		"210": "overflow-wrap",
-		"211": "overflow-x",
-		"212": "overflow-y",
-		"213": "overscroll-behavior-block",
-		"214": "overscroll-behavior-inline",
-		"215": "padding-block-end",
-		"216": "padding-block-start",
-		"217": "padding-bottom",
-		"218": "padding-inline-end",
-		"219": "padding-inline-start",
-		"220": "padding-left",
-		"221": "padding-right",
-		"222": "padding-top",
-		"223": "paint-order",
-		"224": "perspective",
-		"225": "perspective-origin",
-		"226": "pointer-events",
-		"227": "position",
-		"228": "r",
-		"229": "resize",
-		"230": "right",
-		"231": "rotate",
-		"232": "row-gap",
-		"233": "ruby-position",
-		"234": "rx",
-		"235": "ry",
-		"236": "scale",
-		"237": "scroll-behavior",
-		"238": "scroll-margin-block-end",
-		"239": "scroll-margin-block-start",
-		"240": "scroll-margin-inline-end",
-		"241": "scroll-margin-inline-start",
-		"242": "scroll-padding-block-end",
-		"243": "scroll-padding-block-start",
-		"244": "scroll-padding-inline-end",
-		"245": "scroll-padding-inline-start",
-		"246": "scrollbar-gutter",
-		"247": "shape-image-threshold",
-		"248": "shape-margin",
-		"249": "shape-outside",
-		"250": "shape-rendering",
-		"251": "speak",
-		"252": "stop-color",
-		"253": "stop-opacity",
-		"254": "stroke",
-		"255": "stroke-dasharray",
-		"256": "stroke-dashoffset",
-		"257": "stroke-linecap",
-		"258": "stroke-linejoin",
-		"259": "stroke-miterlimit",
-		"260": "stroke-opacity",
-		"261": "stroke-width",
-		"262": "tab-size",
-		"263": "table-layout",
-		"264": "text-align",
-		"265": "text-align-last",
-		"266": "text-anchor",
-		"267": "text-decoration",
-		"268": "text-decoration-color",
-		"269": "text-decoration-line",
-		"270": "text-decoration-skip-ink",
-		"271": "text-decoration-style",
-		"272": "text-emphasis-color",
-		"273": "text-emphasis-position",
-		"274": "text-emphasis-style",
-		"275": "text-indent",
-		"276": "text-overflow",
-		"277": "text-rendering",
-		"278": "text-shadow",
-		"279": "text-size-adjust",
-		"280": "text-transform",
-		"281": "text-underline-position",
-		"282": "text-wrap",
-		"283": "top",
-		"284": "touch-action",
-		"285": "transform",
-		"286": "transform-origin",
-		"287": "transform-style",
-		"288": "transition-delay",
-		"289": "transition-duration",
-		"290": "transition-property",
-		"291": "transition-timing-function",
-		"292": "translate",
-		"293": "unicode-bidi",
-		"294": "user-select",
-		"295": "vector-effect",
-		"296": "vertical-align",
-		"297": "view-transition-name",
-		"298": "visibility",
-		"299": "white-space-collapse",
-		"300": "widows",
-		"301": "width",
-		"302": "will-change",
-		"303": "word-break",
-		"304": "word-spacing",
-		"305": "writing-mode",
-		"306": "x",
-		"307": "y",
-		"308": "z-index",
-		"309": "zoom",
-		"310": "-webkit-border-horizontal-spacing",
-		"311": "-webkit-border-image",
-		"312": "-webkit-border-vertical-spacing",
-		"313": "-webkit-box-align",
-		"314": "-webkit-box-decoration-break",
-		"315": "-webkit-box-direction",
-		"316": "-webkit-box-flex",
-		"317": "-webkit-box-ordinal-group",
-		"318": "-webkit-box-orient",
-		"319": "-webkit-box-pack",
-		"320": "-webkit-box-reflect",
-		"321": "-webkit-font-smoothing",
-		"322": "-webkit-highlight",
-		"323": "-webkit-line-break",
-		"324": "-webkit-line-clamp",
-		"325": "-webkit-locale",
-		"326": "-webkit-mask-box-image",
-		"327": "-webkit-mask-box-image-outset",
-		"328": "-webkit-mask-box-image-repeat",
-		"329": "-webkit-mask-box-image-slice",
-		"330": "-webkit-mask-box-image-source",
-		"331": "-webkit-mask-box-image-width",
-		"332": "-webkit-mask-clip",
-		"333": "-webkit-mask-composite",
-		"334": "-webkit-mask-image",
-		"335": "-webkit-mask-origin",
-		"336": "-webkit-mask-position",
-		"337": "-webkit-mask-repeat",
-		"338": "-webkit-mask-size",
-		"339": "-webkit-print-color-adjust",
-		"340": "-webkit-rtl-ordering",
-		"341": "-webkit-tap-highlight-color",
-		"342": "-webkit-text-combine",
-		"343": "-webkit-text-decorations-in-effect",
-		"344": "-webkit-text-fill-color",
-		"345": "-webkit-text-orientation",
-		"346": "-webkit-text-security",
-		"347": "-webkit-text-stroke-color",
-		"348": "-webkit-text-stroke-width",
-		"349": "-webkit-user-drag",
-		"350": "-webkit-user-modify",
-		"351": "-webkit-writing-mode",
+		"13": "animation-range-end",
+		"14": "animation-range-start",
+		"15": "animation-timeline",
+		"16": "animation-timing-function",
+		"17": "app-region",
+		"18": "appearance",
+		"19": "backdrop-filter",
+		"20": "backface-visibility",
+		"21": "background-attachment",
+		"22": "background-blend-mode",
+		"23": "background-clip",
+		"24": "background-color",
+		"25": "background-image",
+		"26": "background-origin",
+		"27": "background-position",
+		"28": "background-repeat",
+		"29": "background-size",
+		"30": "baseline-shift",
+		"31": "baseline-source",
+		"32": "block-size",
+		"33": "border-block-end-color",
+		"34": "border-block-end-style",
+		"35": "border-block-end-width",
+		"36": "border-block-start-color",
+		"37": "border-block-start-style",
+		"38": "border-block-start-width",
+		"39": "border-bottom-color",
+		"40": "border-bottom-left-radius",
+		"41": "border-bottom-right-radius",
+		"42": "border-bottom-style",
+		"43": "border-bottom-width",
+		"44": "border-collapse",
+		"45": "border-end-end-radius",
+		"46": "border-end-start-radius",
+		"47": "border-image-outset",
+		"48": "border-image-repeat",
+		"49": "border-image-slice",
+		"50": "border-image-source",
+		"51": "border-image-width",
+		"52": "border-inline-end-color",
+		"53": "border-inline-end-style",
+		"54": "border-inline-end-width",
+		"55": "border-inline-start-color",
+		"56": "border-inline-start-style",
+		"57": "border-inline-start-width",
+		"58": "border-left-color",
+		"59": "border-left-style",
+		"60": "border-left-width",
+		"61": "border-right-color",
+		"62": "border-right-style",
+		"63": "border-right-width",
+		"64": "border-start-end-radius",
+		"65": "border-start-start-radius",
+		"66": "border-top-color",
+		"67": "border-top-left-radius",
+		"68": "border-top-right-radius",
+		"69": "border-top-style",
+		"70": "border-top-width",
+		"71": "bottom",
+		"72": "box-shadow",
+		"73": "box-sizing",
+		"74": "break-after",
+		"75": "break-before",
+		"76": "break-inside",
+		"77": "buffered-rendering",
+		"78": "caption-side",
+		"79": "caret-color",
+		"80": "clear",
+		"81": "clip",
+		"82": "clip-path",
+		"83": "clip-rule",
+		"84": "color",
+		"85": "color-interpolation",
+		"86": "color-interpolation-filters",
+		"87": "color-rendering",
+		"88": "column-count",
+		"89": "column-gap",
+		"90": "column-rule-color",
+		"91": "column-rule-style",
+		"92": "column-rule-width",
+		"93": "column-span",
+		"94": "column-width",
+		"95": "contain-intrinsic-block-size",
+		"96": "contain-intrinsic-height",
+		"97": "contain-intrinsic-inline-size",
+		"98": "contain-intrinsic-size",
+		"99": "contain-intrinsic-width",
+		"100": "container-name",
+		"101": "container-type",
+		"102": "content",
+		"103": "cursor",
+		"104": "cx",
+		"105": "cy",
+		"106": "d",
+		"107": "direction",
+		"108": "display",
+		"109": "dominant-baseline",
+		"110": "empty-cells",
+		"111": "fill",
+		"112": "fill-opacity",
+		"113": "fill-rule",
+		"114": "filter",
+		"115": "flex-basis",
+		"116": "flex-direction",
+		"117": "flex-grow",
+		"118": "flex-shrink",
+		"119": "flex-wrap",
+		"120": "float",
+		"121": "flood-color",
+		"122": "flood-opacity",
+		"123": "font-family",
+		"124": "font-kerning",
+		"125": "font-optical-sizing",
+		"126": "font-palette",
+		"127": "font-size",
+		"128": "font-stretch",
+		"129": "font-style",
+		"130": "font-synthesis-small-caps",
+		"131": "font-synthesis-style",
+		"132": "font-synthesis-weight",
+		"133": "font-variant",
+		"134": "font-variant-alternates",
+		"135": "font-variant-caps",
+		"136": "font-variant-east-asian",
+		"137": "font-variant-ligatures",
+		"138": "font-variant-numeric",
+		"139": "font-weight",
+		"140": "grid-auto-columns",
+		"141": "grid-auto-flow",
+		"142": "grid-auto-rows",
+		"143": "grid-column-end",
+		"144": "grid-column-start",
+		"145": "grid-row-end",
+		"146": "grid-row-start",
+		"147": "grid-template-areas",
+		"148": "grid-template-columns",
+		"149": "grid-template-rows",
+		"150": "height",
+		"151": "hyphenate-character",
+		"152": "hyphenate-limit-chars",
+		"153": "hyphens",
+		"154": "image-orientation",
+		"155": "image-rendering",
+		"156": "initial-letter",
+		"157": "inline-size",
+		"158": "inset-block-end",
+		"159": "inset-block-start",
+		"160": "inset-inline-end",
+		"161": "inset-inline-start",
+		"162": "isolation",
+		"163": "justify-content",
+		"164": "justify-items",
+		"165": "justify-self",
+		"166": "left",
+		"167": "letter-spacing",
+		"168": "lighting-color",
+		"169": "line-break",
+		"170": "line-height",
+		"171": "list-style-image",
+		"172": "list-style-position",
+		"173": "list-style-type",
+		"174": "margin-block-end",
+		"175": "margin-block-start",
+		"176": "margin-bottom",
+		"177": "margin-inline-end",
+		"178": "margin-inline-start",
+		"179": "margin-left",
+		"180": "margin-right",
+		"181": "margin-top",
+		"182": "marker-end",
+		"183": "marker-mid",
+		"184": "marker-start",
+		"185": "mask-type",
+		"186": "math-depth",
+		"187": "math-shift",
+		"188": "math-style",
+		"189": "max-block-size",
+		"190": "max-height",
+		"191": "max-inline-size",
+		"192": "max-width",
+		"193": "min-block-size",
+		"194": "min-height",
+		"195": "min-inline-size",
+		"196": "min-width",
+		"197": "mix-blend-mode",
+		"198": "object-fit",
+		"199": "object-position",
+		"200": "object-view-box",
+		"201": "offset-distance",
+		"202": "offset-path",
+		"203": "offset-rotate",
+		"204": "opacity",
+		"205": "order",
+		"206": "orphans",
+		"207": "outline-color",
+		"208": "outline-offset",
+		"209": "outline-style",
+		"210": "outline-width",
+		"211": "overflow-anchor",
+		"212": "overflow-clip-margin",
+		"213": "overflow-wrap",
+		"214": "overflow-x",
+		"215": "overflow-y",
+		"216": "overscroll-behavior-block",
+		"217": "overscroll-behavior-inline",
+		"218": "padding-block-end",
+		"219": "padding-block-start",
+		"220": "padding-bottom",
+		"221": "padding-inline-end",
+		"222": "padding-inline-start",
+		"223": "padding-left",
+		"224": "padding-right",
+		"225": "padding-top",
+		"226": "paint-order",
+		"227": "perspective",
+		"228": "perspective-origin",
+		"229": "pointer-events",
+		"230": "position",
+		"231": "r",
+		"232": "resize",
+		"233": "right",
+		"234": "rotate",
+		"235": "row-gap",
+		"236": "ruby-position",
+		"237": "rx",
+		"238": "ry",
+		"239": "scale",
+		"240": "scroll-behavior",
+		"241": "scroll-margin-block-end",
+		"242": "scroll-margin-block-start",
+		"243": "scroll-margin-inline-end",
+		"244": "scroll-margin-inline-start",
+		"245": "scroll-padding-block-end",
+		"246": "scroll-padding-block-start",
+		"247": "scroll-padding-inline-end",
+		"248": "scroll-padding-inline-start",
+		"249": "scroll-timeline-axis",
+		"250": "scroll-timeline-name",
+		"251": "scrollbar-gutter",
+		"252": "shape-image-threshold",
+		"253": "shape-margin",
+		"254": "shape-outside",
+		"255": "shape-rendering",
+		"256": "speak",
+		"257": "stop-color",
+		"258": "stop-opacity",
+		"259": "stroke",
+		"260": "stroke-dasharray",
+		"261": "stroke-dashoffset",
+		"262": "stroke-linecap",
+		"263": "stroke-linejoin",
+		"264": "stroke-miterlimit",
+		"265": "stroke-opacity",
+		"266": "stroke-width",
+		"267": "tab-size",
+		"268": "table-layout",
+		"269": "text-align",
+		"270": "text-align-last",
+		"271": "text-anchor",
+		"272": "text-decoration",
+		"273": "text-decoration-color",
+		"274": "text-decoration-line",
+		"275": "text-decoration-skip-ink",
+		"276": "text-decoration-style",
+		"277": "text-emphasis-color",
+		"278": "text-emphasis-position",
+		"279": "text-emphasis-style",
+		"280": "text-indent",
+		"281": "text-overflow",
+		"282": "text-rendering",
+		"283": "text-shadow",
+		"284": "text-size-adjust",
+		"285": "text-transform",
+		"286": "text-underline-position",
+		"287": "text-wrap",
+		"288": "top",
+		"289": "touch-action",
+		"290": "transform",
+		"291": "transform-origin",
+		"292": "transform-style",
+		"293": "transition-delay",
+		"294": "transition-duration",
+		"295": "transition-property",
+		"296": "transition-timing-function",
+		"297": "translate",
+		"298": "unicode-bidi",
+		"299": "user-select",
+		"300": "vector-effect",
+		"301": "vertical-align",
+		"302": "view-timeline-axis",
+		"303": "view-timeline-inset",
+		"304": "view-timeline-name",
+		"305": "view-transition-name",
+		"306": "visibility",
+		"307": "white-space-collapse",
+		"308": "widows",
+		"309": "width",
+		"310": "will-change",
+		"311": "word-break",
+		"312": "word-spacing",
+		"313": "writing-mode",
+		"314": "x",
+		"315": "y",
+		"316": "z-index",
+		"317": "zoom",
+		"318": "-webkit-border-horizontal-spacing",
+		"319": "-webkit-border-image",
+		"320": "-webkit-border-vertical-spacing",
+		"321": "-webkit-box-align",
+		"322": "-webkit-box-decoration-break",
+		"323": "-webkit-box-direction",
+		"324": "-webkit-box-flex",
+		"325": "-webkit-box-ordinal-group",
+		"326": "-webkit-box-orient",
+		"327": "-webkit-box-pack",
+		"328": "-webkit-box-reflect",
+		"329": "-webkit-font-smoothing",
+		"330": "-webkit-highlight",
+		"331": "-webkit-line-break",
+		"332": "-webkit-line-clamp",
+		"333": "-webkit-locale",
+		"334": "-webkit-mask-box-image",
+		"335": "-webkit-mask-box-image-outset",
+		"336": "-webkit-mask-box-image-repeat",
+		"337": "-webkit-mask-box-image-slice",
+		"338": "-webkit-mask-box-image-source",
+		"339": "-webkit-mask-box-image-width",
+		"340": "-webkit-mask-clip",
+		"341": "-webkit-mask-composite",
+		"342": "-webkit-mask-image",
+		"343": "-webkit-mask-origin",
+		"344": "-webkit-mask-position",
+		"345": "-webkit-mask-repeat",
+		"346": "-webkit-mask-size",
+		"347": "-webkit-print-color-adjust",
+		"348": "-webkit-rtl-ordering",
+		"349": "-webkit-tap-highlight-color",
+		"350": "-webkit-text-combine",
+		"351": "-webkit-text-decorations-in-effect",
+		"352": "-webkit-text-fill-color",
+		"353": "-webkit-text-orientation",
+		"354": "-webkit-text-security",
+		"355": "-webkit-text-stroke-color",
+		"356": "-webkit-text-stroke-width",
+		"357": "-webkit-user-drag",
+		"358": "-webkit-user-modify",
+		"359": "-webkit-writing-mode",
 		"accentColor": "auto",
 		"additiveSymbols": "",
 		"alignContent": "normal",
@@ -435,6 +443,10 @@
 		"animationIterationCount": "1",
 		"animationName": "none",
 		"animationPlayState": "running",
+		"animationRange": "normal",
+		"animationRangeEnd": "normal",
+		"animationRangeStart": "normal",
+		"animationTimeline": "auto",
 		"animationTimingFunction": "ease",
 		"appRegion": "none",
 		"appearance": "none",
@@ -780,6 +792,9 @@
 		"scrollSnapAlign": "none",
 		"scrollSnapStop": "normal",
 		"scrollSnapType": "none",
+		"scrollTimeline": "none",
+		"scrollTimelineAxis": "block",
+		"scrollTimelineName": "none",
 		"scrollbarGutter": "auto",
 		"shapeImageThreshold": "0",
 		"shapeMargin": "0px",
@@ -847,6 +862,10 @@
 		"userSelect": "auto",
 		"vectorEffect": "none",
 		"verticalAlign": "baseline",
+		"viewTimeline": "none",
+		"viewTimelineAxis": "block",
+		"viewTimelineInset": "0px",
+		"viewTimelineName": "none",
 		"viewTransitionName": "none",
 		"visibility": "visible",
 		"webkitAlignContent": "normal",
@@ -1017,7 +1036,7 @@
 		"zIndex": "auto",
 		"zoom": "1",
 		"cssText": "",
-		"length": 352,
+		"length": 360,
 		"parentRule": null,
 		"cssFloat": "none"
 	},
@@ -1365,7 +1384,6 @@
 		"NamedNodeMap",
 		"MutationRecord",
 		"MutationObserver",
-		"MutationEvent",
 		"MouseEvent",
 		"MimeTypeArray",
 		"MimeType",
@@ -1956,6 +1974,47 @@
 		"FileSystemWritableFileStream",
 		"FontData",
 		"FragmentDirective",
+		"GPU",
+		"GPUAdapter",
+		"GPUAdapterInfo",
+		"GPUBindGroup",
+		"GPUBindGroupLayout",
+		"GPUBuffer",
+		"GPUBufferUsage",
+		"GPUCanvasContext",
+		"GPUColorWrite",
+		"GPUCommandBuffer",
+		"GPUCommandEncoder",
+		"GPUCompilationInfo",
+		"GPUCompilationMessage",
+		"GPUComputePassEncoder",
+		"GPUComputePipeline",
+		"GPUDevice",
+		"GPUDeviceLostInfo",
+		"GPUError",
+		"GPUExternalTexture",
+		"GPUInternalError",
+		"GPUMapMode",
+		"GPUOutOfMemoryError",
+		"GPUPipelineError",
+		"GPUPipelineLayout",
+		"GPUQuerySet",
+		"GPUQueue",
+		"GPURenderBundle",
+		"GPURenderBundleEncoder",
+		"GPURenderPassEncoder",
+		"GPURenderPipeline",
+		"GPUSampler",
+		"GPUShaderModule",
+		"GPUShaderStage",
+		"GPUSupportedFeatures",
+		"GPUSupportedLimits",
+		"GPUTexture",
+		"GPUTextureUsage",
+		"GPUTextureView",
+		"GPUUncapturedErrorEvent",
+		"GPUValidationError",
+		"WGSLLanguageFeatures",
 		"HID",
 		"HIDConnectionEvent",
 		"HIDDevice",
@@ -2057,6 +2116,7 @@
 		"MathMLElement",
 		"MediaMetadata",
 		"MediaSession",
+		"MutationEvent",
 		"NavigatorUAData",
 		"Notification",
 		"PaymentManager",
@@ -2068,12 +2128,15 @@
 		"PushSubscription",
 		"PushSubscriptionOptions",
 		"RemotePlayback",
+		"ScrollTimeline",
+		"ViewTimeline",
 		"SharedWorker",
 		"SpeechSynthesisErrorEvent",
 		"SpeechSynthesisEvent",
 		"SpeechSynthesisUtterance",
 		"VideoPlaybackQuality",
 		"ViewTransition",
+		"VisibilityStateEntry",
 		"webkitSpeechGrammar",
 		"webkitSpeechGrammarList",
 		"webkitSpeechRecognition",
@@ -2407,35 +2470,25 @@
 	],
 	"webgl": {
 		"supportedExtensions": [
-			"ANGLE_instanced_arrays",
-			"EXT_blend_minmax",
+			"EXT_color_buffer_float",
 			"EXT_color_buffer_half_float",
-			"EXT_disjoint_timer_query",
+			"EXT_disjoint_timer_query_webgl2",
 			"EXT_float_blend",
-			"EXT_frag_depth",
-			"EXT_shader_texture_lod",
 			"EXT_texture_compression_bptc",
 			"EXT_texture_compression_rgtc",
 			"EXT_texture_filter_anisotropic",
-			"EXT_sRGB",
+			"EXT_texture_norm16",
 			"KHR_parallel_shader_compile",
-			"OES_element_index_uint",
-			"OES_fbo_render_mipmap",
-			"OES_standard_derivatives",
-			"OES_texture_float",
+			"OES_draw_buffers_indexed",
 			"OES_texture_float_linear",
-			"OES_texture_half_float",
-			"OES_texture_half_float_linear",
-			"OES_vertex_array_object",
-			"WEBGL_color_buffer_float",
+			"OVR_multiview2",
 			"WEBGL_compressed_texture_s3tc",
 			"WEBGL_compressed_texture_s3tc_srgb",
 			"WEBGL_debug_renderer_info",
 			"WEBGL_debug_shaders",
-			"WEBGL_depth_texture",
-			"WEBGL_draw_buffers",
 			"WEBGL_lose_context",
-			"WEBGL_multi_draw"
+			"WEBGL_multi_draw",
+			"WEBGL_provoking_vertex"
 		],
 		"contextAttributes": {
 			"alpha": true,
@@ -2584,7 +2637,7 @@
 			},
 			"3379": {
 				"type": "Number",
-				"value": 988853090
+				"value": 16384
 			},
 			"3386": {
 				"type": "Int32Array",
@@ -2598,24 +2651,24 @@
 				"value": 4
 			},
 			"3410": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3411": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3412": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3413": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3414": {
-				"type": "Number",
-				"value": 24
+				"type": "",
+				"value": null
 			},
 			"3415": {
 				"type": "",
@@ -2631,7 +2684,7 @@
 			},
 			"7938": {
 				"type": "String",
-				"value": "WebGL 1.0 (OpenGL ES 2.0 Chromium)"
+				"value": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
 			},
 			"10752": {
 				"type": "",
@@ -2663,8 +2716,8 @@
 				"value": null
 			},
 			"32883": {
-				"type": "Number",
-				"value": 347437
+				"type": "",
+				"value": null
 			},
 			"32936": {
 				"type": "Number",
@@ -2722,11 +2775,11 @@
 			},
 			"34024": {
 				"type": "Number",
-				"value": 1075953293
+				"value": 16384
 			},
 			"34045": {
-				"type": "Number",
-				"value": 2797
+				"type": "",
+				"value": null
 			},
 			"34047": {
 				"type": "Number",
@@ -2738,7 +2791,7 @@
 			},
 			"34076": {
 				"type": "Number",
-				"value": 2835932641
+				"value": 16384
 			},
 			"34467": {
 				"type": "Uint32Array",
@@ -2761,8 +2814,8 @@
 				"value": 7680
 			},
 			"34852": {
-				"type": "Number",
-				"value": 420318
+				"type": "",
+				"value": null
 			},
 			"34877": {
 				"type": "Number",
@@ -2770,11 +2823,11 @@
 			},
 			"34921": {
 				"type": "Number",
-				"value": 1799179160
+				"value": 16
 			},
 			"34930": {
 				"type": "Number",
-				"value": 320593
+				"value": 16
 			},
 			"34964": {
 				"type": "",
@@ -2785,84 +2838,84 @@
 				"value": null
 			},
 			"35071": {
-				"type": "Number",
-				"value": 210148
+				"type": "",
+				"value": null
 			},
 			"35076": {
 				"type": "",
 				"value": null
 			},
 			"35077": {
-				"type": "Number",
-				"value": 512398
+				"type": "",
+				"value": null
 			},
 			"35371": {
-				"type": "Number",
-				"value": 527975
+				"type": "",
+				"value": null
 			},
 			"35373": {
-				"type": "Number",
-				"value": 71806
+				"type": "",
+				"value": null
 			},
 			"35374": {
-				"type": "Number",
-				"value": 213182
+				"type": "",
+				"value": null
 			},
 			"35375": {
-				"type": "Number",
-				"value": 291599
+				"type": "",
+				"value": null
 			},
 			"35376": {
-				"type": "Number",
-				"value": 397477
+				"type": "",
+				"value": null
 			},
 			"35377": {
-				"type": "Number",
-				"value": 164648
+				"type": "",
+				"value": null
 			},
 			"35379": {
-				"type": "Number",
-				"value": 253136
+				"type": "",
+				"value": null
 			},
 			"35380": {
-				"type": "Number",
-				"value": 497008
+				"type": "",
+				"value": null
 			},
 			"35657": {
-				"type": "Number",
-				"value": 346303
+				"type": "",
+				"value": null
 			},
 			"35658": {
-				"type": "Number",
-				"value": 764050
+				"type": "",
+				"value": null
 			},
 			"35659": {
-				"type": "Number",
-				"value": 158374
+				"type": "",
+				"value": null
 			},
 			"35660": {
 				"type": "Number",
-				"value": 987852
+				"value": 16
 			},
 			"35661": {
 				"type": "Number",
-				"value": 3042983334
+				"value": 32
 			},
 			"35724": {
 				"type": "String",
-				"value": "WebGL GLSL ES 1.0 (OpenGL ES GLSL ES 1.0 Chromium)"
+				"value": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)"
 			},
 			"35725": {
 				"type": "",
 				"value": null
 			},
 			"35968": {
-				"type": "Number",
-				"value": 835944
+				"type": "",
+				"value": null
 			},
 			"35978": {
-				"type": "Number",
-				"value": 197053
+				"type": "",
+				"value": null
 			},
 			"35979": {
 				"type": "",
@@ -2889,32 +2942,32 @@
 				"value": null
 			},
 			"36063": {
-				"type": "Number",
-				"value": 191181
+				"type": "",
+				"value": null
 			},
 			"36183": {
-				"type": "Number",
-				"value": 573594
+				"type": "",
+				"value": null
 			},
 			"36347": {
 				"type": "Number",
-				"value": 3283344087
+				"value": 4096
 			},
 			"36348": {
 				"type": "Number",
-				"value": 4032729418
+				"value": 30
 			},
 			"36349": {
 				"type": "Number",
-				"value": 2257117267
+				"value": 1024
 			},
 			"37154": {
-				"type": "Number",
-				"value": 383398
+				"type": "",
+				"value": null
 			},
 			"37157": {
-				"type": "Number",
-				"value": 315708
+				"type": "",
+				"value": null
 			},
 			"37440": {
 				"type": "",
@@ -3209,7 +3262,7 @@
 			},
 			"3379": {
 				"type": "Number",
-				"value": 988853090
+				"value": 16384
 			},
 			"3386": {
 				"type": "Int32Array",
@@ -3223,24 +3276,24 @@
 				"value": 4
 			},
 			"3410": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3411": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3412": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3413": {
-				"type": "Number",
-				"value": 8
+				"type": "",
+				"value": null
 			},
 			"3414": {
-				"type": "Number",
-				"value": 24
+				"type": "",
+				"value": null
 			},
 			"3415": {
 				"type": "",
@@ -3289,7 +3342,7 @@
 			},
 			"32883": {
 				"type": "Number",
-				"value": 347437
+				"value": 2048
 			},
 			"32936": {
 				"type": "Number",
@@ -3347,11 +3400,11 @@
 			},
 			"34024": {
 				"type": "Number",
-				"value": 1075953293
+				"value": 16384
 			},
 			"34045": {
 				"type": "Number",
-				"value": 2797
+				"value": 2
 			},
 			"34047": {
 				"type": "Number",
@@ -3363,7 +3416,7 @@
 			},
 			"34076": {
 				"type": "Number",
-				"value": 2835932641
+				"value": 16384
 			},
 			"34467": {
 				"type": "Uint32Array",
@@ -3387,7 +3440,7 @@
 			},
 			"34852": {
 				"type": "Number",
-				"value": 420318
+				"value": 8
 			},
 			"34877": {
 				"type": "Number",
@@ -3395,11 +3448,11 @@
 			},
 			"34921": {
 				"type": "Number",
-				"value": 1799179160
+				"value": 16
 			},
 			"34930": {
 				"type": "Number",
-				"value": 320593
+				"value": 16
 			},
 			"34964": {
 				"type": "",
@@ -3411,7 +3464,7 @@
 			},
 			"35071": {
 				"type": "Number",
-				"value": 210148
+				"value": 2048
 			},
 			"35076": {
 				"type": "Number",
@@ -3419,59 +3472,59 @@
 			},
 			"35077": {
 				"type": "Number",
-				"value": 512398
+				"value": 7
 			},
 			"35371": {
 				"type": "Number",
-				"value": 527975
+				"value": 12
 			},
 			"35373": {
 				"type": "Number",
-				"value": 71806
+				"value": 12
 			},
 			"35374": {
 				"type": "Number",
-				"value": 213182
+				"value": 24
 			},
 			"35375": {
 				"type": "Number",
-				"value": 291599
+				"value": 24
 			},
 			"35376": {
 				"type": "Number",
-				"value": 397477
+				"value": 65536
 			},
 			"35377": {
 				"type": "Number",
-				"value": 164648
+				"value": 212992
 			},
 			"35379": {
 				"type": "Number",
-				"value": 253136
+				"value": 200704
 			},
 			"35380": {
 				"type": "Number",
-				"value": 497008
+				"value": 256
 			},
 			"35657": {
 				"type": "Number",
-				"value": 346303
+				"value": 4096
 			},
 			"35658": {
 				"type": "Number",
-				"value": 764050
+				"value": 16384
 			},
 			"35659": {
 				"type": "Number",
-				"value": 158374
+				"value": 120
 			},
 			"35660": {
 				"type": "Number",
-				"value": 987852
+				"value": 16
 			},
 			"35661": {
 				"type": "Number",
-				"value": 3042983334
+				"value": 32
 			},
 			"35724": {
 				"type": "String",
@@ -3483,11 +3536,11 @@
 			},
 			"35968": {
 				"type": "Number",
-				"value": 835944
+				"value": 4
 			},
 			"35978": {
 				"type": "Number",
-				"value": 197053
+				"value": 120
 			},
 			"35979": {
 				"type": "Number",
@@ -3515,31 +3568,31 @@
 			},
 			"36063": {
 				"type": "Number",
-				"value": 191181
+				"value": 8
 			},
 			"36183": {
 				"type": "Number",
-				"value": 573594
+				"value": 16
 			},
 			"36347": {
 				"type": "Number",
-				"value": 3283344087
+				"value": 4096
 			},
 			"36348": {
 				"type": "Number",
-				"value": 4032729418
+				"value": 30
 			},
 			"36349": {
 				"type": "Number",
-				"value": 2257117267
+				"value": 1024
 			},
 			"37154": {
 				"type": "Number",
-				"value": 383398
+				"value": 120
 			},
 			"37157": {
 				"type": "Number",
-				"value": 315708
+				"value": 120
 			},
 			"37440": {
 				"type": "",
@@ -3672,18 +3725,18 @@
 			"en-US",
 			"en"
 		],
-		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.92 Safari/537.36",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
 		"appCodeName": "Mozilla",
 		"appMinorVersion": "_$obj!_undefined_//+_",
 		"appName": "Netscape",
-		"appVersion": "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.92 Safari/537.36",
+		"appVersion": "5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
 		"buildID": "_$obj!_undefined_//+_",
-		"platform": "Win32",
+		"platform": "MacIntel",
 		"product": "Gecko",
 		"productSub": "20030107",
-		"hardwareConcurrency": 8,
+		"hardwareConcurrency": 12,
 		"cpuClass": "_$obj!_undefined_//+_",
-		"maxTouchPoints": 10,
+		"maxTouchPoints": 0,
 		"oscpu": "_$obj!_undefined_//+_",
 		"vendor": "Google Inc.",
 		"vendorSub": "",
@@ -3700,12 +3753,12 @@
 		"userLanguage": "_$obj!_undefined_//+_"
 	},
 	"window": {
-		"innerWidth": 1184,
-		"innerHeight": 727,
-		"outerWidth": 1200,
-		"outerHeight": 815,
-		"screenX": 700,
-		"screenY": 68,
+		"innerWidth": 1904,
+		"innerHeight": 986,
+		"outerWidth": 1920,
+		"outerHeight": 1080,
+		"screenX": 867,
+		"screenY": 244,
 		"pageXOffset": 0,
 		"pageYOffset": 0,
 		"Image": "_$obj!_//+_",
@@ -3726,24 +3779,24 @@
 		"BarcodeDetector": "_$obj!_undefined_//+_"
 	},
 	"document": {
-		"characterSet": "UTF-8",
+		"characterSet": "windows-1252",
 		"compatMode": "CSS1Compat",
 		"documentMode": "_$obj!_undefined_//+_",
 		"layers": "_$obj!_undefined_//+_",
 		"images": "_$obj!_//+_"
 	},
 	"screen": {
-		"availWidth": 3440,
-		"availHeight": 1392,
+		"availWidth": 1920,
+		"availHeight": 1080,
 		"availLeft": 0,
 		"availTop": 0,
-		"width": 3440,
-		"height": 1440,
+		"width": 1920,
+		"height": 1080,
 		"colorDepth": 24,
 		"pixelDepth": 24
 	},
 	"body": {
-		"clientWidth": 1168,
+		"clientWidth": 1888,
 		"clientHeight": 18
 	},
 	"mediaDevices": [
@@ -3751,74 +3804,181 @@
 			"deviceId": "",
 			"kind": "audioinput",
 			"label": "",
-			"groupId": ""
-		},
-		{
-			"deviceId": "",
-			"kind": "audioinput",
-			"label": "",
-			"groupId": ""
+			"groupId": "9c69d23639ca96d686db30c378783d8a105e68acf2a082d5138120743b4b6608"
 		},
 		{
 			"deviceId": "",
 			"kind": "audiooutput",
 			"label": "",
-			"groupId": ""
+			"groupId": "a06edefd433315095db2b91354767bbcb6b3c7a3b60a74d4458390c1c16d7d44"
 		},
 		{
 			"deviceId": "",
-			"kind": "audiooutput",
+			"kind": "videoinput",
 			"label": "",
-			"groupId": ""
-		},
-		{
-			"deviceId": "",
-			"kind": "audiooutput",
-			"label": "",
-			"groupId": ""
-		},
-		{
-			"deviceId": "",
-			"kind": "audiooutput",
-			"label": "",
-			"groupId": ""
+			"groupId": "5b4d5ec0dffb0311cef32609cb722206ff4bbf9640e8dc4696dd67f07a99cad1"
 		}
 	],
+	"battery": {
+		"charging": true,
+		"chargingTime": 0,
+		"dischargingTime": null,
+		"level": 1
+	},
 	"voices": [
 		{
 			"default": true,
-			"lang": "ja-JP",
+			"lang": "fr-FR",
 			"localService": true,
-			"name": "Kyoko",
-			"voiceURI": "Kyoko"
+			"name": "Microsoft Hortense - French (France)",
+			"voiceURI": "Microsoft Hortense - French (France)"
 		},
 		{
 			"default": false,
-			"lang": "es-MX",
+			"lang": "fr-FR",
 			"localService": true,
-			"name": "Juan",
-			"voiceURI": "Juan"
+			"name": "Microsoft Julie - French (France)",
+			"voiceURI": "Microsoft Julie - French (France)"
 		},
 		{
 			"default": false,
-			"lang": "en-IN",
+			"lang": "fr-FR",
 			"localService": true,
-			"name": "Rishi",
-			"voiceURI": "Rishi"
+			"name": "Microsoft Paul - French (France)",
+			"voiceURI": "Microsoft Paul - French (France)"
+		},
+		{
+			"default": false,
+			"lang": "de-DE",
+			"localService": false,
+			"name": "Google Deutsch",
+			"voiceURI": "Google Deutsch"
+		},
+		{
+			"default": false,
+			"lang": "en-US",
+			"localService": false,
+			"name": "Google US English",
+			"voiceURI": "Google US English"
 		},
 		{
 			"default": false,
 			"lang": "en-GB",
-			"localService": true,
-			"name": "Daniel",
-			"voiceURI": "Daniel"
+			"localService": false,
+			"name": "Google UK English Female",
+			"voiceURI": "Google UK English Female"
 		},
 		{
 			"default": false,
-			"lang": "en-AU",
-			"localService": true,
-			"name": "Karen",
-			"voiceURI": "Karen"
+			"lang": "en-GB",
+			"localService": false,
+			"name": "Google UK English Male",
+			"voiceURI": "Google UK English Male"
+		},
+		{
+			"default": false,
+			"lang": "es-ES",
+			"localService": false,
+			"name": "Google español",
+			"voiceURI": "Google español"
+		},
+		{
+			"default": false,
+			"lang": "es-US",
+			"localService": false,
+			"name": "Google español de Estados Unidos",
+			"voiceURI": "Google español de Estados Unidos"
+		},
+		{
+			"default": false,
+			"lang": "fr-FR",
+			"localService": false,
+			"name": "Google français",
+			"voiceURI": "Google français"
+		},
+		{
+			"default": false,
+			"lang": "hi-IN",
+			"localService": false,
+			"name": "Google हिन्दी",
+			"voiceURI": "Google हिन्दी"
+		},
+		{
+			"default": false,
+			"lang": "id-ID",
+			"localService": false,
+			"name": "Google Bahasa Indonesia",
+			"voiceURI": "Google Bahasa Indonesia"
+		},
+		{
+			"default": false,
+			"lang": "it-IT",
+			"localService": false,
+			"name": "Google italiano",
+			"voiceURI": "Google italiano"
+		},
+		{
+			"default": false,
+			"lang": "ja-JP",
+			"localService": false,
+			"name": "Google 日本語",
+			"voiceURI": "Google 日本語"
+		},
+		{
+			"default": false,
+			"lang": "ko-KR",
+			"localService": false,
+			"name": "Google 한국의",
+			"voiceURI": "Google 한국의"
+		},
+		{
+			"default": false,
+			"lang": "nl-NL",
+			"localService": false,
+			"name": "Google Nederlands",
+			"voiceURI": "Google Nederlands"
+		},
+		{
+			"default": false,
+			"lang": "pl-PL",
+			"localService": false,
+			"name": "Google polski",
+			"voiceURI": "Google polski"
+		},
+		{
+			"default": false,
+			"lang": "pt-BR",
+			"localService": false,
+			"name": "Google português do Brasil",
+			"voiceURI": "Google português do Brasil"
+		},
+		{
+			"default": false,
+			"lang": "ru-RU",
+			"localService": false,
+			"name": "Google русский",
+			"voiceURI": "Google русский"
+		},
+		{
+			"default": false,
+			"lang": "zh-CN",
+			"localService": false,
+			"name": "Google 普通话（中国大陆）",
+			"voiceURI": "Google 普通话（中国大陆）"
+		},
+		{
+			"default": false,
+			"lang": "zh-HK",
+			"localService": false,
+			"name": "Google 粤語（香港）",
+			"voiceURI": "Google 粤語（香港）"
+		},
+		{
+			"default": false,
+			"lang": "zh-TW",
+			"localService": false,
+			"name": "Google 國語（臺灣）",
+			"voiceURI": "Google 國語（臺灣）"
 		}
 	],
 	"keyboard": {
@@ -7326,11 +7486,11 @@
 	],
 	"rtc": [
 		{
-			"candidate": "candidate:3555712566 1 udp 2113937151 c1a0c074-5f83-4768-ab32-56a7ed9f2c50.local 56557 typ host generation 0 ufrag ywYH network-cost 999",
+			"candidate": "candidate:998995258 1 udp 2113937151 5e4edcb2-b6ac-4bf7-b72e-cd2a28fb20d5.local 63854 typ host generation 0 ufrag axEJ network-cost 999",
 			"reg": null
 		},
 		{
-			"candidate": "candidate:3486820077 1 udp 1677729535 90.108.242.159 56557 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag ywYH network-cost 999",
+			"candidate": "candidate:714491166 1 udp 1677729535 90.108.242.159 63854 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag axEJ network-cost 999",
 			"reg": [
 				"90.108.242.159",
 				"90.108.242.159",
@@ -7390,6 +7550,14 @@
 		},
 		{
 			"name": "Courier New",
+			"exists": 1
+		},
+		{
+			"name": "Liberation Sans",
+			"exists": 1
+		},
+		{
+			"name": "Liberation Sans Narrow",
 			"exists": 1
 		},
 		{
@@ -7629,6 +7797,26 @@
 			"exists": 1
 		},
 		{
+			"name": "Liberation Mono",
+			"exists": 1
+		},
+		{
+			"name": "Liberation Serif",
+			"exists": 1
+		},
+		{
+			"name": "Noto Mono",
+			"exists": 1
+		},
+		{
+			"name": "KacstTitleL",
+			"exists": 1
+		},
+		{
+			"name": "KacstLetter",
+			"exists": 1
+		},
+		{
 			"name": "sans-serif",
 			"exists": 1
 		},
@@ -7717,6 +7905,10 @@
 			"exists": 1
 		},
 		{
+			"name": "David Libre",
+			"exists": 1
+		},
+		{
 			"name": "Exo 2",
 			"exists": 1
 		},
@@ -7754,6 +7946,10 @@
 		},
 		{
 			"name": "M PLUS Rounded 1c",
+			"exists": 1
+		},
+		{
+			"name": "Miriam Libre",
 			"exists": 1
 		},
 		{
@@ -7966,22 +8162,6 @@
 		},
 		{
 			"name": "padmaa-Bold.1.1",
-			"exists": 1
-		},
-		{
-			"name": "宋体",
-			"exists": 1
-		},
-		{
-			"name": "微软雅黑",
-			"exists": 1
-		},
-		{
-			"name": "ＭＳ ゴシック",
-			"exists": 1
-		},
-		{
-			"name": "ＭＳ Ｐゴシック",
 			"exists": 1
 		}
 	]

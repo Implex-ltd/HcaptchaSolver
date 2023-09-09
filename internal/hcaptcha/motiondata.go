@@ -285,14 +285,14 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	topLevel := TopLevel{
 		St: st,
 		Sc: Sc{
-			AvailWidth:  int64(c.Fingerprint.Screen.AvailWidth),
-			AvailHeight: int64(c.Fingerprint.Screen.AvailHeight),
-			Width:       int64(c.Fingerprint.Screen.Width),
-			Height:      int64(c.Fingerprint.Screen.Height),
-			ColorDepth:  int64(c.Fingerprint.Screen.ColorDepth),
-			PixelDepth:  int64(c.Fingerprint.Screen.PixelDepth),
-			AvailLeft:   int64(c.Fingerprint.Screen.AvailLeft),
-			AvailTop:    int64(c.Fingerprint.Screen.AvailTop),
+			AvailWidth:  int64(c.Fingerprint.Screen.AvailWidth) + int64(utils.RandomNumber(500, 1500)),
+			AvailHeight: int64(c.Fingerprint.Screen.AvailHeight) + int64(utils.RandomNumber(500, 1500)),
+			Width:       int64(c.Fingerprint.Screen.Width) + int64(utils.RandomNumber(500, 1500)),
+			Height:      int64(c.Fingerprint.Screen.Height) + int64(utils.RandomNumber(500, 1500)),
+			ColorDepth:  int64(c.Fingerprint.Screen.ColorDepth) + int64(utils.RandomNumber(500, 1500)),
+			PixelDepth:  int64(c.Fingerprint.Screen.PixelDepth) + int64(utils.RandomNumber(500, 1500)),
+			AvailLeft:   int64(c.Fingerprint.Screen.AvailLeft) + int64(utils.RandomNumber(500, 1500)),
+			AvailTop:    int64(c.Fingerprint.Screen.AvailTop) + int64(utils.RandomNumber(500, 1500)),
 			Onchange:    nil,
 			IsExtended:  true,
 		},
@@ -305,7 +305,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			AppCodeName:         c.Fingerprint.Navigator.AppCodeName,
 			AppName:             c.Fingerprint.Navigator.AppName,
 			AppVersion:          c.Fingerprint.Navigator.AppVersion,
-			Platform:            "Win32", //c.Fingerprint.Navigator.Platform,
+			Platform:            c.Fingerprint.Navigator.Platform,
 			Product:             c.Fingerprint.Navigator.Product,
 			ProductSub:          c.Fingerprint.Navigator.ProductSub,
 			UserAgent:           c.Fingerprint.Navigator.UserAgent,
@@ -333,12 +333,12 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 					},
 				},
 				Mobile:   false,
-				Platform: "Windows", // c.Fingerprint.Navigator.Platform,
+				Platform: "macOS", //"macOS", //c.Fingerprint.Navigator.Platform,
 			},
 		},
-		DR:   "",
+		DR:   "", //"https://balance.vanillagift.com",
 		Inv:  c.Config.Invisible,
-		Exec: false,
+		Exec: false, //true, //false <--n
 		Wn:   [][]int64{
 			/*{
 				int64(c.Fingerprint.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;

@@ -115,19 +115,23 @@ class Api:
 
         return response
 
+import random
+ips = open('./ip.txt', 'r+').read().splitlines()
 
 def task():
     wrapper = Api()
 
     task = wrapper.new_task(
         task_type=TASK_TYPE.TYPE_ENTERPRISE,
-        domain="discord.com",
-        sitekey="4c672d35-0701-42b2-88c3-78380b0db560",
-        turbo_st=100,
-        turbo=True,
-        proxy="http://brd-customer-hl_5ae0707e-zone-data_center-ip-45.134.115.190:s3a3gvzzhgt8@brd.superproxy.io:22225",
-        text_free_entry=True,
+        domain="balance.vanillagift.com",
+        sitekey="262cdd22-6b90-4d5d-870f-69170f8cc6be",
+        proxy=f"http://brd-customer-hl_44e27609-zone-data_center-ip-{random.choice(ips)}:n6nfl9wioefa@brd.superproxy.io:22225",
+        useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+        invisible=True,
     )
+    """
+    
+    """
     print(task)
 
     token = ""
@@ -151,5 +155,5 @@ def task():
 
 
 if __name__ == "__main__":
-    for _ in range(10):
+    for _ in range(15):
         threading.Thread(target=task).start()

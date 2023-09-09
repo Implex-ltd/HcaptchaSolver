@@ -177,9 +177,14 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		}
 	}(resp.Body)
 
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+	
+	if resp.StatusCode == 429 {
+		return nil, fmt.Errorf("ip is ratelimited")
 	}
 
 	var captcha Captcha

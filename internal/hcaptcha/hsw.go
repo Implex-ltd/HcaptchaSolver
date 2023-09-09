@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	ENTERPRISE_ADDR = "http://127.0.0.1:1234"
+	ENTERPRISE_ADDR = "http://192.168.1.26:1234"
 	NORMAL_ADDR     = "http://127.0.0.1:4321"
-	cc              = goccm.New(300)
+	cc              = goccm.New(1200)
 )
 
 var Client *http.Client
