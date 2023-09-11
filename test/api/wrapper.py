@@ -58,6 +58,7 @@ class Api:
         text_free_entry: bool = False,
         turbo: bool = False,
         turbo_st: int = 3000,
+        hc_accessibility: str = "",
     ) -> dict:
         """
         Create a new task for solving a captcha.
@@ -83,6 +84,8 @@ class Api:
 
             `turbo_st` (int, optional): The turbo mode submit time in milliseconds. Defaults to 3000 (3s).
 
+            `hc_accessibility` (string, optional): hc_accessibility cookie, instant pass normal website.
+
         Returns:
             dict: A dictionary containing the task ID.
         """
@@ -100,6 +103,7 @@ class Api:
                     "a11y_tfe": text_free_entry,
                     "turbo": turbo,
                     "turbo_st": turbo_st,
+                    "hc_accessibility": hc_accessibility,
                 },
             )
         )
@@ -115,8 +119,11 @@ class Api:
 
         return response
 
+
 import random
-ips = open('./ip.txt', 'r+').read().splitlines()
+
+ips = open("./ip.txt", "r+").read().splitlines()
+
 
 def task():
     wrapper = Api()
@@ -125,7 +132,7 @@ def task():
         task_type=TASK_TYPE.TYPE_ENTERPRISE,
         domain="balance.vanillagift.com",
         sitekey="262cdd22-6b90-4d5d-870f-69170f8cc6be",
-        proxy=f"http://brd-customer-hl_44e27609-zone-data_center-ip-{random.choice(ips)}:n6nfl9wioefa@brd.superproxy.io:22225",
+        proxy=f"http://brd-customer-hl_d12d7aae-zone-data_center-ip-{random.choice(ips)}:j9kw628yxz1s@brd.superproxy.io:22225",
         useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
         invisible=True,
     )

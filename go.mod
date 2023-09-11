@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	github.com/BurntSushi/toml v1.3.2
-	github.com/Implex-ltd/cleanhttp v0.0.0-20230907050107-09a1a13b5c2f
+	github.com/Implex-ltd/cleanhttp v0.0.0-20230911013353-e9e5d0aacb6e
 	github.com/Implex-ltd/fingerprint-client v0.0.0-20230830235428-380e1bbcfa4b
 	github.com/bogdanfinn/fhttp v0.5.24
 	github.com/bogdanfinn/tls-client v1.6.0

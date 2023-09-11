@@ -158,12 +158,17 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		payload.Set(`a11y_tfe`, `true`)
 	}
 
+	header := c.HeaderGetCaptcha()
+	if c.Config.HcAccessibility != "" {
+		header.Add("cookie", fmt.Sprintf("hc_accessibility=%s", c.Config.HcAccessibility))
+	}
+
 	t := time.Now()
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
 		Body:   strings.NewReader(payload.Encode()),
-		Header: c.HeaderGetCaptcha(),
+		Header: header,
 	})
 	c.GetProcessing = time.Since(t)
 	if err != nil {
@@ -177,12 +182,11 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		}
 	}(resp.Body)
 
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if resp.StatusCode == 429 {
 		return nil, fmt.Errorf("ip is ratelimited")
 	}

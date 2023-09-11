@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/color"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/Implex-ltd/hcsolver/internal/utils"
@@ -282,17 +283,26 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 
 	//PlotPoints(CaptchaPath)
 
+	platform := ""
+	if strings.Contains("", "Windows") {
+		platform = "Windows"
+	} else if strings.Contains("", "Macintosh") {
+		platform = "macOS"
+	} else {
+		platform = "Linux"
+	}
+
 	topLevel := TopLevel{
 		St: st,
 		Sc: Sc{
-			AvailWidth:  int64(c.Fingerprint.Screen.AvailWidth) + int64(utils.RandomNumber(500, 1500)),
-			AvailHeight: int64(c.Fingerprint.Screen.AvailHeight) + int64(utils.RandomNumber(500, 1500)),
-			Width:       int64(c.Fingerprint.Screen.Width) + int64(utils.RandomNumber(500, 1500)),
-			Height:      int64(c.Fingerprint.Screen.Height) + int64(utils.RandomNumber(500, 1500)),
-			ColorDepth:  int64(c.Fingerprint.Screen.ColorDepth) + int64(utils.RandomNumber(500, 1500)),
-			PixelDepth:  int64(c.Fingerprint.Screen.PixelDepth) + int64(utils.RandomNumber(500, 1500)),
-			AvailLeft:   int64(c.Fingerprint.Screen.AvailLeft) + int64(utils.RandomNumber(500, 1500)),
-			AvailTop:    int64(c.Fingerprint.Screen.AvailTop) + int64(utils.RandomNumber(500, 1500)),
+			AvailWidth:  int64(c.Fingerprint.Screen.AvailWidth),
+			AvailHeight: int64(c.Fingerprint.Screen.AvailHeight),
+			Width:       int64(c.Fingerprint.Screen.Width),
+			Height:      int64(c.Fingerprint.Screen.Height),
+			ColorDepth:  int64(c.Fingerprint.Screen.ColorDepth),
+			PixelDepth:  int64(c.Fingerprint.Screen.PixelDepth),
+			AvailLeft:   int64(c.Fingerprint.Screen.AvailLeft),
+			AvailTop:    int64(c.Fingerprint.Screen.AvailTop),
 			Onchange:    nil,
 			IsExtended:  true,
 		},
@@ -333,7 +343,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 					},
 				},
 				Mobile:   false,
-				Platform: "macOS", //"macOS", //c.Fingerprint.Navigator.Platform,
+				Platform: platform,
 			},
 		},
 		DR:   "", //"https://balance.vanillagift.com",

@@ -45,16 +45,17 @@ func CreateTask(c *fiber.Ctx) error {
 	}
 
 	T, err := Newtask(&hcaptcha.Config{
-		UserAgent:     taskData.UserAgent,
-		SiteKey:       taskData.SiteKey,
-		Domain:        taskData.Domain,
-		Proxy:         taskData.Proxy,
-		Logger:        config.Logger,
-		TaskType:      taskData.TaskType,
-		Invisible:     taskData.Invisible,
-		FreeTextEntry: taskData.FreeTextEntry,
-		Turbo:         taskData.Turbo,
-		TurboSt:       taskData.TurboSt,
+		UserAgent:       taskData.UserAgent,
+		SiteKey:         taskData.SiteKey,
+		Domain:          taskData.Domain,
+		Proxy:           taskData.Proxy,
+		Logger:          config.Logger,
+		TaskType:        taskData.TaskType,
+		Invisible:       taskData.Invisible,
+		FreeTextEntry:   taskData.FreeTextEntry,
+		Turbo:           taskData.Turbo,
+		TurboSt:         taskData.TurboSt,
+		HcAccessibility: taskData.HcAccessibility,
 	})
 
 	if err := T.Create(); err != nil {
