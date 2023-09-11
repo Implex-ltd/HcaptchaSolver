@@ -7,12 +7,35 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/cespare/xxhash"
 	"github.com/zenthangplus/goccm"
+)
+
+var (
+	re      = regexp.MustCompile(`Please click (on all|each) image(s)? containing (a\s)?(.+)`)
+	badCode = map[string]string{
+		"а": "a",
+		"е": "e",
+		"e": "e",
+		"i": "i",
+		"і": "i",
+		"ο": "o",
+		"с": "c",
+		"ԁ": "d",
+		"ѕ": "s",
+		"һ": "h",
+		"у": "y",
+		"р": "p",
+		"ϳ": "j",
+		"х": "x",
+		"ー": "一",
+		"土": "士",
+	}
 )
 
 func NewRecognizer(Proxy, Type, Question string, Requester map[string]map[string]string, Task []TaskList) (*Recognizer, error) {
@@ -44,17 +67,39 @@ func NewRecognizer(Proxy, Type, Question string, Requester map[string]map[string
 	}, nil
 }
 
+func (R *Recognizer) ExtractTarget(question string) string {
+	matches := re.FindStringSubmatch(question)
+	out := R.Question
+
+	if len(matches) >= 4 {
+		out = strings.ReplaceAll(matches[4], " ", "_")
+	}
+
+	return out
+}
+
+func (R *Recognizer) LabelCleaning(rawLabel string) string {
+	runes := []rune(rawLabel)
+
+	for i, r := range runes {
+		if replacement, ok := badCode[string(r)]; ok {
+			runes[i] = []rune(replacement)[0]
+		}
+	}
+
+	cleanLabel := string(runes)
+	return cleanLabel
+}
+
 func (R *Recognizer) Recognize() (*SolveResponse, error) {
 	var solved *SolveResponse
 	var err error
 
+	R.Question = R.LabelCleaning(R.Question)
+
 	switch R.TaskType {
 	case "image_label_binary":
-		if strings.Contains("Please click each image containing a ", R.Question) {
-			R.Target = strings.ReplaceAll(strings.Split(R.Question, "Please click each image containing a ")[1], " ", "_")
-		} else {
-			R.Target = strings.ReplaceAll(strings.Split(R.Question, "Please click each image containing ")[1], " ", "_")
-		}
+		R.Target = R.ExtractTarget(R.Question)
 
 		solved, err = R.LabelBinary()
 	case "image_label_area_select":

@@ -64,29 +64,19 @@ class Api:
         Create a new task for solving a captcha.
 
         Args:
-            `task_type` (TASK_TYPE, optional): The type of captcha-solving task. Defaults to TASK_TYPE.TYPE_NORMAL.
+            `task_type` (TASK_TYPE, optional): The type of captcha-solving task. Defaults to TASK_TYPE.TYPE_NORMAL.\n
+            `domain` (str, optional): The domain where the captcha is presented. Defaults to "accounts.hcaptcha.com".\n
+            `sitekey` (str, optional): The sitekey associated with the captcha. Defaults to "2eaf963b-eeab-4516-9599-9daa18cd5138".\n
+            `useragent` (str, optional): The user agent to use when making requests. Defaults to a common user agent string.\n
+            `proxy` (str, optional): The proxy to use for making requests. Defaults to an empty string.\n
+            `invisible` (bool, optional): Whether the captcha is invisible. Defaults to False.\n
+            `rqdata` (str, optional): Additional request data. Defaults to an empty string.\n
+            `text_free_entry` (bool, optional): Whether free text entry is allowed. Defaults to False.\n
+            `turbo` (bool, optional): Whether turbo mode is enabled. Defaults to False.\n
+            `turbo_st` (int, optional): The turbo mode submit time in milliseconds. Defaults to 3000 (3s).\n
+            `hc_accessibility` (string, optional): hc_accessibility cookie, instant pass normal website.\n
 
-            `domain` (str, optional): The domain where the captcha is presented. Defaults to "accounts.hcaptcha.com".
-
-            `sitekey` (str, optional): The sitekey associated with the captcha. Defaults to "2eaf963b-eeab-4516-9599-9daa18cd5138".
-
-            `useragent` (str, optional): The user agent to use when making requests. Defaults to a common user agent string.
-
-            `proxy` (str, optional): The proxy to use for making requests. Defaults to an empty string.
-
-            `invisible` (bool, optional): Whether the captcha is invisible. Defaults to False.
-
-            `rqdata` (str, optional): Additional request data. Defaults to an empty string.
-
-            `text_free_entry` (bool, optional): Whether free text entry is allowed. Defaults to False.
-
-            `turbo` (bool, optional): Whether turbo mode is enabled. Defaults to False.
-
-            `turbo_st` (int, optional): The turbo mode submit time in milliseconds. Defaults to 3000 (3s).
-
-            `hc_accessibility` (string, optional): hc_accessibility cookie, instant pass normal website.
-
-        Returns:
+        Returns:\n
             dict: A dictionary containing the task ID.
         """
         response = self.check_response(
@@ -130,11 +120,10 @@ def task():
 
     task = wrapper.new_task(
         task_type=TASK_TYPE.TYPE_ENTERPRISE,
-        domain="balance.vanillagift.com",
-        sitekey="262cdd22-6b90-4d5d-870f-69170f8cc6be",
+        domain="comspec.com.ph",
+        sitekey="3d4e78fa-92a0-4b4b-b404-c76e112c4d02",
         proxy=f"http://brd-customer-hl_d12d7aae-zone-data_center-ip-{random.choice(ips)}:j9kw628yxz1s@brd.superproxy.io:22225",
         useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
-        invisible=True,
     )
     """
     
