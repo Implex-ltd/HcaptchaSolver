@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/color"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/Implex-ltd/hcsolver/internal/utils"
@@ -282,6 +283,15 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 
 	//PlotPoints(CaptchaPath)
 
+	platform := ""
+	if strings.Contains("", "Windows") {
+		platform = "Windows"
+	} else if strings.Contains("", "Macintosh") {
+		platform = "macOS"
+	} else {
+		platform = "Linux"
+	}
+
 	topLevel := TopLevel{
 		St: st,
 		Sc: Sc{
@@ -305,7 +315,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			AppCodeName:         c.Fingerprint.Navigator.AppCodeName,
 			AppName:             c.Fingerprint.Navigator.AppName,
 			AppVersion:          c.Fingerprint.Navigator.AppVersion,
-			Platform:            "Win32", //c.Fingerprint.Navigator.Platform,
+			Platform:            c.Fingerprint.Navigator.Platform,
 			Product:             c.Fingerprint.Navigator.Product,
 			ProductSub:          c.Fingerprint.Navigator.ProductSub,
 			UserAgent:           c.Fingerprint.Navigator.UserAgent,
@@ -333,12 +343,12 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 					},
 				},
 				Mobile:   false,
-				Platform: "Windows", // c.Fingerprint.Navigator.Platform,
+				Platform: platform,
 			},
 		},
-		DR:   "",
+		DR:   "", //"https://balance.vanillagift.com",
 		Inv:  c.Config.Invisible,
-		Exec: false,
+		Exec: false, //true, //false <--n
 		Wn:   [][]int64{
 			/*{
 				int64(c.Fingerprint.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;

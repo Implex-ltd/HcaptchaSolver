@@ -40,6 +40,7 @@ func (T *HcaptchaTask) Create() error {
 		zap.Int("type", T.Config.TaskType),
 		zap.Bool("turbo", T.Config.Turbo),
 		zap.Int("st", T.Config.TurboSt),
+		zap.String("hc_accessibility", T.Config.HcAccessibility),
 	)
 
 	T.Captcha = hc

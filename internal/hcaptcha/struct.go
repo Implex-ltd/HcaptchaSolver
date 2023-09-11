@@ -10,16 +10,17 @@ import (
 )
 
 type Config struct {
-	UserAgent     string
-	SiteKey       string
-	Domain        string
-	Proxy         string
-	Rqdata        string
-	Invisible     bool
-	TaskType      int
-	FreeTextEntry bool
-	Turbo         bool
-	TurboSt       int
+	UserAgent       string
+	SiteKey         string
+	Domain          string
+	Proxy           string
+	Rqdata          string
+	Invisible       bool
+	TaskType        int
+	FreeTextEntry   bool
+	Turbo           bool
+	TurboSt         int
+	HcAccessibility string
 
 	Logger *zap.Logger
 }
