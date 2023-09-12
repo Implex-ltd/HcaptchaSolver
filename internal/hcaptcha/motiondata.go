@@ -284,10 +284,13 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	//PlotPoints(CaptchaPath)
 
 	platform := ""
-	if strings.Contains("", "Windows") {
+	plat := c.Fingerprint.Navigator.Platform
+	if strings.Contains(c.Config.UserAgent, "Windows") {
 		platform = "Windows"
-	} else if strings.Contains("", "Macintosh") {
+		plat = "Win32"
+	} else if strings.Contains(c.Config.UserAgent, "Macintosh") {
 		platform = "macOS"
+		plat = "MacIntel"
 	} else {
 		platform = "Linux"
 	}
@@ -315,7 +318,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			AppCodeName:         c.Fingerprint.Navigator.AppCodeName,
 			AppName:             c.Fingerprint.Navigator.AppName,
 			AppVersion:          c.Fingerprint.Navigator.AppVersion,
-			Platform:            c.Fingerprint.Navigator.Platform,
+			Platform:            plat,
 			Product:             c.Fingerprint.Navigator.Product,
 			ProductSub:          c.Fingerprint.Navigator.ProductSub,
 			UserAgent:           c.Fingerprint.Navigator.UserAgent,
@@ -330,16 +333,16 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			UserAgentData: UserAgentData{
 				Brands: []Brand{
 					{
+						Brand:   "Not/A)Brand",
+						Version: "24",
+					},
+					{
 						Brand:   "Google Chrome",
 						Version: c.Http.BaseHeader.UaInfo.UaVersion,
 					},
 					{
 						Brand:   "Chromium",
 						Version: c.Http.BaseHeader.UaInfo.UaVersion,
-					},
-					{
-						Brand:   "Not/A)Brand",
-						Version: "24",
 					},
 				},
 				Mobile:   false,
@@ -406,7 +409,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				widget,
 			},
 			WidgetID: widget,
-			Href:     fmt.Sprintf("https://%s", c.Config.Domain),
+			Href:     "https://discord.com/invite/zaSphzfm", //fmt.Sprintf("https://%s", c.Config.Domain),
 			Prev: Prev{
 				Escaped:          false,
 				Passed:           false,
