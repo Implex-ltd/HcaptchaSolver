@@ -125,7 +125,6 @@ func (R *Recognizer) Recognize() (*SolveResponse, error) {
 }
 
 func (R *Recognizer) HashExistBinary(hashString string) (bool, error) {
-	// Load the hashlist value for the target prompt.
 	hashesInterface, _ := Hashlist.Load(R.Target)
 
 	if hashesInterface != nil {
@@ -137,7 +136,6 @@ func (R *Recognizer) HashExistBinary(hashString string) (bool, error) {
 		}
 	}
 
-	// Iterate over the sync.Map to check other prompts.
 	Hashlist.Range(func(key, value interface{}) bool {
 		prompt := key.(string)
 		if prompt != R.Target {
