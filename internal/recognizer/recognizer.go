@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"sync"
@@ -451,8 +452,18 @@ func (R *Recognizer) TextFreeEntry() (*SolveResponse, error) {
 		res := resp[rand.Int()%len(resp)]
 		question := strings.ReplaceAll(questions.DatapointText["fr"], " ", "_")
 
-		if val, ok := Answerlist.Load(question); ok {
+		val, ok := Answerlist.Load(question)
+
+		if ok {
 			res = val.(string)
+		} else {
+			file, err := os.OpenFile("../../assets/nop.txt", os.O_APPEND|os.O_WRONLY, 0644)
+				if err != nil {
+					return nil, err
+				}
+				defer file.Close()
+
+				file.WriteString(fmt.Sprintf("%s", question + "\n"))
 		}
 
 		answers[questions.TaskKey] = AnswerStruct{
