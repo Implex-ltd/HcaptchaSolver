@@ -56,6 +56,7 @@ func CreateTask(c *fiber.Ctx) error {
 		Turbo:           taskData.Turbo,
 		TurboSt:         taskData.TurboSt,
 		HcAccessibility: taskData.HcAccessibility,
+		Oneblick:        taskData.OneclickOnly,
 	})
 
 	if err := T.Create(); err != nil {

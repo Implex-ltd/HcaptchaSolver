@@ -117,6 +117,39 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		}, nil
 	}
 
+	if T.Config.OneClick {
+		config.Logger.Info("one-click failed",
+			zap.Object("perf", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+				enc.AddInt64("hsw", T.Captcha.HswProcessing.Milliseconds())
+				enc.AddInt64("recognition", T.Captcha.AnswerProcessing.Milliseconds())
+				enc.AddInt64("task", time.Since(st).Milliseconds())
+				enc.AddInt64("cc", T.Captcha.CheckProcessing.Milliseconds())
+				enc.AddInt64("gc", T.Captcha.GetProcessing.Milliseconds())
+				enc.AddInt64("gs", T.Captcha.SiteConfigProcessing.Milliseconds())
+				return nil
+			})),
+			zap.Object("config", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+				enc.AddString("rqdata", T.Config.Rqdata)
+				enc.AddBool("inv", T.Config.Invisible)
+				enc.AddBool("a11y", T.Config.FreeTextEntry)
+				enc.AddInt("type", T.Config.TaskType)
+				enc.AddString("ua", T.Config.UserAgent)
+				enc.AddString("key", T.Config.SiteKey)
+				enc.AddString("dns", T.Config.Domain)
+				enc.AddString("proxy", T.Config.Proxy)
+				return nil
+			})),
+			zap.Object("captcha", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
+				enc.AddString("key", "")
+				enc.AddString("prompt", captcha.RequesterQuestion.En)
+				enc.AddString("type", captcha.RequestType)
+				return nil
+			})),
+		)
+
+		return nil, fmt.Errorf("one-click failed, captcha spawned")
+	}
+
 	response, err := T.Captcha.CheckCaptcha(captcha)
 	if err != nil {
 		return nil, err
