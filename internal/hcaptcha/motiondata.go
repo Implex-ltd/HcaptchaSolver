@@ -409,7 +409,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				widget,
 			},
 			WidgetID: widget,
-			Href:     "https://discord.com/invite/zaSphzfm", //fmt.Sprintf("https://%s", c.Config.Domain),
+			Href:     "https://discord.com", //fmt.Sprintf("https://%s", c.Config.Domain),
 			Prev: Prev{
 				Escaped:          false,
 				Passed:           false,

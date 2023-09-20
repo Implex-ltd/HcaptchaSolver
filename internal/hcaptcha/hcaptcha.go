@@ -67,11 +67,16 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 	return fp, nil
 }
 
-func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
+func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 	st := time.Now()
+	swa := "1"
+	if hsw {
+		swa = "0"
+	}
+
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=1", VERSION, c.Config.Domain, c.Config.SiteKey),
+		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=1", VERSION, c.Config.Domain, c.Config.SiteKey, swa),
 		Header: c.HeaderCheckSiteConfig(),
 	})
 	c.SiteConfigProcessing = time.Since(st)
@@ -107,15 +112,18 @@ func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
 	return &config, nil
 }
 
-func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
+func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 	var pow string
 	var err error
 
 	st := time.Now()
 
-	pow, err = c.GetHsw(config.C.Req)
-	if err != nil {
-		return nil, err
+	pow = "fail"
+	if !hsj {
+		pow, err = c.GetHsw(config.C.Req)
+		if err != nil {
+			return nil, err
+		}
 	}
 	c.AnswerProcessing = time.Since(st)
 

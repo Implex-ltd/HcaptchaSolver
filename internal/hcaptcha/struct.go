@@ -21,6 +21,7 @@ type Config struct {
 	Turbo           bool
 	TurboSt         int
 	HcAccessibility string
+	OneClick        bool
 
 	Logger *zap.Logger
 }

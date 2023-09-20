@@ -13,7 +13,7 @@ import (
 var (
 	ENTERPRISE_ADDR = "http://127.0.0.1:1234"
 	NORMAL_ADDR     = "http://127.0.0.1:4321"
-	cc              = goccm.New(50)
+	cc              = goccm.New(150)
 )
 
 var Client *http.Client
@@ -37,7 +37,7 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		}
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 3; i++ {
 		cc.Wait()
 		resp, err := Client.Do(req)
 		cc.Done()

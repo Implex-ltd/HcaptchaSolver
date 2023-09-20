@@ -127,17 +127,17 @@ func LoadSettings() {
 
 	// hsw client
 	t := http.DefaultTransport.(*http.Transport).Clone()
-	t.MaxIdleConns = 200
+	t.MaxIdleConns = 500
 	t.MaxConnsPerHost = 500
-	t.MaxIdleConnsPerHost = 200
+	t.MaxIdleConnsPerHost = 500
 
 	hcaptcha.Client = &http.Client{
-		Timeout:   5 * time.Second,
+		Timeout:   15 * time.Second,
 		Transport: t,
 	}
 
 	recognizer.Client = &http.Client{
-		Timeout:   5 * time.Second,
+		Timeout:   15 * time.Second,
 		Transport: t,
 	}
 }
