@@ -76,8 +76,7 @@ func CreateTask(c *fiber.Ctx) error {
 		config.Logger.Error("error-", zap.Error(err))
 		panic(err)
 	}
-
-	// Unmarshal data
+	
 	createTask := make([]model.Task, 1)
 	err = surrealdb.Unmarshal(data, &createTask)
 	if err != nil {
@@ -93,8 +92,7 @@ func CreateTask(c *fiber.Ctx) error {
 			task.Status = STATUS_ERROR
 			task.Success = false
 			task.Error = err.Error()
-
-			// Update user
+			
 			if _, err = db.Change(createTask[0].ID, task); err != nil {
 				config.Logger.Error("error-db.Change", zap.Error(err))
 				panic(err)

@@ -112,9 +112,6 @@ func LoadSettings() {
 		prompt := key.(string)
 		hashDataList := value.([]recognizer.HashData)
 
-		// Now you are working with a slice of HashData, not []string.
-		// You can log the loaded hash data or perform other operations as needed.
-
 		Logger.Info("Loaded hash data",
 			zap.String("prompt", prompt),
 			zap.Int("count", len(hashDataList)),
