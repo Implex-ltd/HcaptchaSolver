@@ -31,23 +31,19 @@ func LoadHashSelect(path string) (int, error) {
 		y, _ := strconv.Atoi(_y)
 
 		currentValue, _ := Selectlist.Load(prompt)
-
-		// Create a new HashData entry.
 		newHashData := HashData{
 			Hash: hash,
 			X:    x,
 			Y:    y,
 		}
-
-		// Append the new HashData entry to the existing slice (or create a new slice if it doesn't exist).
+		
 		var updatedValue []HashData
 		if currentValue != nil {
 			updatedValue = append(currentValue.([]HashData), newHashData)
 		} else {
 			updatedValue = []HashData{newHashData}
 		}
-
-		// Store the updated value back into the 'Selectlist'.
+		
 		Selectlist.Store(prompt, updatedValue)
 
 		count++
@@ -79,19 +75,15 @@ func LoadHash(path string) (int, error) {
 		}
 
 		hash, prompt := parts[0], parts[1]
-
-		// Load the current value associated with 'prompt'.
 		currentValue, _ := Hashlist.Load(prompt)
-
-		// Append the new hash to the existing slice (or create a new slice if it doesn't exist).
+		
 		var updatedValue []string
 		if currentValue != nil {
 			updatedValue = append(currentValue.([]string), hash)
 		} else {
 			updatedValue = []string{hash}
 		}
-
-		// Store the updated value back into the 'Hashlist'.
+		
 		Hashlist.Store(prompt, updatedValue)
 		count++
 	}
