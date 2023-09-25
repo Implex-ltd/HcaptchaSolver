@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
+	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
 	//"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/router"
 	_ "github.com/Implex-ltd/hcsolver/internal/utils"
@@ -31,32 +31,32 @@ func main() {
 
 	config.LoadSettings()
 
-	/*
 	database.ConnectDB(config.Config.Database.IP, config.Config.Database.Username, config.Config.Database.Password, config.Config.Database.Port)
 
-	req, err := database.FpDB.Select("fp")
-	if err != nil {
-		panic(err)
-	}
-
-	var FingerprintSlice []Fingerprint
-	err = surrealdb.Unmarshal(req, &FingerprintSlice)
-	if err != nil {
-		panic(err)
-	}
-	for _, fp := range FingerprintSlice {
-		fmt.Println(fp.ID)
-		if fp.ID == "fp:fc49974c8afd714dab25042617bf5d36" {
-			fmt.Println(fp.Fingerprint)
-			b, err := base64.RawStdEncoding.DecodeString(fp.Fingerprint)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-			log.Println(string(b))
+	/*
+		req, err := database.FpDB.Select("fp")
+		if err != nil {
+			panic(err)
 		}
 
-	}
+		var FingerprintSlice []Fingerprint
+		err = surrealdb.Unmarshal(req, &FingerprintSlice)
+		if err != nil {
+			panic(err)
+		}
+		for _, fp := range FingerprintSlice {
+			fmt.Println(fp.ID)
+			if fp.ID == "fp:fc49974c8afd714dab25042617bf5d36" {
+				fmt.Println(fp.Fingerprint)
+				b, err := base64.RawStdEncoding.DecodeString(fp.Fingerprint)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				log.Println(string(b))
+			}
+
+		}
 	*/
 
 	app := fiber.New()
