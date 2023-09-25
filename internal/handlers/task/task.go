@@ -21,7 +21,7 @@ const (
 )
 
 func CreateTask(c *fiber.Ctx) error {
-	db := database.DB
+	db := database.TaskDB
 	task := new(model.Task)
 
 	var taskData BodyNewSolveTask
@@ -76,7 +76,7 @@ func CreateTask(c *fiber.Ctx) error {
 		config.Logger.Error("error-", zap.Error(err))
 		panic(err)
 	}
-	
+
 	createTask := make([]model.Task, 1)
 	err = surrealdb.Unmarshal(data, &createTask)
 	if err != nil {
@@ -92,7 +92,7 @@ func CreateTask(c *fiber.Ctx) error {
 			task.Status = STATUS_ERROR
 			task.Success = false
 			task.Error = err.Error()
-			
+
 			if _, err = db.Change(createTask[0].ID, task); err != nil {
 				config.Logger.Error("error-db.Change", zap.Error(err))
 				panic(err)
@@ -100,7 +100,7 @@ func CreateTask(c *fiber.Ctx) error {
 
 			go func() {
 				time.Sleep(120 * time.Second)
-				database.DB.Delete(createTask[0].ID)
+				database.TaskDB.Delete(createTask[0].ID)
 			}()
 
 			return
@@ -111,13 +111,13 @@ func CreateTask(c *fiber.Ctx) error {
 		task.Token = captcha.GeneratedPassUUID
 		task.Expiration = captcha.Expiration
 
-		if _, err = db.Change(createTask[0].ID, task); err != nil {
+		if _, err = db.Update(createTask[0].ID, task); err != nil {
 			panic(err)
 		}
 
 		go func() {
 			time.Sleep(time.Duration(task.Expiration) * time.Second)
-			database.DB.Delete(createTask[0].ID)
+			database.TaskDB.Delete(createTask[0].ID)
 		}()
 	}(task)
 
@@ -131,7 +131,7 @@ func CreateTask(c *fiber.Ctx) error {
 func GetTask(c *fiber.Ctx) error {
 	id := c.Params("taskId")
 
-	data, err := database.DB.Select(id)
+	data, err := database.TaskDB.Select(id)
 	if err != nil {
 		config.Logger.Error("error-GetTask", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

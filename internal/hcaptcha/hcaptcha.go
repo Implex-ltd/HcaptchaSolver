@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	VERSION = "12aefcf"
+	VERSION = "28ff887"
 	LANG    = "fr"
 )
 
@@ -73,7 +73,7 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 
 	resp, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=0", VERSION, c.Config.Domain, c.Config.SiteKey, swa),
+		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=1", VERSION, c.Config.Domain, c.Config.SiteKey, swa),
 		Header: c.HeaderCheckSiteConfig(),
 	})
 	c.SiteConfigProcessing = time.Since(st)
@@ -92,6 +92,8 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(string(body), resp.Status)
 
 	var config SiteConfig
 	if err := json.Unmarshal(body, &config); err != nil {
@@ -150,7 +152,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 		`pdc`:        string(pdc),
 		`n`:          pow,
 		`c`:          string(C),
-		//`pst`:        `false`,
+		`pst`:        `false`,
 	} {
 		payload.Set(name, value)
 	}

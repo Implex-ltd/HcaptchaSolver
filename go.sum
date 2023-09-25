@@ -86,6 +86,8 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/surrealdb/surrealdb.go v0.2.1 h1:E4rCnD75Ftq8/wTgbQ9kJgMACi3xMziXtMlRkm6Jh1g=
 github.com/surrealdb/surrealdb.go v0.2.1/go.mod h1:CloW70O49xyVO/rGO9cAZ62FEbl0/hreRHEJuamnndQ=
+github.com/surrealdb/surrealdb.go v0.2.2-0.20230920140034-4e3ec8259689 h1:/z3KA+ZruqWij90C2JryxlviuER5+crrhli3J6Z/IUU=
+github.com/surrealdb/surrealdb.go v0.2.2-0.20230920140034-4e3ec8259689/go.mod h1:iu4fEj0iQfz0rZes+bEDEpIqRXDnnTvaZBhgWskVfkw=
 github.com/tam7t/hpkp v0.0.0-20160821193359-2b70b4024ed5 h1:YqAladjX7xpA6BM04leXMWAEjS0mTZ5kUU9KRBriQJc=
 github.com/tam7t/hpkp v0.0.0-20160821193359-2b70b4024ed5/go.mod h1:2JjD2zLQYH5HO74y5+aE3remJQvl6q4Sn6aWA2wD1Ng=
 github.com/tinylib/msgp v1.1.8 h1:FCXC1xanKO4I8plpHGH2P7koL/RzZs12l/+r7vakfm0=
@@ -115,6 +117,7 @@ golang.org/x/crypto v0.13.0 h1:mvySKfSWJ+UKUii46M40LOvyWfN0s2U+46/jDd0e6Ck=
 golang.org/x/crypto v0.13.0/go.mod h1:y6Z2r+Rw4iayiXXAIxJIDAJ1zMW4yaTpebo8fPOliYc=
 golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b h1:r+vk0EmXNmekl0S0BascoeeoHk/L7wmaW2QF90K+kYI=
 golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b/go.mod h1:FXUEEKJgO7OQYeo8N01OfiKP8RXMtf6e8aTskBGqWdc=
+golang.org/x/exp v0.0.0-20230809150735-7b3493d9a819 h1:EDuYyU/MkFXllv9QF9819VlI9a4tzGuCbhG0ExK9o1U=
 golang.org/x/image v0.12.0 h1:w13vZbU4o5rKOFFR8y7M+c4A5jXDC0uXTdHYRP8X2DQ=
 golang.org/x/image v0.12.0/go.mod h1:Lu90jvHG7GfemOIcldsh9A2hS01ocl6oNO7ype5mEnk=
 golang.org/x/mod v0.3.0/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=

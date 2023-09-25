@@ -292,7 +292,12 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 		platform = "macOS"
 		plat = "MacIntel"
 	} else {
-		platform = "Linux"
+		if strings.Contains(c.Config.UserAgent, "Android") {
+			platform = "Linux armv81"
+			plat = "Android"
+		} else {
+			platform = "Linux"
+		}
 	}
 
 	topLevel := TopLevel{
@@ -349,7 +354,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				Platform: platform,
 			},
 		},
-		DR:   "", //"https://balance.vanillagift.com",
+		DR:   "",
 		Inv:  c.Config.Invisible,
 		Exec: false, //true, //false <--n
 		Wn:   [][]int64{
@@ -409,7 +414,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				widget,
 			},
 			WidgetID: widget,
-			Href:     "https://discord.com", //fmt.Sprintf("https://%s", c.Config.Domain),
+			Href:     fmt.Sprintf("https://%s", c.Config.Domain),
 			Prev: Prev{
 				Escaped:          false,
 				Passed:           false,

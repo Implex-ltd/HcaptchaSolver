@@ -12,7 +12,6 @@ require (
 	github.com/google/uuid v1.3.1
 	github.com/mattn/go-colorable v0.1.13
 	github.com/oschwald/maxminddb-golang v1.12.0
-	github.com/surrealdb/surrealdb.go v0.2.1
 	github.com/zenthangplus/goccm v1.1.3
 	go.uber.org/zap v1.26.0
 	gonum.org/v1/plot v0.14.0
@@ -41,6 +40,7 @@ require (
 	github.com/playwright-community/playwright-go v0.3700.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/surrealdb/surrealdb.go v0.2.1 // indirect
 	github.com/tam7t/hpkp v0.0.0-20160821193359-2b70b4024ed5 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

@@ -59,6 +59,7 @@ class Api:
         turbo: bool = False,
         turbo_st: int = 3000,
         hc_accessibility: str = "",
+        oneclick_only: bool = False,
     ) -> dict:
         """
         Create a new task for solving a captcha.
@@ -94,6 +95,7 @@ class Api:
                     "turbo": turbo,
                     "turbo_st": turbo_st,
                     "hc_accessibility": hc_accessibility,
+                    "oneclick_only": oneclick_only,
                 },
             )
         )
@@ -119,24 +121,27 @@ def task():
     wrapper = Api()
 
     task = wrapper.new_task(
-        task_type=TASK_TYPE.TYPE_ENTERPRISE,
-        domain="comspec.com.ph",
-        sitekey="3d4e78fa-92a0-4b4b-b404-c76e112c4d02",
-        proxy=f"http://brd-customer-hl_d12d7aae-zone-data_center-ip-{random.choice(ips)}:j9kw628yxz1s@brd.superproxy.io:22225",
-        useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+        task_type=TASK_TYPE.TYPE_NORMAL,
+        domain="balance.vanillagift.com",
+        sitekey="262cdd22-6b90-4d5d-870f-69170f8cc6be",
+        proxy=f"http://brd-customer-hl_982d9e84-zone-data_center-ip-{random.choice(ips)}:iazc3nuglvbl@brd.superproxy.io:22225",
+        useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
+        oneclick_only=True,
+        invisible=True,
     )
     """
     
     """
     print(task)
 
+    err = ""
     token = ""
     while True:
         status = wrapper.get_task(task["json"]["data"][0]["id"])
         data = status["json"]["data"]
-        print(data)
 
         if data["status"] == STATUS.STATUS_ERROR:
+            err = data["error"]
             break
 
         elif data["status"] == STATUS.STATUS_SOLVED:
@@ -148,6 +153,8 @@ def task():
 
     if token != "":
         print(f"[+] Solved: {token[:50]}")
+    else:
+        print("[-] fail:", err)
 
 
 if __name__ == "__main__":
