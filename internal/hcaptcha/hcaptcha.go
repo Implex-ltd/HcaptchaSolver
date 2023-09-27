@@ -3,6 +3,7 @@ package hcaptcha
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 	"time"
@@ -25,9 +26,9 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 	c, err := cleanhttp.NewFastCleanHttpClient(&cleanhttp.Config{
 		Proxy:               config.Proxy,
 		BrowserFp:           fp,
-		Timeout:             10,
-		ReadTimeout:         time.Second * 10,
-		WriteTimeout:        time.Second * 10,
+		Timeout:             15,
+		ReadTimeout:         time.Second * 15,
+		WriteTimeout:        time.Second * 15,
 		MaxIdleConnDuration: time.Minute,
 	})
 	if err != nil {
@@ -170,6 +171,10 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 		return nil, err
 	}
 
+	if body == nil {
+		return nil, fmt.Errorf("GetChallenge body is nil")
+	}
+
 	if status == 429 {
 		return nil, fmt.Errorf("ip is ratelimited")
 	}
@@ -266,6 +271,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	}
 
 	if !Resp.Pass {
+		log.Println(answers, captcha.Tasklist)
 		return nil, fmt.Errorf("checkCaptcha: failed to pass: %+v", string(body))
 	}
 

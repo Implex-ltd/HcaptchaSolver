@@ -279,7 +279,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	MdPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(8, 16))
 	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
 	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
-	//WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
+	WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
 
 	//PlotPoints(CaptchaPath)
 
@@ -300,13 +300,15 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 		}
 	}
 
+	w, h := generateRandomBrowserSize(800, 3400)
+
 	topLevel := TopLevel{
 		St: st,
 		Sc: Sc{
-			AvailWidth:  int64(c.Fingerprint.Screen.AvailWidth),
-			AvailHeight: int64(c.Fingerprint.Screen.AvailHeight),
-			Width:       int64(c.Fingerprint.Screen.Width),
-			Height:      int64(c.Fingerprint.Screen.Height),
+			AvailWidth:  int64(w),
+			AvailHeight: int64(h),
+			Width:       int64(w),
+			Height:      int64(h),
 			ColorDepth:  int64(c.Fingerprint.Screen.ColorDepth),
 			PixelDepth:  int64(c.Fingerprint.Screen.PixelDepth),
 			AvailLeft:   int64(c.Fingerprint.Screen.AvailLeft),
@@ -315,8 +317,8 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			IsExtended:  true,
 		},
 		Nv: Nv{
-			HardwareConcurrency: int64(c.Fingerprint.Navigator.HardwareConcurrency),
-			DeviceMemory:        int64(c.Fingerprint.Navigator.DeviceMemory),
+			HardwareConcurrency: utils.RandomElementInt([]int64{2, 4, 6, 8, 12, 16}),
+			DeviceMemory:        utils.RandomElementInt([]int64{2, 4, 8, 16}),
 			Webdriver:           false,
 			MaxTouchPoints:      int64(c.Fingerprint.Navigator.MaxTouchPoints),
 			CookieEnabled:       true,
@@ -339,7 +341,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				Brands: []Brand{
 					{
 						Brand:   "Not/A)Brand",
-						Version: "24",
+						Version: fmt.Sprintf("%d", utils.RandomElementInt([]int64{8, 24, 99})),
 					},
 					{
 						Brand:   "Google Chrome",
@@ -357,22 +359,22 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 		DR:   "",
 		Inv:  c.Config.Invisible,
 		Exec: false, //true, //false <--n
-		Wn:   [][]int64{
-			/*{
+		Wn: [][]int64{
+			{
 				int64(c.Fingerprint.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
 				int64(c.Fingerprint.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
 				1,                                       // mt.System.dpr()
 				addTime(st, WnTime),                     // Date.now()
-			},*/
+			},
 		},
 		WnMp: 0,
-		Xy:   [][]int64{
-			/*{
+		Xy: [][]int64{
+			{
 				0, // mt.Browser.scrollX(),  // ---> return window.pageXOffset !== undefined ? window.pageXOffset : WnTime.isCSS1 ? document.documentElement.scrollLeft : document.body.scrollLeft;
 				0, // mt.Browser.scrollY(),  // ---> return window.pageYOffset !== undefined ? window.pageYOffset : WnTime.isCSS1 ? document.documentElement.scrollTop : document.body.scrollTop;
 				int64(c.Fingerprint.Screen.AvailWidth) / (int64(c.Fingerprint.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
 				addTime(st, WnTime), // Date.now()
-			},*/
+			},
 		},
 		XyMp: 0,
 		Mm:   MmPath,

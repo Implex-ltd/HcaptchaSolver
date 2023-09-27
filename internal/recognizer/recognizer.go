@@ -463,9 +463,9 @@ func (R *Recognizer) TextFreeEntry() (*SolveResponse, error) {
 			}
 			defer file.Close()
 
-			file.WriteString(fmt.Sprintf("%s", question+"\n"))
+			file.WriteString(fmt.Sprintf("%s|%s", question, res+"\n"))
 		}
-
+		
 		answers[questions.TaskKey] = AnswerStruct{
 			Text: res,
 		}

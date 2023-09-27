@@ -22,3 +22,8 @@ func RandomString(length int) string {
 
 	return string(result)
 }
+
+func RandomElementInt(slice []int64) int64 {
+	index := rand.Intn(len(slice))
+	return slice[index]
+}

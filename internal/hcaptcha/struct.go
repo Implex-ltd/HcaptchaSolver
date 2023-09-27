@@ -162,6 +162,11 @@ type CheckData struct {
 
 	TopLevel TopLevel `json:"topLevel"`
 	V        int64    `json:"v"`
+
+	//Kd   [][]int64 `json:"kd"`
+	//KdMp int64     `json:"kd-mp"`
+	//Ku   [][]int64 `json:"ku"`
+	//KuMp int64     `json:"ku-mp"`
 }
 
 type GetData struct {

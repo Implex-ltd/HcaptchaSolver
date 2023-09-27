@@ -19,16 +19,16 @@ var (
 )
 
 var (
-	cc = goccm.New(250)
+	cc = goccm.New(150)
 
-	readTimeout, _  = time.ParseDuration("10s")
-	writeTimeout, _ = time.ParseDuration("10s")
+	readTimeout, _  = time.ParseDuration("15s")
+	writeTimeout, _ = time.ParseDuration("15s")
 
 	headerContentTypeJson = []byte("application/json")
 	Client                = &fasthttp.Client{
 		ReadTimeout:                   readTimeout,
 		WriteTimeout:                  writeTimeout,
-		MaxIdleConnDuration:           time.Second * 10,
+		MaxIdleConnDuration:           time.Second * 15,
 		NoDefaultUserAgentHeader:      true,
 		DisableHeaderNamesNormalizing: true,
 		DisablePathNormalizing:        true,
