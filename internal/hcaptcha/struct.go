@@ -28,7 +28,7 @@ type Config struct {
 
 type Hcap struct {
 	Config      *Config
-	Http        *cleanhttp.CleanHttp
+	Http        *cleanhttp.FastCleanHttp
 	Fingerprint *fpclient.Fingerprint
 
 	// metrics

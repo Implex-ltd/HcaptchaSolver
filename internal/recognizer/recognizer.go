@@ -458,12 +458,12 @@ func (R *Recognizer) TextFreeEntry() (*SolveResponse, error) {
 			res = val.(string)
 		} else {
 			file, err := os.OpenFile("../../assets/nop.txt", os.O_APPEND|os.O_WRONLY, 0644)
-				if err != nil {
-					return nil, err
-				}
-				defer file.Close()
+			if err != nil {
+				return nil, err
+			}
+			defer file.Close()
 
-				file.WriteString(fmt.Sprintf("%s", question + "\n"))
+			file.WriteString(fmt.Sprintf("%s", question+"\n"))
 		}
 
 		answers[questions.TaskKey] = AnswerStruct{

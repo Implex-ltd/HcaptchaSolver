@@ -3,7 +3,6 @@ package hcaptcha
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/url"
 	"strings"
 	"time"
@@ -23,10 +22,13 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		return nil, err
 	}
 
-	c, err := cleanhttp.NewCleanHttpClient(&cleanhttp.Config{
-		Proxy:     config.Proxy,
-		BrowserFp: fp,
-		Timeout:   5,
+	c, err := cleanhttp.NewFastCleanHttpClient(&cleanhttp.Config{
+		Proxy:               config.Proxy,
+		BrowserFp:           fp,
+		Timeout:             10,
+		ReadTimeout:         time.Second * 10,
+		WriteTimeout:        time.Second * 10,
+		MaxIdleConnDuration: time.Minute,
 	})
 	if err != nil {
 		return nil, err
@@ -71,7 +73,7 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 		swa = "0"
 	}
 
-	resp, err := c.Http.Do(cleanhttp.RequestOption{
+	body, _, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=0", VERSION, c.Config.Domain, c.Config.SiteKey, swa),
 		Header: c.HeaderCheckSiteConfig(),
@@ -80,20 +82,6 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("checksiteconfig", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Println(string(body), resp.Status)
 
 	var config SiteConfig
 	if err := json.Unmarshal(body, &config); err != nil {
@@ -171,7 +159,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 	}
 
 	t := time.Now()
-	resp, err := c.Http.Do(cleanhttp.RequestOption{
+	body, status, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
 		Body:   strings.NewReader(payload.Encode()),
@@ -182,19 +170,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 		return nil, err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("checkcap", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode == 429 {
+	if status == 429 {
 		return nil, fmt.Errorf("ip is ratelimited")
 	}
 
@@ -272,7 +248,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	time.Sleep((time.Millisecond * time.Duration(c.Config.TurboSt)) - time.Since(st))
 
 	t := time.Now()
-	resp, err := c.Http.Do(cleanhttp.RequestOption{
+	body, _, err := c.Http.Do(cleanhttp.RequestOption{
 		Url:    fmt.Sprintf("https://hcaptcha.com/checkcaptcha/%s/%s", c.Config.SiteKey, captcha.Key),
 		Body:   strings.NewReader(string(payload)),
 		Method: "POST",
@@ -280,18 +256,6 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	})
 	c.CheckProcessing = time.Since(t)
 
-	if err != nil {
-		return nil, err
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("checkcap2", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}

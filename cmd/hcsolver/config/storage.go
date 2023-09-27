@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
-	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
@@ -127,11 +126,6 @@ func LoadSettings() {
 	t.MaxIdleConns = 500
 	t.MaxConnsPerHost = 500
 	t.MaxIdleConnsPerHost = 500
-
-	hcaptcha.Client = &http.Client{
-		Timeout:   15 * time.Second,
-		Transport: t,
-	}
 
 	recognizer.Client = &http.Client{
 		Timeout:   15 * time.Second,

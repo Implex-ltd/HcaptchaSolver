@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	github.com/BurntSushi/toml v1.3.2
-	github.com/Implex-ltd/cleanhttp v0.0.0-20230921225715-5741f21b9557
+	github.com/Implex-ltd/cleanhttp v0.0.0-20230926235213-b53b8af7ce3c
 	github.com/Implex-ltd/fingerprint-client v0.0.0-20230830235428-380e1bbcfa4b
 	github.com/bogdanfinn/fhttp v0.5.24
 	github.com/cespare/xxhash v1.1.0

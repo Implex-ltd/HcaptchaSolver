@@ -72,8 +72,6 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		site.C = captcha.C
 	}
 
-	fmt.Println(site)
-
 	captcha, err := T.Captcha.GetChallenge(site, false)
 	if err != nil {
 		return nil, err

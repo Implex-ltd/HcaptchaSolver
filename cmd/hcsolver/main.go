@@ -8,11 +8,9 @@ import (
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/router"
 	_ "github.com/Implex-ltd/hcsolver/internal/utils"
 	"github.com/gofiber/fiber/v2"
-
 	/*"encoding/base64"
 	"github.com/surrealdb/surrealdb.go"
-	"log"*/
-)
+	"log"*/)
 
 type Fingerprint struct {
 	ID          string `json:"id,omitempty"`
