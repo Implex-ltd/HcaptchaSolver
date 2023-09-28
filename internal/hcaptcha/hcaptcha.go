@@ -74,7 +74,7 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 		swa = "0"
 	}
 
-	body, _, err := c.Http.Do(cleanhttp.RequestOption{
+	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=0", VERSION, c.Config.Domain, c.Config.SiteKey, swa),
 		Header: c.HeaderCheckSiteConfig(),
@@ -85,7 +85,7 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 	}
 
 	var config SiteConfig
-	if err := json.Unmarshal(body, &config); err != nil {
+	if err := json.Unmarshal(body.Body(), &config); err != nil {
 		return nil, err
 	}
 
@@ -160,7 +160,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 	}
 
 	t := time.Now()
-	body, status, err := c.Http.Do(cleanhttp.RequestOption{
+	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
 		Body:   strings.NewReader(payload.Encode()),
@@ -175,12 +175,12 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 		return nil, fmt.Errorf("GetChallenge body is nil")
 	}
 
-	if status == 429 {
+	if body.StatusCode() == 429 {
 		return nil, fmt.Errorf("ip is ratelimited")
 	}
 
 	var captcha Captcha
-	if err := json.Unmarshal(body, &captcha); err != nil {
+	if err := json.Unmarshal(body.Body(), &captcha); err != nil {
 		return nil, err
 	}
 
@@ -253,7 +253,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	time.Sleep((time.Millisecond * time.Duration(c.Config.TurboSt)) - time.Since(st))
 
 	t := time.Now()
-	body, _, err := c.Http.Do(cleanhttp.RequestOption{
+	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Url:    fmt.Sprintf("https://hcaptcha.com/checkcaptcha/%s/%s", c.Config.SiteKey, captcha.Key),
 		Body:   strings.NewReader(string(payload)),
 		Method: "POST",
@@ -266,13 +266,13 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	}
 
 	var Resp ResponseCheckCaptcha
-	if json.Unmarshal([]byte(body), &Resp) != nil {
+	if json.Unmarshal([]byte(body.Body()), &Resp) != nil {
 		return nil, fmt.Errorf("checkCaptcha-unmarshal: %+v", err)
 	}
 
 	if !Resp.Pass {
 		log.Println(answers, captcha.Tasklist)
-		return nil, fmt.Errorf("checkCaptcha: failed to pass: %+v", string(body))
+		return nil, fmt.Errorf("checkCaptcha: failed to pass: %+v", string(body.Body()))
 	}
 
 	return &Resp, nil
