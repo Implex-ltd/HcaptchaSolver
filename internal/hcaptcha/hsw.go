@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/0xF7A4C6/GoCycle"
 	"github.com/valyala/fasthttp"
 	"github.com/zenthangplus/goccm"
 )
@@ -19,7 +20,7 @@ var (
 )
 
 var (
-	cc = goccm.New(150)
+	cc = goccm.New(700)
 
 	readTimeout, _  = time.ParseDuration("15s")
 	writeTimeout, _ = time.ParseDuration("15s")
@@ -39,14 +40,32 @@ var (
 	}
 )
 
+var (
+	Endpoints = GoCycle.New(&[]string{
+		"http://127.0.0.1:1235",
+		"http://127.0.0.1:1236",
+		"http://127.0.0.1:1237",
+		"http://127.0.0.1:1238",
+		"http://127.0.0.1:1239",
+		"http://127.0.0.1:1240",
+		"http://127.0.0.1:1241",
+		"http://127.0.0.1:1242",
+		"http://127.0.0.1:1243",
+		"http://127.0.0.1:1244",
+		"http://127.0.0.1:1245",
+		"http://127.0.0.1:1246",
+	})
+)
+
 func (c *Hcap) GetHsw(jwt string) (string, error) {
 	req := fasthttp.AcquireRequest()
 
 	switch c.Config.TaskType {
 	case TASKTYPE_ENTERPRISE:
+		end, _ := Endpoints.Next()
 		req.Header.SetMethod(fasthttp.MethodPost)
 		req.Header.SetContentTypeBytes(headerContentTypeJson)
-		req.SetRequestURI(fmt.Sprintf("%s/n", ENTERPRISE_ADDR))
+		req.SetRequestURI(fmt.Sprintf("%s/n", end))
 		req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s"}`, jwt)))
 	case TASKTYPE_NORMAL:
 		req.Header.SetMethod(fasthttp.MethodGet)

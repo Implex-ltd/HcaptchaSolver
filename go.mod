@@ -19,6 +19,7 @@ require (
 
 require (
 	git.sr.ht/~sbinet/gg v0.5.0 // indirect
+	github.com/0xF7A4C6/GoCycle v0.0.0-20230623065856-dd8a5a180c87 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/bogdanfinn/tls-client v1.6.1 // indirect
