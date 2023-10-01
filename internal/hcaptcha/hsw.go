@@ -1,7 +1,10 @@
 package hcaptcha
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/0xF7A4C6/GoCycle"
@@ -62,11 +65,23 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 
 	switch c.Config.TaskType {
 	case TASKTYPE_ENTERPRISE:
+		n, err := c.ChallengeFingerprint.Build()
+		if err != nil {
+			return "", err
+		}
+
+		st := time.Now()
+		out, err := json.Marshal(n)
+		if err != nil {
+			panic(err)
+		}
+		log.Println("gen payload st: ", time.Since(st))
+
 		end, _ := Endpoints.Next()
 		req.Header.SetMethod(fasthttp.MethodPost)
 		req.Header.SetContentTypeBytes(headerContentTypeJson)
 		req.SetRequestURI(fmt.Sprintf("%s/n", end))
-		req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s"}`, jwt)))
+		req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s", "fp": "%s"}`, jwt, base64.RawStdEncoding.EncodeToString(out))))
 	case TASKTYPE_NORMAL:
 		req.Header.SetMethod(fasthttp.MethodGet)
 		req.SetRequestURI(fmt.Sprintf("%s/n?req=%s", NORMAL_ADDR, jwt))

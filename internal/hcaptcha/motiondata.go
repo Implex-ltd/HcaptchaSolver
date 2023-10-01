@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image/color"
 	"math/rand"
-	"strings"
 	"time"
 
 	"github.com/Implex-ltd/hcsolver/internal/utils"
@@ -279,60 +278,41 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	MdPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(8, 16))
 	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
 	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
-	WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
+	//WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
 
 	//PlotPoints(CaptchaPath)
-
-	platform := ""
-	plat := c.Fingerprint.Navigator.Platform
-	if strings.Contains(c.Config.UserAgent, "Windows") {
-		platform = "Windows"
-		plat = "Win32"
-	} else if strings.Contains(c.Config.UserAgent, "Macintosh") {
-		platform = "macOS"
-		plat = "MacIntel"
-	} else {
-		if strings.Contains(c.Config.UserAgent, "Android") {
-			platform = "Linux armv81"
-			plat = "Android"
-		} else {
-			platform = "Linux"
-		}
-	}
-
-	w, h := generateRandomBrowserSize(800, 3400)
 
 	topLevel := TopLevel{
 		St: st,
 		Sc: Sc{
-			AvailWidth:  int64(w),
-			AvailHeight: int64(h),
-			Width:       int64(w),
-			Height:      int64(h),
-			ColorDepth:  int64(c.Fingerprint.Screen.ColorDepth),
-			PixelDepth:  int64(c.Fingerprint.Screen.PixelDepth),
+			AvailWidth:  int64(c.ChallengeFingerprint.Profile.Screen.AvailWidth),
+			AvailHeight: int64(c.ChallengeFingerprint.Profile.Screen.AvailHeight),
+			Width:       int64(c.ChallengeFingerprint.Profile.Screen.Width),
+			Height:      int64(c.ChallengeFingerprint.Profile.Screen.Height),
+			ColorDepth:  int64(c.ChallengeFingerprint.Profile.Screen.ColorDepth),
+			PixelDepth:  int64(c.ChallengeFingerprint.Profile.Screen.PixelDepth),
 			AvailLeft:   int64(c.Fingerprint.Screen.AvailLeft),
 			AvailTop:    int64(c.Fingerprint.Screen.AvailTop),
 			Onchange:    nil,
 			IsExtended:  true,
 		},
 		Nv: Nv{
-			HardwareConcurrency: utils.RandomElementInt([]int64{2, 4, 6, 8, 12, 16}),
-			DeviceMemory:        utils.RandomElementInt([]int64{2, 4, 8, 16}),
+			HardwareConcurrency: int64(c.ChallengeFingerprint.Profile.Misc.HardwareConcurrency),
+			DeviceMemory:        int64(c.ChallengeFingerprint.Profile.Misc.DeviceMemory),
 			Webdriver:           false,
-			MaxTouchPoints:      int64(c.Fingerprint.Navigator.MaxTouchPoints),
+			MaxTouchPoints:      c.ChallengeFingerprint.Profile.Navigator.MaxTouchPoints,
 			CookieEnabled:       true,
 			AppCodeName:         c.Fingerprint.Navigator.AppCodeName,
 			AppName:             c.Fingerprint.Navigator.AppName,
 			AppVersion:          c.Fingerprint.Navigator.AppVersion,
-			Platform:            plat,
+			Platform:            c.ChallengeFingerprint.Profile.Navigator.Platform,
 			Product:             c.Fingerprint.Navigator.Product,
 			ProductSub:          c.Fingerprint.Navigator.ProductSub,
-			UserAgent:           c.Fingerprint.Navigator.UserAgent,
+			UserAgent:           c.ChallengeFingerprint.UserAgent,
 			Vendor:              c.Fingerprint.Navigator.Vendor,
 			VendorSub:           c.Fingerprint.Navigator.VendorSub,
-			Language:            c.Fingerprint.Navigator.Language,
-			Languages:           c.Fingerprint.Navigator.Languages,
+			Language:            c.ChallengeFingerprint.Profile.Navigator.Language,
+			Languages:           c.ChallengeFingerprint.Profile.Navigator.Languages,
 			OnLine:              true,
 			PDFViewerEnabled:    true,
 			DoNotTrack:          c.Fingerprint.Navigator.DoNotTrack,
@@ -341,7 +321,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				Brands: []Brand{
 					{
 						Brand:   "Not/A)Brand",
-						Version: fmt.Sprintf("%d", utils.RandomElementInt([]int64{8, 24, 99})),
+						Version: "8",
 					},
 					{
 						Brand:   "Google Chrome",
@@ -353,28 +333,28 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 					},
 				},
 				Mobile:   false,
-				Platform: platform,
+				Platform: c.ChallengeFingerprint.Profile.Misc.Os,
 			},
 		},
 		DR:   "",
 		Inv:  c.Config.Invisible,
 		Exec: false, //true, //false <--n
 		Wn: [][]int64{
-			{
-				int64(c.Fingerprint.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
-				int64(c.Fingerprint.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
+			/*{
+				int64(c.ChallengeFingerprint.Profile.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
+				int64(c.ChallengeFingerprint.Profile.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
 				1,                                       // mt.System.dpr()
 				addTime(st, WnTime),                     // Date.now()
-			},
+			},*/
 		},
 		WnMp: 0,
 		Xy: [][]int64{
-			{
+			/*{
 				0, // mt.Browser.scrollX(),  // ---> return window.pageXOffset !== undefined ? window.pageXOffset : WnTime.isCSS1 ? document.documentElement.scrollLeft : document.body.scrollLeft;
 				0, // mt.Browser.scrollY(),  // ---> return window.pageYOffset !== undefined ? window.pageYOffset : WnTime.isCSS1 ? document.documentElement.scrollTop : document.body.scrollTop;
-				int64(c.Fingerprint.Screen.AvailWidth) / (int64(c.Fingerprint.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
+				int64(c.ChallengeFingerprint.Profile.Screen.AvailWidth) / (int64(c.ChallengeFingerprint.Profile.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
 				addTime(st, WnTime), // Date.now()
-			},
+			},*/
 		},
 		XyMp: 0,
 		Mm:   MmPath,

@@ -9,6 +9,7 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 )
 
 const (
@@ -34,11 +35,21 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		return nil, err
 	}
 
+	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := builder.GenerateProfile(); err != nil {
+		return nil, err
+	}
+
 	return &Hcap{
-		Fingerprint: fp,
-		Config:      config,
-		Http:        c,
-		Logger:      config.Logger,
+		Fingerprint:          fp,
+		Config:               config,
+		Http:                 c,
+		Logger:               config.Logger,
+		ChallengeFingerprint: builder,
 	}, nil
 }
 

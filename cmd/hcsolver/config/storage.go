@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
@@ -131,4 +132,6 @@ func LoadSettings() {
 		Timeout:   15 * time.Second,
 		Transport: t,
 	}
+
+	fingerprint.CollectFpArray.RandomiseIndex()
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"go.uber.org/zap"
 )
@@ -42,6 +43,9 @@ type Hcap struct {
 	//Infos *utils.IpInfos
 
 	Logger *zap.Logger
+
+	// ndata spoofing
+	ChallengeFingerprint *fingerprint.Builder
 }
 
 type Motion struct {
