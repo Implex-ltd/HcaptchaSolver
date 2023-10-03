@@ -112,7 +112,12 @@ func (R *Recognizer) Recognize() (*SolveResponse, error) {
 			}
 		}
 
-		R.Target = strings.ReplaceAll(strings.Split(R.Question, "Please click on the ")[1], " ", "_")
+		if strings.Contains(R.Question, "Please click the") {
+			R.Target = strings.ReplaceAll(strings.Split(R.Question, "Please click the ")[1], " ", "_")
+		} else {
+			R.Target = strings.ReplaceAll(strings.Split(R.Question, "Please click on the ")[1], " ", "_")
+		}
+
 		R.EntityType = entity
 
 		solved, err = R.LabelAreaSelect()
@@ -465,7 +470,7 @@ func (R *Recognizer) TextFreeEntry() (*SolveResponse, error) {
 
 			file.WriteString(fmt.Sprintf("%s|%s", question, res+"\n"))
 		}
-		
+
 		answers[questions.TaskKey] = AnswerStruct{
 			Text: res,
 		}

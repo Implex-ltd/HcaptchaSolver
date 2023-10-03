@@ -3,7 +3,8 @@ package utils
 import "math/rand"
 
 const (
-	charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	charset      = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	hash_charset = "0123456789"
 )
 
 func RandomNumber(a, b int) int {
@@ -23,7 +24,21 @@ func RandomString(length int) string {
 	return string(result)
 }
 
-func RandomElementInt(slice []int64) int64 {
+func RandomHash(length int) string {
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = hash_charset[rand.Intn(len(hash_charset))]
+	}
+
+	return string(result)
+}
+
+func RandomElementInt(slice []int) int {
+	index := rand.Intn(len(slice))
+	return slice[index]
+}
+
+func RandomElementString(slice []string) string {
 	index := rand.Intn(len(slice))
 	return slice[index]
 }

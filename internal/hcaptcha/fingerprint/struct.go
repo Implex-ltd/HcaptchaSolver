@@ -1,9 +1,9 @@
 package fingerprint
 
 type Builder struct {
-	UserAgent, HcapVersion string
-	CollectedFp            *NdataCollect
-	Profile                *Profile
+	UserAgent, HcapVersion, HswVersion string
+	CollectedFp                        *NdataCollect
+	Profile                            *Profile
 }
 
 type Profile struct {

@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/0xF7A4C6/GoCycle"
@@ -70,18 +69,19 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 			return "", err
 		}
 
-		st := time.Now()
 		out, err := json.Marshal(n)
 		if err != nil {
 			panic(err)
 		}
-		log.Println("gen payload st: ", time.Since(st))
+
+		// heure dâÃ©tÃ© dâEurope centrale
+		fp := base64.StdEncoding.EncodeToString(out)
 
 		end, _ := Endpoints.Next()
 		req.Header.SetMethod(fasthttp.MethodPost)
 		req.Header.SetContentTypeBytes(headerContentTypeJson)
 		req.SetRequestURI(fmt.Sprintf("%s/n", end))
-		req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s", "fp": "%s"}`, jwt, base64.RawStdEncoding.EncodeToString(out))))
+		req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s", "fp": "%s"}`, jwt, fp)))
 	case TASKTYPE_NORMAL:
 		req.Header.SetMethod(fasthttp.MethodGet)
 		req.SetRequestURI(fmt.Sprintf("%s/n?req=%s", NORMAL_ADDR, jwt))

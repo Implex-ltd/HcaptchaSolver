@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/0xF7A4C6/GoCycle"
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 var (
@@ -37,16 +38,11 @@ func NewFingerprintBuilder(useragent string) (*Builder, error) {
 		}
 	}
 
-	/*fmt.Println(data.ParsedEvents)
-
-	// Print the ParsedEvents map
-	for key, value := range data.ParsedEvents {
-		fmt.Printf("Item Number: %d, Item Value: %v\n", key, value)
-	}*/
-
 	return &Builder{
 		UserAgent:   useragent,
 		CollectedFp: &data,
+		HcapVersion: "1b812e2",
+		HswVersion:  "1.39.0/bf600bd",
 	}, nil
 }
 
@@ -73,24 +69,24 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 		},
 		Hash: Hash{
 			Performance:   B.CollectedFp.Components.PerformanceHash,
-			Canvas:        B.CollectedFp.Components.CanvasHash,
+			Canvas:        utils.RandomHash(19), //B.CollectedFp.Components.CanvasHash,
 			WebGL:         B.CollectedFp.Components.WebGlHash,
 			WebRTC:        B.CollectedFp.Components.WebrtcHash,
 			Audio:         B.CollectedFp.Components.AudioHash,
-			ParrentWindow: "2556339636007144308",
+			ParrentWindow: "17427492278707878793",
 		},
 		Misc: Misc{
 			HasTouch:            false,
 			Chrome:              B.CollectedFp.Components.Chrome,
 			UniqueKeys:          B.CollectedFp.Components.UniqueKeys,
 			InvUniqueKeys:       B.CollectedFp.Components.InvUniqueKeys,
-			DeviceMemory:        8,
-			HardwareConcurrency: 16,
+			DeviceMemory:        utils.RandomElementInt([]int{2, 4, 8, 1632, 64, 128}),
+			HardwareConcurrency: utils.RandomElementInt([]int{2, 4, 6, 8, 12, 16, 32, 64}),
 			ChromeVersion:       "116",
 			Os:                  "Windows",
 			Arch:                "x86",
 			CPU:                 "64",
-			BrowserAppVersion:   "116.0.0.0",
+			BrowserAppVersion:   utils.RandomElementString([]string{"116.0.5845.187", "116.0.5845.179", "116.0.5845.140", "116.0.5845.110", "116.0.5845.96"}),
 			Vendor:              "Google Inc. (NVIDIA)",
 			Renderer:            "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)",
 		},
@@ -104,19 +100,20 @@ func (B *Builder) Build() (*Ndata, error) {
 	if B.Profile == nil {
 		return nil, fmt.Errorf("you need to generate profile first")
 	}
+
 	N := Ndata{
 		Components: Components{
-			Version:                   "1.39.0/bf600bd",
+			Version:                   B.HswVersion,
 			Navigator:                 B.Profile.Navigator,
 			Screen:                    B.Profile.Screen,
 			DevicePixelRatio:          B.CollectedFp.Components.DevicePixelRatio,
-			HasSessionStorage:         true,
-			HasLocalStorage:           true,
+			HasSessionStorage:         B.CollectedFp.Components.HasSessionStorage,
+			HasLocalStorage:           B.CollectedFp.Components.HasLocalStorage,
 			HasIndexedDB:              B.CollectedFp.Components.HasIndexedDB,
 			WebGlHash:                 B.Profile.Hash.WebGL,
 			CanvasHash:                B.Profile.Hash.Canvas,
 			HasTouch:                  B.Profile.Misc.HasTouch,
-			NotificationAPIPermission: "Denied",
+			NotificationAPIPermission: B.CollectedFp.Components.NotificationAPIPermission,
 			Chrome:                    B.Profile.Misc.Chrome,
 			ToStringLength:            B.CollectedFp.Components.ToStringLength,
 			ErrFirefox:                nil,
@@ -145,11 +142,25 @@ func (B *Builder) Build() (*Ndata, error) {
 		Errs: Errs{
 			List: []string{},
 		},
-		Perf: B.CollectedFp.Perf,
+		Perf: [][]int64{
+			{
+				1,
+				int64(utils.RandomNumber(10, 100)),
+			},
+			{
+				2,
+				int64(utils.RandomNumber(50, 300)),
+			},
+			{
+				3,
+				int64(utils.RandomNumber(0, 5)),
+			},
+		},
 	}
 
 	eventsMethods := []func(*Builder) FingerprintEvent{
 		(*Builder).Event_0,
+		(*Builder).Event_3,
 		(*Builder).Event_107,
 		(*Builder).Event_201,
 		(*Builder).Event_211,
@@ -170,11 +181,13 @@ func (B *Builder) Build() (*Ndata, error) {
 		(*Builder).Event_1103,
 		(*Builder).Event_1105,
 		(*Builder).Event_1107,
+		(*Builder).Event_1302,
 		(*Builder).Event_1401,
 		(*Builder).Event_1402,
 		(*Builder).Event_1403,
 		(*Builder).Event_1901,
 		(*Builder).Event_1902,
+		(*Builder).Event_1904,
 		(*Builder).Event_2001,
 		(*Builder).Event_2002,
 		(*Builder).Event_2401,
@@ -191,6 +204,7 @@ func (B *Builder) Build() (*Ndata, error) {
 		(*Builder).Event_2415,
 		(*Builder).Event_2416,
 		(*Builder).Event_2417,
+		(*Builder).Event_2420,
 		(*Builder).Event_2801,
 		(*Builder).Event_2805,
 		(*Builder).Event_3210,
