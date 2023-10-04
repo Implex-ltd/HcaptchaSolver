@@ -552,9 +552,9 @@ func (B *Builder) Event_1107() FingerprintEvent {
 		},
 	})
 
-	/*if fp := B.CollectedFp.ParsedEvents[1107]; fp != nil {
+	if fp := B.CollectedFp.ParsedEvents[1107]; fp != nil {
 		data = fp.(string)
-	}*/
+	}
 
 	return FingerprintEvent{
 		1107,
@@ -677,7 +677,7 @@ func (B *Builder) Event_2002() FingerprintEvent {
 }
 
 func (B *Builder) Event_2401() FingerprintEvent {
-	/*data := "17670611538850778206"
+	data := utils.RandomHash(18)
 
 	if fp := B.CollectedFp.ParsedEvents[2401]; fp != nil {
 		data = fp.(string)
@@ -686,10 +686,6 @@ func (B *Builder) Event_2401() FingerprintEvent {
 	return FingerprintEvent{
 		2401,
 		data,
-	}*/
-	return FingerprintEvent{
-		2401,
-		utils.RandomHash(18),
 	}
 }
 
@@ -975,7 +971,8 @@ func (B *Builder) Event_3211() FingerprintEvent {
 func (B *Builder) Event_3401() FingerprintEvent {
 	return FingerprintEvent{
 		3401,
-		utils.RandomHash(20), //B.CollectedFp.ParsedEvents[3401].(string), //"4226317358175830201",
+		B.CollectedFp.ParsedEvents[3401].(string),
+		//utils.RandomHash(20), //"4226317358175830201",
 	}
 }
 
@@ -1006,19 +1003,24 @@ func (B *Builder) Event_3403() FingerprintEvent {
 func (B *Builder) Event_3501() FingerprintEvent {
 	data := B.Stringify([]interface{}{
 		[]interface{}{
-			"navigation:newassets.hcaptcha.com",
+			"img:imgs.hcaptcha.com",
 			0,
-			8.5,
+			57.25,
+		},
+		[]interface{}{
+			"navigation:newassets.hcaptcha.com",
+			18.099999964237213,
+			34.799999952316284,
 		},
 		[]interface{}{
 			"script:newassets.hcaptcha.com",
-			0.15000000223517418,
-			3.649999998509884,
+			14,
+			22.44999998807907,
 		},
 		[]interface{}{
 			"xmlhttprequest:hcaptcha.com",
 			0,
-			40.399999998509884,
+			161.4000000357628,
 		},
 	})
 
@@ -1035,14 +1037,18 @@ func (B *Builder) Event_3501() FingerprintEvent {
 func (B *Builder) Event_3502() FingerprintEvent {
 	return FingerprintEvent{
 		3502,
-		B.CollectedFp.ParsedEvents[3502].(string), //"6.199999999254942",
+		fmt.Sprintf("%.14f", utils.RandomFloat64(20, 50)),
+		//B.CollectedFp.ParsedEvents[3502].(string),
+		//"6.199999999254942",
 	}
 }
 
 func (B *Builder) Event_3503() FingerprintEvent {
 	return FingerprintEvent{
 		3503,
-		B.CollectedFp.ParsedEvents[3503].(string), //"0.15000000223517418",
+		fmt.Sprintf("%.14f", utils.RandomFloat64(10, 20)),
+		//B.CollectedFp.ParsedEvents[3503].(string),
+		//"0.15000000223517418",
 	}
 }
 
@@ -1053,6 +1059,7 @@ func (B *Builder) Event_3504() FingerprintEvent {
 	}
 }
 
+// not used
 func (B *Builder) Event_3505() FingerprintEvent {
 	data := B.Stringify([]interface{}{
 		0.09999999403953552,

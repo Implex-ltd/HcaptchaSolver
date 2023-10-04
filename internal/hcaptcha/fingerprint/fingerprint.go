@@ -79,7 +79,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			HasTouch:            false,
 			Chrome:              B.CollectedFp.Components.Chrome,
 			UniqueKeys:          "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,2,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__", //B.CollectedFp.Components.UniqueKeys,
-			InvUniqueKeys:       "__wdata,_sharedLibs,text_free_entry,sessionStorage,hsw,image_label_area_select,localStorage",                                                                                                                                                                                                                                             //B.CollectedFp.Components.InvUniqueKeys,
+			InvUniqueKeys:       "__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",                                                                                                                                                                                                                                                  //B.CollectedFp.Components.InvUniqueKeys,
 			DeviceMemory:        utils.RandomElementInt([]int{2, 4, 8, 1632, 64, 128}),
 			HardwareConcurrency: utils.RandomElementInt([]int{2, 4, 6, 8, 12, 16, 32, 64}),
 			ChromeVersion:       "116",

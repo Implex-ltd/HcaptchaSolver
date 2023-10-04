@@ -5,6 +5,8 @@ import "math/rand"
 const (
 	charset      = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	hash_charset = "0123456789"
+
+	precision = 10000000000000.0
 )
 
 func RandomNumber(a, b int) int {
@@ -13,6 +15,18 @@ func RandomNumber(a, b int) int {
 	}
 
 	return rand.Intn(b-a+1) + a
+}
+
+func RandomFloat64(a, b float64) float64 {
+	if a >= b {
+		panic("Invalid range: a must be less than b")
+	}
+
+	randomFloat := a + rand.Float64()*(b-a)
+	randomFloat *= precision
+	randomFloat = float64(int(randomFloat)) / precision
+
+	return randomFloat
 }
 
 func RandomString(length int) string {
