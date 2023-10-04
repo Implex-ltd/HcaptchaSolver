@@ -116,46 +116,73 @@ import random
 
 ips = open("./ip.txt", "r+").read().splitlines()
 
+import requests
+import json
+
 
 def task():
-    wrapper = Api()
-
-    task = wrapper.new_task(
-        task_type=TASK_TYPE.TYPE_ENTERPRISE,
-        domain="balance.vanillagift.com",
-        sitekey="262cdd22-6b90-4d5d-870f-69170f8cc6be",
-        proxy=f"http://brd-customer-hl_2fb58154-zone-data_center-ip-{random.choice(ips)}:cx5fos9ci328@brd.superproxy.io:22225",
-        useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
-        #oneclick_only=True,
-        invisible=True,
-        #hc_accessibility="nPi/vljCrOnx0YF18mDXw099naIm05QS5JoxKeO15LEDjinkcXQrWB5fDeekS2DJhXFI9Omp6TETLiuczd2z67M8VksLFxJJOl63HkY+sdmoZUNhnC9QA8l333ZAaJQdujNSI+22e3b+brVonB/tCq5Sgm7UuGXU7E9ClNYfho3209R8kHCrq0392FTsAZOJGsRaLfQn6H+dKV8JUvSyoAthVE4TdonhHM8XUJalz3moQPOQWO3aTpuGg068qFJv7diic3AldWBH4wKVOBamYU+PU5i5cCIR1plyOJpxYcHDcMVRc/DV9AfXfPNksinbZuO3Cuscsgn+e2ZMorIj1phBF0JzTD15Ep72t/gHUYcKjqLPe5qgVAmeyyKVn3WRBXlflDrDBYlfWptjLrNx3iqfyELQMKKqnHjHtPIVE8uen66BAd4orcY2352jsXBlKCBf/XyA9aEluYyYBZf8GNDW5SSzxEyD3pQRX5IV8Jd/meitrOWn/yIf6fbQ+gEwRWRsYApAD3RvDdDKGVT/tC31fEi1YOAn3bF3ZcRylwz4jscilqOOrnRiT0AdQhnU61QVwtWSbHrAUTp+Q3ipGgNyNxANJog0P6xKQH1cJXa/LEzc+oQB818Ao6vU19Y0BVhO+Xyuz0e3j8RoVXFwQq92MLztcCrER8yfmXT0Mu+vDRJo2FyOeUmUpqzY31KN35JKAd3/a5yOe1B/hT39Kf+8WkXkC09oXLsmHbxP9Xnb4N8YITSxokttSGVERfPsjHs41ZjPUEng8rXv0rSeuo9ASvgSPfy0VReF64MiltruaesBJ+42xchu/h16Orv9koCTUxs60D7uxFJnu4ul1CzGslR9i62g1uKQE2TYHOUKLgf6TwQr8HmIXq1SzoyX9rGzwCuNSb5EFByOrFC+IFtRY5wKGzUgaZOh81eXoKeqpaMC335F6qJ+hwnX6eaxvDB0tjJxgyc3SkPY2DHy+28ocAAOPU0Te3UfL1zSJZMW0ObNCjQ5UjqkFdCQ1a81jY6uIm01k0BrdeSmarRBdVYkpPPwRbTSE/69sCXoduMV6Tt7uiteFDcMKPoJrVWieIc3zr9Mvd6h/TLRaS25/IwNkp38Ht8fBs/hbv3BoV4=XJwOqN4KgnSsgAnG"
-        #"OzYODUeztHgUrpR6wANKrwiI4r2BGvMzoSeDm/ABnNod4BfZ2XgI6QNe/GcDl+wV7ukpgKBgfVNIbciUd2yUgh7U3Cr9kVonGXjzcO4SgJiFLPGR3fMXusSmEOdVYVB1yvBT0K6kdkw4USl+oZnOl4movsCwpks4c7/zd2VkiSQi17LO2RS1GmOjQjMnUzGWEy2GKIQr1XmRJTfxyvm5UEv/hA1mA156mC0mlqPV97/RQ+FtJzclSkU+s9AEEErIdMrEXqlmDkSxTH+jVe4Dk9YnsIArFEvF+zIhE3ZK0D9VxCi9tx9djKXdYTwuS7rzeMZR5ZzIG49B2rbhAiHALuCVGcPAOOpYX03T0+3Hik0mm4TcCadrfP4LJCOPyZCcT345e70q7ljnM6ZKSuYTRyHDwJ7jfCdfs26Wl5BHB4GFMExFQsNhDkkIhblno/ZHoocWYPP7DKhOETMlMYTKSuU6Cf7MkQT/JlXJ1DalV1pb11m0D+/rcuVsjJUXph3Zp2x1rDdkTeZ/FA3LGsx34UIas0edwsSJtzw+7fl+56Fs5X8dWXUngNJ3PCF7vw7a85Kpmo4izoev50lfLUQtQ3BI2CppoApcG87XNWXWB9PBWfGMR+lBEEIS2pWd4z0D5gx2nhAoz04DiA6oQm9qP39JaLnwr0atBhx08xvEnNlhiX0xNPoeS9MZJCKOl5ris8PBPRIOm8x6TksP5N9bwwI1gVtaIYgAU1MW6HNtG/+YW9RS7VSQ7oGHgnt4rWNAiiAcUMexkrOCxl7S6sPI7o6agSF8+xGBw+go+MGHvxaEZlG/aIFrT8EFuOnf04ibetTKNzn1KLJa+2GD2+5wC+P3ZURAqUb4pKdUVUCF/29c/h/WAO3fC1KpRI0m0ia+u0sNzI3hwSvCygF/a0d5Odkv0sMdrH+FXEjvIe6t7tF61RlA149ZZUEhWMLrLwuGuOnUQIBBEEfe6RtICdcnZsMUJZbm48F+51bZqlXvf0QfHmeRnsIH0DAnm3N1TWrobOb99rMFwyYpAKU9fxUEbnYRai9prDJHqSMly3mSFZT7nejX3lYpDtetVUNWYGnwLmKZdw==keFA1WJU/sRz6lxg",
-    )
-    print(task)
-
-    err = ""
-    token = ""
     while True:
-        status = wrapper.get_task(task["json"]["data"][0]["id"])
-        data = status["json"]["data"]
+        wrapper = Api()
 
-        if data["status"] == STATUS.STATUS_ERROR:
-            err = data["error"]
-            break
+        prox = "http://" + random.choice(ips) #f"http://brd-customer-hl_f4860b9d-zone-data_center-ip-{random.choice(ips)}:9lueli41vncj@brd.superproxy.io:22225"
+        task = wrapper.new_task(
+            task_type=TASK_TYPE.TYPE_ENTERPRISE,
+            domain="balance.vanillagift.com",
+            sitekey="262cdd22-6b90-4d5d-870f-69170f8cc6be",
+            proxy=prox,
+            useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
+            #oneclick_only=True,
+            invisible=True,
+            #hc_accessibility="OzYODUeztHgUrpR6wANKrwiI4r2BGvMzoSeDm/ABnNod4BfZ2XgI6QNe/GcDl+wV7ukpgKBgfVNIbciUd2yUgh7U3Cr9kVonGXjzcO4SgJiFLPGR3fMXusSmEOdVYVB1yvBT0K6kdkw4USl+oZnOl4movsCwpks4c7/zd2VkiSQi17LO2RS1GmOjQjMnUzGWEy2GKIQr1XmRJTfxyvm5UEv/hA1mA156mC0mlqPV97/RQ+FtJzclSkU+s9AEEErIdMrEXqlmDkSxTH+jVe4Dk9YnsIArFEvF+zIhE3ZK0D9VxCi9tx9djKXdYTwuS7rzeMZR5ZzIG49B2rbhAiHALuCVGcPAOOpYX03T0+3Hik0mm4TcCadrfP4LJCOPyZCcT345e70q7ljnM6ZKSuYTRyHDwJ7jfCdfs26Wl5BHB4GFMExFQsNhDkkIhblno/ZHoocWYPP7DKhOETMlMYTKSuU6Cf7MkQT/JlXJ1DalV1pb11m0D+/rcuVsjJUXph3Zp2x1rDdkTeZ/FA3LGsx34UIas0edwsSJtzw+7fl+56Fs5X8dWXUngNJ3PCF7vw7a85Kpmo4izoev50lfLUQtQ3BI2CppoApcG87XNWXWB9PBWfGMR+lBEEIS2pWd4z0D5gx2nhAoz04DiA6oQm9qP39JaLnwr0atBhx08xvEnNlhiX0xNPoeS9MZJCKOl5ris8PBPRIOm8x6TksP5N9bwwI1gVtaIYgAU1MW6HNtG/+YW9RS7VSQ7oGHgnt4rWNAiiAcUMexkrOCxl7S6sPI7o6agSF8+xGBw+go+MGHvxaEZlG/aIFrT8EFuOnf04ibetTKNzn1KLJa+2GD2+5wC+P3ZURAqUb4pKdUVUCF/29c/h/WAO3fC1KpRI0m0ia+u0sNzI3hwSvCygF/a0d5Odkv0sMdrH+FXEjvIe6t7tF61RlA149ZZUEhWMLrLwuGuOnUQIBBEEfe6RtICdcnZsMUJZbm48F+51bZqlXvf0QfHmeRnsIH0DAnm3N1TWrobOb99rMFwyYpAKU9fxUEbnYRai9prDJHqSMly3mSFZT7nejX3lYpDtetVUNWYGnwLmKZdw==keFA1WJU/sRz6lxg"
+        )
 
-        elif data["status"] == STATUS.STATUS_SOLVED:
-            token = data["token"]
-            break
+        err = ""
+        token = ""
+        while True:
+            status = wrapper.get_task(task["json"]["data"][0]["id"])
+            data = status["json"]["data"]
 
-        else:
-            time.sleep(1)
+            if data["status"] == STATUS.STATUS_ERROR:
+                #err = data["error"]
+                break
 
-    if token != "":
-        print(f"[+] Solved: {token[:50]}")
-    else:
-        print("[-] fail:", err)
+            elif data["status"] == STATUS.STATUS_SOLVED:
+                token = data["token"]
+                url = "http://localhost:18000/checkCaptcha"
+
+                payload = json.dumps(
+                    {
+                        "proxy": prox,#"http://56447580:28701924_country-us_session-jibej868_lifetime-1@residental.beyondproxy.io:12321",
+                        "token": token,
+                    }
+                )
+                headers = {"Content-Type": "application/json"}
+
+                response = requests.request("POST", url, headers=headers, data=payload)
+
+                print("RESP API --> ", response.text)
+                if "success" in response.text:
+                    if response.json()['success'] == True:
+                        print("""
+------------------------------
+------------------------------
+------------------------------
+GOTCHA
+------------------------------
+------------------------------
+------------------------------
+""")
+                break
+
+            else:
+                time.sleep(1)
+
+        if token != "":
+            print(f"[+] Solved: {token[:50]}")
+        #else:
+        #    print("[-] fail:", err)
 
 
 if __name__ == "__main__":
-    for _ in range(10):
+    for _ in range(50):
         threading.Thread(target=task).start()

@@ -42,7 +42,7 @@ func NewFingerprintBuilder(useragent string) (*Builder, error) {
 		UserAgent:   useragent,
 		CollectedFp: &data,
 		HcapVersion: "1b812e2",
-		HswVersion:  "1.39.0/bf600bd",
+		HswVersion:  "1.40.1/7a7fc3d",
 	}, nil
 }
 
@@ -68,18 +68,18 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            B.CollectedFp.Components.Navigator.PluginsUndefined,
 		},
 		Hash: Hash{
-			Performance:   B.CollectedFp.Components.PerformanceHash,
+			Performance:   utils.RandomHash(19), //B.CollectedFp.Components.PerformanceHash,
 			Canvas:        utils.RandomHash(19), //B.CollectedFp.Components.CanvasHash,
 			WebGL:         B.CollectedFp.Components.WebGlHash,
 			WebRTC:        B.CollectedFp.Components.WebrtcHash,
 			Audio:         B.CollectedFp.Components.AudioHash,
-			ParrentWindow: "17427492278707878793",
+			ParrentWindow: "17464972382824382480", //utils.RandomHash(20),
 		},
 		Misc: Misc{
 			HasTouch:            false,
 			Chrome:              B.CollectedFp.Components.Chrome,
-			UniqueKeys:          B.CollectedFp.Components.UniqueKeys,
-			InvUniqueKeys:       B.CollectedFp.Components.InvUniqueKeys,
+			UniqueKeys:          "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,2,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__", //B.CollectedFp.Components.UniqueKeys,
+			InvUniqueKeys:       "__wdata,_sharedLibs,text_free_entry,sessionStorage,hsw,image_label_area_select,localStorage",                                                                                                                                                                                                                                             //B.CollectedFp.Components.InvUniqueKeys,
 			DeviceMemory:        utils.RandomElementInt([]int{2, 4, 8, 1632, 64, 128}),
 			HardwareConcurrency: utils.RandomElementInt([]int{2, 4, 6, 8, 12, 16, 32, 64}),
 			ChromeVersion:       "116",
@@ -165,8 +165,8 @@ func (B *Builder) Build() (*Ndata, error) {
 		(*Builder).Event_201,
 		(*Builder).Event_211,
 		(*Builder).Event_301,
-		(*Builder).Event_302,
-		(*Builder).Event_303,
+		//(*Builder).Event_302,
+		//(*Builder).Event_303,
 		(*Builder).Event_304,
 		(*Builder).Event_401,
 		(*Builder).Event_402,
@@ -188,11 +188,11 @@ func (B *Builder) Build() (*Ndata, error) {
 		(*Builder).Event_1901,
 		(*Builder).Event_1902,
 		(*Builder).Event_1904,
-		(*Builder).Event_2001,
-		(*Builder).Event_2002,
+		//(*Builder).Event_2001,
+		//(*Builder).Event_2002,
 		(*Builder).Event_2401,
 		(*Builder).Event_2402,
-		(*Builder).Event_2403,
+		//(*Builder).Event_2403,
 		(*Builder).Event_2407,
 		(*Builder).Event_2408,
 		(*Builder).Event_2409,
@@ -215,7 +215,7 @@ func (B *Builder) Build() (*Ndata, error) {
 		(*Builder).Event_3502,
 		(*Builder).Event_3503,
 		(*Builder).Event_3504,
-		(*Builder).Event_3505,
+		//(*Builder).Event_3505,
 	}
 
 	for _, eventMethod := range eventsMethods {

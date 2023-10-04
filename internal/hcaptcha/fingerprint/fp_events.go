@@ -320,14 +320,14 @@ func (B *Builder) Event_604() FingerprintEvent {
 func (B *Builder) Event_702() FingerprintEvent {
 	data := B.Stringify([]interface{}{
 		B.Profile.Misc.Os,
-		"15.0.0",
+		"14.0.0",
 		nil,
 		B.Profile.Misc.CPU,
 		B.Profile.Misc.Arch,
 		B.Profile.Misc.BrowserAppVersion,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[1402]; fp != nil {
+	if fp := B.CollectedFp.ParsedEvents[702]; fp != nil {
 		data = fp.(string)
 	}
 
@@ -677,7 +677,7 @@ func (B *Builder) Event_2002() FingerprintEvent {
 }
 
 func (B *Builder) Event_2401() FingerprintEvent {
-	data := "17670611538850778206"
+	/*data := "17670611538850778206"
 
 	if fp := B.CollectedFp.ParsedEvents[2401]; fp != nil {
 		data = fp.(string)
@@ -686,6 +686,10 @@ func (B *Builder) Event_2401() FingerprintEvent {
 	return FingerprintEvent{
 		2401,
 		data,
+	}*/
+	return FingerprintEvent{
+		2401,
+		utils.RandomHash(18),
 	}
 }
 
@@ -971,7 +975,7 @@ func (B *Builder) Event_3211() FingerprintEvent {
 func (B *Builder) Event_3401() FingerprintEvent {
 	return FingerprintEvent{
 		3401,
-		B.CollectedFp.ParsedEvents[3401].(string), //"4226317358175830201",
+		utils.RandomHash(20), //B.CollectedFp.ParsedEvents[3401].(string), //"4226317358175830201",
 	}
 }
 
