@@ -39,10 +39,12 @@ func (B *Builder) Event_0() FingerprintEvent {
 func (B *Builder) Event_3() FingerprintEvent {
 	return FingerprintEvent{
 		3,
+		//"32575",
 		B.CollectedFp.ParsedEvents[3].(string),
 	}
 }
 
+// https://gist.github.com/nikolahellatrigger/ea00832b010c0db8f0a0d5ca0d467072
 func (B *Builder) Event_107() FingerprintEvent {
 	data := B.Stringify([]interface{}{
 		B.Profile.Screen.Width,
@@ -54,17 +56,17 @@ func (B *Builder) Event_107() FingerprintEvent {
 		false,
 		B.Profile.Navigator.MaxTouchPoints,
 		B.CollectedFp.Components.DevicePixelRatio,
-		1979, // AvailLeft ?
-		1399, // AvailTop  ?
+		B.Profile.Screen.Width - int64(utils.RandomNumber(100, 300)),  // outerWidth
+		B.Profile.Screen.Height - int64(utils.RandomNumber(100, 300)), // outerHeight
 		true,
 		true,
 		true,
 		false,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[107]; fp != nil {
+	/*if fp := B.CollectedFp.ParsedEvents[107]; fp != nil {
 		data = B.CollectedFp.ParsedEvents[107].(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		107,
@@ -73,15 +75,16 @@ func (B *Builder) Event_107() FingerprintEvent {
 }
 
 func (B *Builder) Event_201() FingerprintEvent {
-	data := "13122422878918113034"
+	/*data := "13122422878918113034"
 
 	if fp := B.CollectedFp.ParsedEvents[201]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		201,
-		data,
+		"4226317358175830201",
+		//data,
 	}
 }
 
@@ -125,15 +128,16 @@ func (B *Builder) Event_211() FingerprintEvent {
 }
 
 func (B *Builder) Event_301() FingerprintEvent {
-	data := "8383473043360077444"
+	/*data := "8383473043360077444"
 
 	if fp := B.CollectedFp.ParsedEvents[301]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		301,
-		data,
+		"8383473043360077444",
+		//data,
 	}
 }
 
@@ -173,37 +177,38 @@ func (B *Builder) Event_303() FingerprintEvent {
 }
 
 func (B *Builder) Event_304() FingerprintEvent {
-	data := "623"
+	/*data := "623"
 
 	if fp := B.CollectedFp.ParsedEvents[304]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		304,
-		data,
+		"623",
 	}
 }
 
 func (B *Builder) Event_401() FingerprintEvent {
-	data := "\"Europe/Paris\""
+	/*data := "2400869836852708862"
 
 	if fp := B.CollectedFp.ParsedEvents[401]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		401,
-		data,
+		"2400869836852708862",
+		//data,
 	}
 }
 
 func (B *Builder) Event_402() FingerprintEvent {
-	data := "1116"
+	data := "1109"
 
-	if fp := B.CollectedFp.ParsedEvents[402]; fp != nil {
+	/*if fp := B.CollectedFp.ParsedEvents[402]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		402,
@@ -265,21 +270,23 @@ func (B *Builder) Event_407() FingerprintEvent {
 }
 
 func (B *Builder) Event_412() FingerprintEvent {
-	data := "15584660433093862032"
+	/*data := "15584660433093862032"
 
 	if fp := B.CollectedFp.ParsedEvents[412]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		412,
-		data,
+		"15584660433093862032",
+		//data,
 	}
 }
 
+// https://gist.github.com/nikolahellatrigger/c4d6cf4ddb0ab219c38ddd133dc772eb
 func (B *Builder) Event_604() FingerprintEvent {
 	data := B.Stringify([]interface{}{
-		strings.Split(B.UserAgent, "Mozilla/")[1],
+		B.Profile.Misc.AppVersion,
 		B.UserAgent,
 		B.Profile.Misc.DeviceMemory,
 		B.Profile.Misc.HardwareConcurrency,
@@ -292,24 +299,24 @@ func (B *Builder) Event_604() FingerprintEvent {
 			"Not;A=Brand 8",
 			fmt.Sprintf("Chromium %s", B.Profile.Misc.ChromeVersion),
 		},
-		false,
+		B.Profile.Misc.Mobile,
 		B.Profile.Misc.Os,
-		2,
-		5,
-		true,
+		2,                               // mimeTypes len
+		5,                               // plugins len
+		B.Profile.Misc.PDFViewerEnabled, // pdf
 		false,
-		utils.RandomNumber(0, 100),
+		50,
 		false,
 		false,
 		true,
 		"[object Keyboard]",
-		false,
-		false,
+		strings.Contains(strings.ToLower(B.UserAgent), "brave"),
+		strings.Contains(strings.ToLower(B.UserAgent), "duckduckgo"),
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[604]; fp != nil {
+	/*if fp := B.CollectedFp.ParsedEvents[604]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		604,
@@ -324,12 +331,12 @@ func (B *Builder) Event_702() FingerprintEvent {
 		nil,
 		B.Profile.Misc.CPU,
 		B.Profile.Misc.Arch,
-		B.Profile.Misc.BrowserAppVersion,
+		B.Profile.Misc.BrowserVersion,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[702]; fp != nil {
+	/*if fp := B.CollectedFp.ParsedEvents[702]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		702,
@@ -363,15 +370,16 @@ func (B *Builder) Event_803() FingerprintEvent {
 }
 
 func (B *Builder) Event_901() FingerprintEvent {
-	data := "16132118391739044799"
+	/*data := "16132118391739044799"
 
 	if fp := B.CollectedFp.ParsedEvents[901]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		901,
-		data,
+		//data,
+		"135869055876678538",
 	}
 }
 
@@ -400,9 +408,9 @@ func (B *Builder) Event_905() FingerprintEvent {
 		},
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[905]; fp != nil {
+	/*if fp := B.CollectedFp.ParsedEvents[905]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		905,
@@ -413,21 +421,24 @@ func (B *Builder) Event_905() FingerprintEvent {
 func (B *Builder) Event_1101() FingerprintEvent {
 	return FingerprintEvent{
 		1101,
-		B.CollectedFp.ParsedEvents[1101].(string), //"1308681860871815407",
+		"2028058230851665858",
+		//B.CollectedFp.ParsedEvents[1101].(string), //"1308681860871815407",
 	}
 }
 
 func (B *Builder) Event_1103() FingerprintEvent {
 	return FingerprintEvent{
 		1103,
-		B.CollectedFp.ParsedEvents[1103].(string), //"4932383211497360507",
+		"4932383211497360507",
+		//B.CollectedFp.ParsedEvents[1103].(string), //"4932383211497360507",
 	}
 }
 
 func (B *Builder) Event_1105() FingerprintEvent {
 	return FingerprintEvent{
 		1105,
-		B.CollectedFp.ParsedEvents[1105].(string), //"17157476241021694346",
+		"17157476241021694346",
+		//B.CollectedFp.ParsedEvents[1105].(string), //"17157476241021694346",
 	}
 }
 
@@ -629,7 +640,8 @@ func (B *Builder) Event_1403() FingerprintEvent {
 func (B *Builder) Event_1901() FingerprintEvent {
 	return FingerprintEvent{
 		1901,
-		B.CollectedFp.ParsedEvents[1901].(string), //"15307345790125003576",
+		"15307345790125003576",
+		//B.CollectedFp.ParsedEvents[1901].(string), //"15307345790125003576",
 	}
 }
 
@@ -677,15 +689,16 @@ func (B *Builder) Event_2002() FingerprintEvent {
 }
 
 func (B *Builder) Event_2401() FingerprintEvent {
-	data := utils.RandomHash(18)
+	/*data := utils.RandomHash(18)
 
 	if fp := B.CollectedFp.ParsedEvents[2401]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		2401,
-		data,
+		//data,
+		"13854066076378004045",
 	}
 }
 
@@ -720,7 +733,8 @@ func (B *Builder) Event_2403() FingerprintEvent {
 func (B *Builder) Event_2407() FingerprintEvent {
 	return FingerprintEvent{
 		2407,
-		B.CollectedFp.ParsedEvents[2407].(string), //"13177607191192652685",
+		"13177607191192652685",
+		//B.CollectedFp.ParsedEvents[2407].(string), //"13177607191192652685",
 	}
 }
 
@@ -894,7 +908,8 @@ func (B *Builder) Event_2420() FingerprintEvent {
 func (B *Builder) Event_2801() FingerprintEvent {
 	return FingerprintEvent{
 		2801,
-		B.CollectedFp.ParsedEvents[2801].(string), //"4631229088072584217",
+		"4631229088072584217",
+		//B.CollectedFp.ParsedEvents[2801].(string), //"4631229088072584217",
 	}
 }
 
@@ -1005,28 +1020,29 @@ func (B *Builder) Event_3501() FingerprintEvent {
 		[]interface{}{
 			"img:imgs.hcaptcha.com",
 			0,
-			57.25,
+			utils.RandomFloat64(20, 60),
 		},
 		[]interface{}{
 			"navigation:newassets.hcaptcha.com",
-			18.099999964237213,
-			34.799999952316284,
+			utils.RandomFloat64(10, 50),
+			utils.RandomFloat64(10, 50),
+			utils.RandomFloat64(10, 50),
 		},
 		[]interface{}{
 			"script:newassets.hcaptcha.com",
-			14,
-			22.44999998807907,
+			utils.RandomFloat64(5, 50),
+			utils.RandomFloat64(10, 50),
 		},
 		[]interface{}{
 			"xmlhttprequest:hcaptcha.com",
 			0,
-			161.4000000357628,
+			utils.RandomFloat64(150, 250),
 		},
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[3501]; fp != nil {
+	/*if fp := B.CollectedFp.ParsedEvents[3501]; fp != nil {
 		data = fp.(string)
-	}
+	}*/
 
 	return FingerprintEvent{
 		3501,
@@ -1055,7 +1071,7 @@ func (B *Builder) Event_3503() FingerprintEvent {
 func (B *Builder) Event_3504() FingerprintEvent {
 	return FingerprintEvent{
 		3504,
-		fmt.Sprintf("%d", time.Now().UTC().UnixNano()/1e6),
+		fmt.Sprintf("%.1f", float64(time.Now().UnixNano())/1e6),
 	}
 }
 

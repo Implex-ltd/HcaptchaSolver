@@ -15,11 +15,11 @@ type Profile struct {
 }
 
 type Misc struct {
-	HasTouch, Chrome                                bool
-	UniqueKeys, InvUniqueKeys                       string
-	DeviceMemory, HardwareConcurrency               int
-	ChromeVersion, Os, Arch, CPU, BrowserAppVersion string
-	Vendor, Renderer                                string
+	HasTouch, Chrome, Mobile, PDFViewerEnabled               bool
+	UniqueKeys, InvUniqueKeys                                string
+	DeviceMemory, HardwareConcurrency                        int
+	ChromeVersion, Os, Arch, CPU, BrowserVersion, AppVersion string
+	Vendor, Renderer                                         string
 }
 
 type Hash struct {
@@ -66,7 +66,7 @@ type Components struct {
 	RBotScore2                int64       `json:"r_bot_score_2"`
 	AudioHash                 string      `json:"audio_hash"`
 	Extensions                []bool      `json:"extensions"`
-	ParentWinHash             interface{} `json:"parent_win_hash"`
+	ParentWinHash             string      `json:"parent_win_hash"`
 	WebrtcHash                string      `json:"webrtc_hash"`
 	PerformanceHash           string      `json:"performance_hash"`
 	UniqueKeys                string      `json:"unique_keys"`

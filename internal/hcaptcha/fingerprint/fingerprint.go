@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/0xF7A4C6/GoCycle"
+	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
@@ -47,6 +49,13 @@ func NewFingerprintBuilder(useragent string) (*Builder, error) {
 }
 
 func (B *Builder) GenerateProfile() (*Profile, error) {
+	uaSplit := strings.Split(B.UserAgent, "Mozilla/")
+	if len(uaSplit) != 2 {
+		return nil, fmt.Errorf("invalid UA")
+	}
+
+	ua := cleanhttp.ParseUserAgent(B.UserAgent)
+
 	p := Profile{
 		UserAgent: B.UserAgent,
 		Screen: Screen{
@@ -58,7 +67,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			AvailHeight: B.CollectedFp.Components.Screen.AvailHeight,
 		},
 		Navigator: Navigator{
-			UserAgent:                   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+			UserAgent:                   B.UserAgent,
 			Language:                    B.CollectedFp.Components.Navigator.Language,
 			Languages:                   B.CollectedFp.Components.Navigator.Languages,
 			Platform:                    B.CollectedFp.Components.Navigator.Platform,
@@ -68,25 +77,28 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            B.CollectedFp.Components.Navigator.PluginsUndefined,
 		},
 		Hash: Hash{
-			Performance:   utils.RandomHash(19), //B.CollectedFp.Components.PerformanceHash,
-			Canvas:        utils.RandomHash(19), //B.CollectedFp.Components.CanvasHash,
+			Performance:   "2372271609278715010", //B.CollectedFp.Components.PerformanceHash,
+			Canvas:        "5968978429106453258", //B.CollectedFp.Components.CanvasHash,
 			WebGL:         B.CollectedFp.Components.WebGlHash,
 			WebRTC:        B.CollectedFp.Components.WebrtcHash,
 			Audio:         B.CollectedFp.Components.AudioHash,
-			ParrentWindow: "17464972382824382480", //utils.RandomHash(20),
+			ParrentWindow: "17427492278707878793", //utils.RandomHash(20),
 		},
 		Misc: Misc{
+			PDFViewerEnabled:    true,
+			AppVersion:          uaSplit[1],
+			Mobile:              false,
 			HasTouch:            false,
 			Chrome:              B.CollectedFp.Components.Chrome,
-			UniqueKeys:          "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,2,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__", //B.CollectedFp.Components.UniqueKeys,
-			InvUniqueKeys:       "__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",                                                                                                                                                                                                                                                  //B.CollectedFp.Components.InvUniqueKeys,
-			DeviceMemory:        utils.RandomElementInt([]int{2, 4, 8, 1632, 64, 128}),
-			HardwareConcurrency: utils.RandomElementInt([]int{2, 4, 6, 8, 12, 16, 32, 64}),
-			ChromeVersion:       "116",
-			Os:                  "Windows",
+			UniqueKeys:          "_,regeneratorRuntime,__sentry_instrumentation_handlers__,1,GLOBAL_ENV,__BILLING_STANDALONE__,webpackChunkdiscord_app,__localeData__,hcaptcha,0,__OVERLAY__,DiscordErrors,clearImmediate,grecaptcha,DiscordSentry,__timingFunction,hcaptchaOnLoad,IntlPolyfill,__SENTRY__,__DISCORD_WINDOW_ID,setImmediate,__SECRET_EMOTION__,platform", //B.CollectedFp.Components.UniqueKeys,
+			InvUniqueKeys:       "localStorage,_sharedLibs,hsw,__wdata,sessionStorage",                                                                                                                                                                                                                                                                                   //B.CollectedFp.Components.InvUniqueKeys,
+			DeviceMemory:        utils.RandomElementInt([]int{2, 4, 8, 16, 32}),
+			HardwareConcurrency: utils.RandomElementInt([]int{2, 4, 6, 8, 12, 16}),
+			ChromeVersion:       strings.Split(ua.BrowserVersion, ".")[0],
+			Os:                  ua.OSName,
 			Arch:                "x86",
 			CPU:                 "64",
-			BrowserAppVersion:   utils.RandomElementString([]string{"116.0.5845.187", "116.0.5845.179", "116.0.5845.140", "116.0.5845.110", "116.0.5845.96"}),
+			BrowserVersion:      "117.0.5938.132", //ua.BrowserVersion,
 			Vendor:              "Google Inc. (NVIDIA)",
 			Renderer:            "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)",
 		},

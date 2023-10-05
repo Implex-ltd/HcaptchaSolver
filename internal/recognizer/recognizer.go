@@ -453,6 +453,10 @@ func (R *Recognizer) TextFreeEntry() (*SolveResponse, error) {
 	answers := map[string]AnswerStruct{}
 	resp := []string{"oui", "non"}
 
+	if len(R.TaskList) == 0 {
+		return nil, fmt.Errorf("no prompt found")
+	}
+
 	for _, questions := range R.TaskList {
 		res := resp[rand.Int()%len(resp)]
 		question := strings.ReplaceAll(questions.DatapointText["fr"], " ", "_")
