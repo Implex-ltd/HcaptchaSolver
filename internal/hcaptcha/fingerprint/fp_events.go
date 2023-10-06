@@ -535,18 +535,9 @@ func (B *Builder) Event_1402() FingerprintEvent {
 }
 
 func (B *Builder) Event_1403() FingerprintEvent {
-	/*data := []interface{}{
-		"DzBXcMZkmlelYzPGD=Yk",
-		"1",
-		"3",
-		"TDEDEVJMPMMFH",
-	}*/
-
-	data := B.CollectedFp.ParsedEvents[1403].(string)
-
 	return FingerprintEvent{
 		1403,
-		B.GetByID(1403, data),
+		B.Stringify(EncStr(B.CollectedFp.ParsedEvents[1401].(string))),
 	}
 }
 
@@ -781,9 +772,17 @@ func (B *Builder) Event_2417() FingerprintEvent {
 }
 
 func (B *Builder) Event_2420() FingerprintEvent {
+	var out []string
+	json.Unmarshal([]byte(B.CollectedFp.ParsedEvents[2402].(string)), &out)
+
+	data := B.Stringify([]interface{}{
+		EncStr(out[0]),
+		EncStr(out[1]),
+	})
+
 	return FingerprintEvent{
 		2420,
-		B.GetByID(2420, B.CollectedFp.ParsedEvents[2420].(string)),
+		data,
 	}
 }
 
@@ -844,7 +843,7 @@ func (B *Builder) Event_3210() FingerprintEvent {
 func (B *Builder) Event_3211() FingerprintEvent {
 	return FingerprintEvent{
 		3211,
-		B.GetByID(3211, B.CollectedFp.ParsedEvents[3211].(string)),
+		B.Stringify(EncStr("143254600089")),
 	}
 }
 
