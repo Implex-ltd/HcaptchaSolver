@@ -1,81 +1,73 @@
-function __EncryptStr(A) {
-    // console.log(A)
-    var g = 322,
-        I = 617,
-        B = 619,
-        Q = 378,
-        C = 671,
-        E = 671,
-        D = 450,
-        i = 768,
-        w = 588,
-        o = 242,
-        M = h;
-    if (null == A) return null;
-    var N = {};
-    N[M(238)] = 13;
-    var G = M(352) != typeof A ? String(A) : A,
-        y = Array[M(g)](N, (function () {
-            return String.fromCharCode(cA(65, 90))
-        }))[M(378)](""),
-        a = cA(1, 26),
-        n = G[M(619)](" ")[M(I)]()[M(378)](" ")[M(B)]("").reverse().map((function (A) {
-            var g = M;
-            if (!A[g(659)](YA)) return A;
-            var I = hA[g(w)](A.toLowerCase()),
-                B = hA[(I + a) % 26];
-            return A === A[g(o)]() ? B[g(o)]() : B
-        }))[M(Q)](""),
-        L = window.btoa(encodeURIComponent(n)).split("")[M(I)]()[M(378)](""),
-        c = L[M(238)],
-        Y = cA(1, c - 1);
-    return [(L[M(C)](Y, c) + L[M(E)](0, Y))[M(724)](new RegExp("["[M(450)](y)[M(D)](y[M(576)](), "]"), "g"), (function (A) {
-        var g = M;
-        return A === A[g(242)]() ? A[g(576)]() : A[g(242)]()
-    })), a[M(768)](16), Y[M(i)](16), y]
+// https://gist.github.com/nikolahellatrigger/a8856463170fbe3596569977148ebaf4
+
+/*
+    This script is used to "encrypt" somes data into fingerprint_event such as:
+        - webgl vendor + renderer
+        - browser performance
+        - browser timezone
+    
+    I think it's used to verify the data is authentic / non duplicated (output is different each time you run the function)
+*/
+
+function getRandNum(A, g) {
+    return Math.floor(Math.random() * (g - A + 1)) + A
 }
 
-__EncryptStr("ANGLE (NVIDIA, NVIDIA GeForce GT 755M Direct3D11 vs_5_0 ps_5_0, D3D11)")
+function __Enc(A) {
+    if (null == A) {
+        return null
+    }
 
-// deob, (not 100%)
+    let inputArr = Array.from({ length: 13 }, function () {
+        return String.fromCharCode(getRandNum(65, 90))
+    }).join('')
 
-function __EncryptStr(input) {
-    if (input === null) return null;
+    let rand_a = getRandNum(1, 26)
 
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const randomOffset = Math.floor(Math.random() * 26);
+    let encodedResult = A.split(' ').reverse().join(' ').split('').reverse().map(function (A) {
+        if (!A.match('/[a-z]/i')) {
+            return A
+        }
 
-    const encryptedString = input
-        .split(' ')
-        .map(word => {
-            return word.split('').reverse().map(char => {
-                if (!alphabet.includes(char.toUpperCase())) return char;
-                const charCode = char.toLowerCase().charCodeAt(0);
-                const encryptedCharCode = (charCode - 97 + randomOffset) % 26 + 97;
-                return char === char.toUpperCase()
-                    ? String.fromCharCode(encryptedCharCode).toUpperCase()
-                    : String.fromCharCode(encryptedCharCode);
-            }).join('');
-        })
-        .join(' ');
+        let I = hA.indexOf(A.toLowerCase())
+        let B = hA[(I + rand_a) % 26]
 
-    const encodedString = btoa(encodeURIComponent(encryptedString))
-        .split('')
-        .map(char => {
-            const isUppercase = /[A-Z]/.test(char);
-            return isUppercase ? char.toLowerCase() : char.toUpperCase();
-        })
-        .join('');
+        if (A === A.toUpperCase()) {
+            return B.toUpperCase();
+        } else {
+            return B;
+        }
+    }).join('')
 
-    const length = encodedString.length;
-    const randomIndex = Math.floor(Math.random() * (length - 1)) + 1;
-    const firstPart = encodedString.substring(randomIndex);
-    const secondPart = encodedString.substring(0, randomIndex);
+    let b64out = window.btoa(encodeURIComponent(encodedResult)).split('').reverse().join('')
+    let b64randLen = getRandNum(1, b64out.length - 1)
 
-    const finalString = (firstPart + secondPart)
-        .replace(new RegExp(`[${alphabet}]`, 'gi'), char => {
-            return char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase();
-        });
-
-    return [finalString, randomOffset.toString(16), randomIndex.toString(16)];
+    return [
+        (b64out.slice(b64randLen, b64out.length) + b64out.slice(0, b64randLen)).replace(
+            new RegExp('['.concat(inputArr).concat(inputArr.toLowerCase(), ']'), 'g'),
+            
+            function (A) {
+                if (A === A.toUpperCase()) {
+                    return A.toLowerCase();
+                } else {
+                    return A.toUpperCase();
+                }
+            }
+        ),
+        rand_a.toString(16),
+        b64randLen.toString(16),
+        inputArr,
+    ]
 }
+
+__Enc("ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)")
+
+// output
+/*
+[
+    "wzWItjozVSElUqWItjO4kVjRUSbNkmlAJmlEktHxUR=q0mEftmPAJmlA3CFVZXWmkmlAJmly3CFVZXWAJmlqUaYV2y0NDRxEDmYUcVPbJmlmDm2ADmYUiUUhfmYUYRlz0BYN",
+    "13",
+    "5a",
+    "FCOZWPYTZJMBQ"
+]
+*/

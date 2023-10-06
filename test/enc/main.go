@@ -3,119 +3,100 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
+	"log"
 	"math/rand"
-	"net/url"
+	"regexp"
 	"strings"
 	"time"
-	"unicode"
+	"unicode/utf8"
 )
 
 var (
-	charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	charset = "abcdefghijklmnopqrstuvwxyz"
 )
 
-func swapCase(input string) string {
-	return strings.Map(func(r rune) rune {
-		if r >= 'A' && r <= 'Z' {
-			return r + 32
-		} else if r >= 'a' && r <= 'z' {
-			return r - 32
+func Reverse(s string) string {
+	size := len(s)
+	buf := make([]byte, size)
+	for start := 0; start < size; {
+		r, n := utf8.DecodeRuneInString(s[start:])
+		start += n
+		utf8.EncodeRune(buf[size-start:], r)
+	}
+	return string(buf)
+}
+
+func findCharIndex(char byte, charset string) int {
+	for i := 0; i < len(charset); i++ {
+		if charset[i] == char {
+			return i
 		}
-		return r
-	}, input)
-}
-
-func reverseString(input string) string {
-	runes := []rune(input)
-	reversed := make([]rune, len(runes))
-	for i, j := 0, len(runes)-1; i <= j; i, j = i+1, j-1 {
-		reversed[i], reversed[j] = runes[j], runes[i]
 	}
-	return string(reversed)
+	return -1
 }
 
-func charCodeAt(s string, n int) rune {
-	i := 0
-	for _, r := range s {
-		if i == n {
-			return r
-		}
-		i++
-	}
-	return 0
+func getRandNum(A, g int) int {
+	return rand.Intn(g-A+1) + A
 }
 
-func uppercaseRune(char rune) rune {
-    if !unicode.IsLower(char) {
-        return char
-    }
-    return unicode.ToUpper(char)
+func getRandomChar(min, max int) byte {
+	return byte(rand.Intn(max-min+1) + min)
 }
 
-func encryptStr(input string) ([]string, error) {
-	if input == "" {
-		return nil, fmt.Errorf("Input cannot be empty")
-	}
-
-	randomOffset := rand.Intn(26)
-
-	encryptedString := func(input string) string {
-		words := strings.Split(input, " ")
-		encWords := make([]string, len(words))
-
-		for _, word := range words {
-			reversed := reverseString(word)
-			enc := ""
-
-			for _, char := range reversed {
-				if !strings.ContainsRune(charset, uppercaseRune(char)) {
-					enc += string(char)
-					continue
-				}
-
-				charCode := int(charCodeAt(strings.ToLower(fmt.Sprintf("%c", char)), 0))
-				encryptedCharCode := (charCode-97+randomOffset)%26 + 97
-
-				if char == uppercaseRune(char) {
-					enc += fmt.Sprintf("%c", encryptedCharCode-32)
-				} else {
-					enc += fmt.Sprintf("%c", encryptedCharCode)
-				}
-			}
-
-			encWords = append(encWords, enc)
+func enc(input string) []string {
+	inputArr := func() string {
+		var out []byte
+		for i := 0; i < 13; i++ {
+			char := getRandomChar(65, 90)
+			out = append(out, char)
 		}
 
-		return strings.Join(encWords, " ")[3:]
+		return string(out)
+	}()
+
+	randA := getRandNum(1, 26)
+
+	Reversed := func(input string) (out string) {
+		words := []string{}
+
+		for _, word := range strings.Split(input, " ") {
+			words = append(words, Reverse(word))
+		}
+
+		return strings.Join(words, " ")
 	}(input)
 
-	encodedString := func(encrypted string) string {
-		b64 := base64.RawStdEncoding.EncodeToString([]byte(url.QueryEscape(encrypted)))
-		return swapCase(b64)
-	}(encryptedString)
+	b64 := Reverse(base64.RawURLEncoding.WithPadding(base64.StdPadding).EncodeToString([]byte(Reversed)))
+	b64rand := getRandNum(1, len(b64)-1)
 
-	length := len(encodedString)
-	randomIndex := rand.Intn(length-1) + 1
+	final := func(b64 string, i int) string {
+		return regexp.MustCompile(fmt.Sprintf("[%v%s]", inputArr, strings.ToLower(inputArr))).ReplaceAllStringFunc(b64[i:]+b64[:i], func(A string) string {
+			if A == strings.ToUpper(A) {
+				return strings.ToLower(A)
+			} else {
+				return strings.ToUpper(A)
+			}
+		})
+	}(b64, b64rand)
 
-	firstPart := encodedString[randomIndex:]
-	secondPart := encodedString[:randomIndex]
-
-	finalString := (firstPart + secondPart)
-	finalString = swapCase(finalString)
-
-	return []string{finalString, fmt.Sprintf("%x", randomOffset), fmt.Sprintf("%x", randomIndex)}, nil
+	return []string{
+		final,
+		fmt.Sprintf("%x", randA),
+		fmt.Sprintf("%x", b64rand),
+		inputArr,
+	}
 }
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	for i := 0; i < 5; i++ {
-		result, err := encryptStr("Europe/Paris")
-		if err != nil {
-			fmt.Println("Error:", err)
-			return
-		}
-
-		fmt.Println(result)
+	for _, str := range []string{
+		"Europe/Paris",
+		"Google Inc. (NVIDIA)",
+		"ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)",
+		"143254600089",
+	} {
+		log.Printf("======[  %s  ]======", str)
+		log.Println(enc(str))
 	}
 }
