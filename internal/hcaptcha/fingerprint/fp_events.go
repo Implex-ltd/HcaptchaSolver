@@ -20,6 +20,10 @@ import (
 	- 901
 */
 
+var (
+	Hardcode = true
+)
+
 func (B *Builder) Stringify(data any) string {
 	jsonString, err := json.Marshal(data)
 	if err != nil {
@@ -29,18 +33,25 @@ func (B *Builder) Stringify(data any) string {
 	return string(jsonString)
 }
 
+func (B *Builder) GetByID(id int, hardcoded string) string {
+	if fp := B.CollectedFp.ParsedEvents[id]; fp != nil && !Hardcode {
+		hardcoded = fp.(string)
+	}
+
+	return hardcoded
+}
+
 func (B *Builder) Event_0() FingerprintEvent {
 	return FingerprintEvent{
 		0,
-		B.CollectedFp.ParsedEvents[0].(string),
+		fmt.Sprintf("%.14f", utils.RandomFloat64(15, 40)),
 	}
 }
 
 func (B *Builder) Event_3() FingerprintEvent {
 	return FingerprintEvent{
 		3,
-		//"32575",
-		B.CollectedFp.ParsedEvents[3].(string),
+		fmt.Sprintf("%.2f", utils.RandomFloat64(30000, 60000)),
 	}
 }
 
@@ -64,10 +75,6 @@ func (B *Builder) Event_107() FingerprintEvent {
 		false,
 	})
 
-	/*if fp := B.CollectedFp.ParsedEvents[107]; fp != nil {
-		data = B.CollectedFp.ParsedEvents[107].(string)
-	}*/
-
 	return FingerprintEvent{
 		107,
 		data,
@@ -75,16 +82,9 @@ func (B *Builder) Event_107() FingerprintEvent {
 }
 
 func (B *Builder) Event_201() FingerprintEvent {
-	/*data := "13122422878918113034"
-
-	if fp := B.CollectedFp.ParsedEvents[201]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		201,
-		"4226317358175830201",
-		//data,
+		B.GetByID(201, "4226317358175830201"),
 	}
 }
 
@@ -117,27 +117,16 @@ func (B *Builder) Event_211() FingerprintEvent {
 		},
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[211]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		211,
-		data,
+		B.GetByID(211, data),
 	}
 }
 
 func (B *Builder) Event_301() FingerprintEvent {
-	/*data := "8383473043360077444"
-
-	if fp := B.CollectedFp.ParsedEvents[301]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		301,
-		"8383473043360077444",
-		//data,
+		B.GetByID(301, "8383473043360077444"),
 	}
 }
 
@@ -150,13 +139,9 @@ func (B *Builder) Event_302() FingerprintEvent {
 		4,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[302]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		302,
-		data,
+		B.GetByID(302, data),
 	}
 }
 
@@ -166,53 +151,30 @@ func (B *Builder) Event_303() FingerprintEvent {
 		"\"Segoe UI\"",
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[303]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		303,
-		data,
+		B.GetByID(303, data),
 	}
 }
 
 func (B *Builder) Event_304() FingerprintEvent {
-	/*data := "623"
-
-	if fp := B.CollectedFp.ParsedEvents[304]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		304,
-		"623",
+		B.GetByID(304, "623"),
 	}
 }
 
 func (B *Builder) Event_401() FingerprintEvent {
-	/*data := "2400869836852708862"
-
-	if fp := B.CollectedFp.ParsedEvents[401]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		401,
-		"2400869836852708862",
-		//data,
+		B.GetByID(401, "2400869836852708862"),
 	}
 }
 
 func (B *Builder) Event_402() FingerprintEvent {
-	data := "1109"
-
-	/*if fp := B.CollectedFp.ParsedEvents[402]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		402,
-		data,
+		B.GetByID(402, "1109"),
 	}
 }
 
@@ -270,16 +232,9 @@ func (B *Builder) Event_407() FingerprintEvent {
 }
 
 func (B *Builder) Event_412() FingerprintEvent {
-	/*data := "15584660433093862032"
-
-	if fp := B.CollectedFp.ParsedEvents[412]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		412,
-		"15584660433093862032",
-		//data,
+		B.GetByID(412, "15584660433093862032"),
 	}
 }
 
@@ -314,10 +269,6 @@ func (B *Builder) Event_604() FingerprintEvent {
 		strings.Contains(strings.ToLower(B.UserAgent), "duckduckgo"),
 	})
 
-	/*if fp := B.CollectedFp.ParsedEvents[604]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		604,
 		data,
@@ -333,10 +284,6 @@ func (B *Builder) Event_702() FingerprintEvent {
 		B.Profile.Misc.Arch,
 		B.Profile.Misc.BrowserVersion,
 	})
-
-	/*if fp := B.CollectedFp.ParsedEvents[702]; fp != nil {
-		data = fp.(string)
-	}*/
 
 	return FingerprintEvent{
 		702,
@@ -359,27 +306,16 @@ func (B *Builder) Event_803() FingerprintEvent {
 		29,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[803]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		803,
-		data,
+		B.GetByID(803, data),
 	}
 }
 
 func (B *Builder) Event_901() FingerprintEvent {
-	/*data := "16132118391739044799"
-
-	if fp := B.CollectedFp.ParsedEvents[901]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		901,
-		//data,
-		"135869055876678538",
+		B.GetByID(901, "135869055876678538"),
 	}
 }
 
@@ -408,37 +344,30 @@ func (B *Builder) Event_905() FingerprintEvent {
 		},
 	})
 
-	/*if fp := B.CollectedFp.ParsedEvents[905]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		905,
-		data,
+		B.GetByID(905, data),
 	}
 }
 
 func (B *Builder) Event_1101() FingerprintEvent {
 	return FingerprintEvent{
 		1101,
-		"2028058230851665858",
-		//B.CollectedFp.ParsedEvents[1101].(string), //"1308681860871815407",
+		B.GetByID(1101, "2028058230851665858"),
 	}
 }
 
 func (B *Builder) Event_1103() FingerprintEvent {
 	return FingerprintEvent{
 		1103,
-		"4932383211497360507",
-		//B.CollectedFp.ParsedEvents[1103].(string), //"4932383211497360507",
+		B.GetByID(1103, "4932383211497360507"),
 	}
 }
 
 func (B *Builder) Event_1105() FingerprintEvent {
 	return FingerprintEvent{
 		1105,
-		"17157476241021694346",
-		//B.CollectedFp.ParsedEvents[1105].(string), //"17157476241021694346",
+		B.GetByID(1105, "17157476241021694346"),
 	}
 }
 
@@ -563,13 +492,9 @@ func (B *Builder) Event_1107() FingerprintEvent {
 		},
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[1107]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		1107,
-		data,
+		B.GetByID(1107, data),
 	}
 }
 
@@ -578,26 +503,18 @@ func (B *Builder) Event_1302() FingerprintEvent {
 		0, 1, 2, 3, 4,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[1302]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		1302,
-		data,
+		B.GetByID(1302, data),
 	}
 }
 
 func (B *Builder) Event_1401() FingerprintEvent {
 	data := "\"Europe/Paris\""
 
-	if fp := B.CollectedFp.ParsedEvents[1401]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		1401,
-		data,
+		B.GetByID(1401, data),
 	}
 }
 
@@ -611,13 +528,9 @@ func (B *Builder) Event_1402() FingerprintEvent {
 		"fr",
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[1402]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		1402,
-		data,
+		B.GetByID(1402, data),
 	}
 }
 
@@ -629,76 +542,60 @@ func (B *Builder) Event_1403() FingerprintEvent {
 		"TDEDEVJMPMMFH",
 	}*/
 
-	data := B.CollectedFp.ParsedEvents[1403]
+	data := B.CollectedFp.ParsedEvents[1403].(string)
 
 	return FingerprintEvent{
 		1403,
-		string(data.(string)),
+		B.GetByID(1403, data),
 	}
 }
 
 func (B *Builder) Event_1901() FingerprintEvent {
 	return FingerprintEvent{
 		1901,
-		"15307345790125003576",
-		//B.CollectedFp.ParsedEvents[1901].(string), //"15307345790125003576",
+		B.GetByID(1901, "15307345790125003576"),
 	}
 }
 
 func (B *Builder) Event_1902() FingerprintEvent {
 	return FingerprintEvent{
 		1902,
-		B.CollectedFp.ParsedEvents[1902].(string), //"57",
+		B.GetByID(1902, "57"),
 	}
 }
 
 func (B *Builder) Event_1904() FingerprintEvent {
 	return FingerprintEvent{
 		1904,
-		B.CollectedFp.ParsedEvents[1904].(string),
+		B.GetByID(1904, "[0,11411,11411]"),
 	}
 }
 
+// disabled
 func (B *Builder) Event_2001() FingerprintEvent {
-	data := "13414760775080815217"
-
-	if fp := B.CollectedFp.ParsedEvents[2001]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		2001,
-		data,
+		B.GetByID(2001, "13414760775080815217"),
 	}
 }
 
+// disabled
 func (B *Builder) Event_2002() FingerprintEvent {
 	data := B.Stringify([]interface{}{
 		"denied",
 		"denied",
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[2002]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		2002,
-		data,
+		B.GetByID(2002, data),
 	}
 }
 
 func (B *Builder) Event_2401() FingerprintEvent {
-	/*data := utils.RandomHash(18)
-
-	if fp := B.CollectedFp.ParsedEvents[2401]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		2401,
-		//data,
-		"13854066076378004045",
+		B.GetByID(2401, "13854066076378004045"),
 	}
 }
 
@@ -708,33 +605,33 @@ func (B *Builder) Event_2402() FingerprintEvent {
 		B.Profile.Misc.Renderer,
 	}*/
 
-	data := B.CollectedFp.ParsedEvents[2402]
+	data := B.CollectedFp.ParsedEvents[2402].(string)
 
 	return FingerprintEvent{
 		2402,
-		string(data.(string)),
+		B.GetByID(2402, data),
 	}
 }
 
+// disabled
 func (B *Builder) Event_2403() FingerprintEvent {
 	/*data := []interface{}{
 		B.Profile.Misc.Vendor,
 		B.Profile.Misc.Renderer,
 	}*/
 
-	data := B.CollectedFp.ParsedEvents[2403]
+	data := B.CollectedFp.ParsedEvents[2403].(string)
 
 	return FingerprintEvent{
 		2403,
-		string(data.(string)),
+		B.GetByID(2403, data),
 	}
 }
 
 func (B *Builder) Event_2407() FingerprintEvent {
 	return FingerprintEvent{
 		2407,
-		"13177607191192652685",
-		//B.CollectedFp.ParsedEvents[2407].(string), //"13177607191192652685",
+		B.GetByID(2407, "13177607191192652685"),
 	}
 }
 
@@ -746,21 +643,20 @@ func (B *Builder) Event_2408() FingerprintEvent {
 }
 
 func (B *Builder) Event_2409() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		2147483647,
 		2147483647,
 		4294967294,
-	}*/
-	data := B.CollectedFp.ParsedEvents[2409]
+	})
 
 	return FingerprintEvent{
 		2409,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_2410() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		16,
 		1024,
 		4096,
@@ -768,78 +664,72 @@ func (B *Builder) Event_2410() FingerprintEvent {
 		12,
 		120,
 		[]interface{}{23, 127, 127},
-	}*/
-	data := B.CollectedFp.ParsedEvents[2410]
+	})
 
 	return FingerprintEvent{
 		2410,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_2411() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		32767,
 		32767,
 		16384,
 		8,
 		8,
 		8,
-	}*/
-	data := B.CollectedFp.ParsedEvents[2411]
+	})
 
 	return FingerprintEvent{
 		2411,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_2412() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		1,
 		1024,
 		1,
 		1,
 		4,
-	}*/
-	data := B.CollectedFp.ParsedEvents[2412]
+	})
 
 	return FingerprintEvent{
 		2412,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_2413() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		2147483647,
 		2147483647,
 		2147483647,
 		2147483647,
-	}*/
-
-	data := B.CollectedFp.ParsedEvents[2413]
+	})
 
 	return FingerprintEvent{
 		2413,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_2414() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		16384,
 		32,
 		16384,
 		2048,
 		2,
 		2048,
-	}*/
-	data := B.CollectedFp.ParsedEvents[2414]
+	})
 
 	return FingerprintEvent{
 		2414,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
@@ -850,10 +740,6 @@ func (B *Builder) Event_2415() FingerprintEvent {
 		4,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[2415]; fp == nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		2415,
 		data,
@@ -861,23 +747,22 @@ func (B *Builder) Event_2415() FingerprintEvent {
 }
 
 func (B *Builder) Event_2416() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		24,
 		24,
 		65536,
 		212988,
 		200704,
-	}*/
-	data := B.CollectedFp.ParsedEvents[2416]
+	})
 
 	return FingerprintEvent{
 		2416,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_2417() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		16,
 		4095,
 		30,
@@ -887,34 +772,30 @@ func (B *Builder) Event_2417() FingerprintEvent {
 		12,
 		120,
 		[]interface{}{23, 127, 127},
-	}*/
-	data := B.CollectedFp.ParsedEvents[2417]
+	})
 
 	return FingerprintEvent{
 		2417,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_2420() FingerprintEvent {
-	data := B.CollectedFp.ParsedEvents[2420]
-
 	return FingerprintEvent{
 		2420,
-		string(data.(string)),
+		B.GetByID(2420, B.CollectedFp.ParsedEvents[2420].(string)),
 	}
 }
 
 func (B *Builder) Event_2801() FingerprintEvent {
 	return FingerprintEvent{
 		2801,
-		"4631229088072584217",
-		//B.CollectedFp.ParsedEvents[2801].(string), //"4631229088072584217",
+		B.GetByID(2801, "4631229088072584217"),
 	}
 }
 
 func (B *Builder) Event_2805() FingerprintEvent {
-	/*data := []interface{}{
+	data := B.Stringify([]interface{}{
 		[]interface{}{
 			277114314453,
 			277114314460,
@@ -933,19 +814,18 @@ func (B *Builder) Event_2805() FingerprintEvent {
 			277114314451,
 		},
 		false,
-	}*/
-	data := B.CollectedFp.ParsedEvents[2805]
+	})
 
 	return FingerprintEvent{
 		2805,
-		string(data.(string)), //B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_3210() FingerprintEvent {
 	data := B.Stringify([]interface{}{
-		143254600089,
-		143254600089,
+		281274078282, // change
+		281274078282, // change
 		nil,
 		nil,
 		4294705152,
@@ -955,44 +835,28 @@ func (B *Builder) Event_3210() FingerprintEvent {
 		nil,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[3210]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		3210,
-		data,
+		B.GetByID(3210, data),
 	}
 }
 
 func (B *Builder) Event_3211() FingerprintEvent {
-	data := B.Stringify([]interface{}{
-		"mYudn2AdmWgTOxQZ",
-		"11",
-		"3",
-		"ZKRKYBDWNDUMW",
-	})
-
-	if fp := B.CollectedFp.ParsedEvents[3211]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		3211,
-		data,
+		B.GetByID(3211, B.CollectedFp.ParsedEvents[3211].(string)),
 	}
 }
 
 func (B *Builder) Event_3401() FingerprintEvent {
 	return FingerprintEvent{
 		3401,
-		B.CollectedFp.ParsedEvents[3401].(string),
-		//utils.RandomHash(20), //"4226317358175830201",
+		B.GetByID(3401, "4226317358175830201"),
 	}
 }
 
 func (B *Builder) Event_3403() FingerprintEvent {
-	data := []interface{}{
+	data := B.Stringify([]interface{}{
 		[]interface{}{
 			[]interface{}{
 				fmt.Sprintf("https://newassets.hcaptcha.com/captcha/v1/%s/hcaptcha.js", B.HcapVersion),
@@ -1007,21 +871,21 @@ func (B *Builder) Event_3403() FingerprintEvent {
 				9,
 			},
 		},
-	}
+	})
 
 	return FingerprintEvent{
 		3403,
-		B.Stringify(data),
+		data,
 	}
 }
 
 func (B *Builder) Event_3501() FingerprintEvent {
 	data := B.Stringify([]interface{}{
-		[]interface{}{
+		/*[]interface{}{
 			"img:imgs.hcaptcha.com",
 			0,
 			utils.RandomFloat64(20, 60),
-		},
+		},*/
 		[]interface{}{
 			"navigation:newassets.hcaptcha.com",
 			utils.RandomFloat64(10, 50),
@@ -1040,10 +904,6 @@ func (B *Builder) Event_3501() FingerprintEvent {
 		},
 	})
 
-	/*if fp := B.CollectedFp.ParsedEvents[3501]; fp != nil {
-		data = fp.(string)
-	}*/
-
 	return FingerprintEvent{
 		3501,
 		data,
@@ -1054,8 +914,6 @@ func (B *Builder) Event_3502() FingerprintEvent {
 	return FingerprintEvent{
 		3502,
 		fmt.Sprintf("%.14f", utils.RandomFloat64(20, 50)),
-		//B.CollectedFp.ParsedEvents[3502].(string),
-		//"6.199999999254942",
 	}
 }
 
@@ -1063,8 +921,6 @@ func (B *Builder) Event_3503() FingerprintEvent {
 	return FingerprintEvent{
 		3503,
 		fmt.Sprintf("%.14f", utils.RandomFloat64(10, 20)),
-		//B.CollectedFp.ParsedEvents[3503].(string),
-		//"0.15000000223517418",
 	}
 }
 
@@ -1075,19 +931,15 @@ func (B *Builder) Event_3504() FingerprintEvent {
 	}
 }
 
-// not used
+// disabled
 func (B *Builder) Event_3505() FingerprintEvent {
 	data := B.Stringify([]interface{}{
 		0.09999999403953552,
 		27,
 	})
 
-	if fp := B.CollectedFp.ParsedEvents[3505]; fp != nil {
-		data = fp.(string)
-	}
-
 	return FingerprintEvent{
 		3505,
-		data,
+		B.GetByID(3505, data),
 	}
 }
