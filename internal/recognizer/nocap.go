@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"sync"
+	"time"
 )
 
 var (
@@ -49,6 +50,7 @@ type NoCapAnswerSelect struct {
 	ProcessingTime string  `json:"processing_time"`
 	Solution       []any   `json:"solution"`
 	Status         string  `json:"status"`
+	Url            string  `json:"url"`
 }
 
 func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[string]string, error) {
@@ -222,8 +224,44 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 		return out, err
 	}
 
+	if answer.Status == "new" {
+		time.Sleep(time.Second)
+
+		req, err := http.NewRequest("GET", answer.Url, nil)
+		if err != nil {
+			return out, err
+		}
+
+		req.Header.Set("Content-type", "application/json")
+		req.Header.Set("apikey", apikey)
+
+		resp, err := Client.Do(req)
+		if err != nil {
+			return out, err
+		}
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				fmt.Println("nocap2", err)
+			}
+		}(resp.Body)
+
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return out, err
+		}
+
+		if err := json.Unmarshal(bodyBytes, &answer); err != nil {
+			return out, err
+		}
+	}
+
+	if answer.Status == "skip" {
+		return out, fmt.Errorf("cant solve images (skip)")
+	}
+
 	if len(answer.Answers) == 0 {
-		return out, fmt.Errorf("cant solve answers, (0 found)")
+		return out, fmt.Errorf("can solve images, (0 found)")
 	}
 
 	i := 0

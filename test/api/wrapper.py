@@ -185,5 +185,5 @@ GOTCHA
 
 
 if __name__ == "__main__":
-    for _ in range(50):
+    for _ in range(10):
         threading.Thread(target=task).start()
