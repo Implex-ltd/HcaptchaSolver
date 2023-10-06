@@ -43,7 +43,7 @@ func NewFingerprintBuilder(useragent string) (*Builder, error) {
 	return &Builder{
 		UserAgent:   useragent,
 		CollectedFp: &data,
-		HcapVersion: "1b812e2",
+		HcapVersion: "38b4fae",
 		HswVersion:  "1.40.1/7a7fc3d",
 	}, nil
 }
@@ -84,7 +84,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			WebGL:         B.CollectedFp.Components.WebGlHash,
 			WebRTC:        B.CollectedFp.Components.WebrtcHash,
 			Audio:         B.CollectedFp.Components.AudioHash,
-			ParrentWindow: "17427492278707878793",
+			ParrentWindow: "17464972382824382480",
 		},
 		Misc: Misc{
 			PDFViewerEnabled:    true,
@@ -92,8 +92,8 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			Mobile:              false,
 			HasTouch:            false,
 			Chrome:              B.CollectedFp.Components.Chrome,
-			UniqueKeys:          "_,regeneratorRuntime,__sentry_instrumentation_handlers__,1,GLOBAL_ENV,__BILLING_STANDALONE__,webpackChunkdiscord_app,__localeData__,hcaptcha,0,__OVERLAY__,DiscordErrors,clearImmediate,grecaptcha,DiscordSentry,__timingFunction,hcaptchaOnLoad,IntlPolyfill,__SENTRY__,__DISCORD_WINDOW_ID,setImmediate,__SECRET_EMOTION__,platform", //B.CollectedFp.Components.UniqueKeys,
-			InvUniqueKeys:       "localStorage,_sharedLibs,hsw,__wdata,sessionStorage",                                                                                                                                                                                                                                                                                   //B.CollectedFp.Components.InvUniqueKeys,
+			UniqueKeys:          "_,regeneratorRuntime,__sentry_instrumentation_handlers__,1,GLOBAL_ENV,__BILLING_STANDALONE__,webpackChunkdiscord_app,__localeData__,hcaptcha,0,__OVERLAY__,DiscordErrors,clearImmediate,grecaptcha,DiscordSentry,__timingFunction,hcaptchaOnLoad,IntlPolyfill,__SENTRY__,__DISCORD_WINDOW_ID,setImmediate,__SECRET_EMOTION__,2,platform", //B.CollectedFp.Components.UniqueKeys,
+			InvUniqueKeys:       "localStorage,_sharedLibs,hsw,__wdata,sessionStorage",                                                                                                                                                                                                                                                                                     //B.CollectedFp.Components.InvUniqueKeys,
 			DeviceMemory:        utils.RandomElementInt([]int{2, 4, 8, 16, 32}),
 			HardwareConcurrency: utils.RandomElementInt([]int{2, 4, 6, 8, 12, 16}),
 			ChromeVersion:       strings.Split(ua.BrowserVersion, ".")[0],
@@ -102,7 +102,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			CPU:                 "64",
 			BrowserVersion:      "117.0.5938.63", //ua.BrowserVersion,
 			Vendor:              "Google Inc. (NVIDIA)",
-			Renderer:            "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)",
+			Renderer:            "ANGLE (NVIDIA, NVIDIA Quadro P620 Direct3D11 vs_5_0 ps_5_0, D3D11)",
 		},
 	}
 

@@ -131,7 +131,7 @@ def task():
             sitekey="262cdd22-6b90-4d5d-870f-69170f8cc6be",
             proxy=prox,
             useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
-            #oneclick_only=True,
+            oneclick_only=True,
             invisible=True,
             #hc_accessibility="OzYODUeztHgUrpR6wANKrwiI4r2BGvMzoSeDm/ABnNod4BfZ2XgI6QNe/GcDl+wV7ukpgKBgfVNIbciUd2yUgh7U3Cr9kVonGXjzcO4SgJiFLPGR3fMXusSmEOdVYVB1yvBT0K6kdkw4USl+oZnOl4movsCwpks4c7/zd2VkiSQi17LO2RS1GmOjQjMnUzGWEy2GKIQr1XmRJTfxyvm5UEv/hA1mA156mC0mlqPV97/RQ+FtJzclSkU+s9AEEErIdMrEXqlmDkSxTH+jVe4Dk9YnsIArFEvF+zIhE3ZK0D9VxCi9tx9djKXdYTwuS7rzeMZR5ZzIG49B2rbhAiHALuCVGcPAOOpYX03T0+3Hik0mm4TcCadrfP4LJCOPyZCcT345e70q7ljnM6ZKSuYTRyHDwJ7jfCdfs26Wl5BHB4GFMExFQsNhDkkIhblno/ZHoocWYPP7DKhOETMlMYTKSuU6Cf7MkQT/JlXJ1DalV1pb11m0D+/rcuVsjJUXph3Zp2x1rDdkTeZ/FA3LGsx34UIas0edwsSJtzw+7fl+56Fs5X8dWXUngNJ3PCF7vw7a85Kpmo4izoev50lfLUQtQ3BI2CppoApcG87XNWXWB9PBWfGMR+lBEEIS2pWd4z0D5gx2nhAoz04DiA6oQm9qP39JaLnwr0atBhx08xvEnNlhiX0xNPoeS9MZJCKOl5ris8PBPRIOm8x6TksP5N9bwwI1gVtaIYgAU1MW6HNtG/+YW9RS7VSQ7oGHgnt4rWNAiiAcUMexkrOCxl7S6sPI7o6agSF8+xGBw+go+MGHvxaEZlG/aIFrT8EFuOnf04ibetTKNzn1KLJa+2GD2+5wC+P3ZURAqUb4pKdUVUCF/29c/h/WAO3fC1KpRI0m0ia+u0sNzI3hwSvCygF/a0d5Odkv0sMdrH+FXEjvIe6t7tF61RlA149ZZUEhWMLrLwuGuOnUQIBBEEfe6RtICdcnZsMUJZbm48F+51bZqlXvf0QfHmeRnsIH0DAnm3N1TWrobOb99rMFwyYpAKU9fxUEbnYRai9prDJHqSMly3mSFZT7nejX3lYpDtetVUNWYGnwLmKZdw==keFA1WJU/sRz6lxg"
         #rqdata='test'

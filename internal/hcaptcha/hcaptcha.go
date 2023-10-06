@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	VERSION = "1b812e2"
+	VERSION = "38b4fae"
 	LANG    = "fr"
 )
 
