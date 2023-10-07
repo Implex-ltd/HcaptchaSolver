@@ -77,8 +77,6 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            B.CollectedFp.Components.Navigator.PluginsUndefined,
 		},
 		Hash: Hash{
-			// "2372271609278715010",
-			// "5968978429106453258",
 			Performance:   utils.RandomHash(19), //B.CollectedFp.Components.PerformanceHash,
 			Canvas:        utils.RandomHash(19), //B.CollectedFp.Components.CanvasHash,
 			WebGL:         B.CollectedFp.Components.WebGlHash,

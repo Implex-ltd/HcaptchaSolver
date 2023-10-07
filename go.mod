@@ -27,6 +27,7 @@ require (
 	github.com/bogdanfinn/tls-client v1.6.1 // indirect
 	github.com/bogdanfinn/utls v1.5.16 // indirect
 	github.com/campoy/embedmd v1.0.0 // indirect
+	github.com/catalinc/hashcash v0.0.0-20220723060415-5e3ec3e24f67 // indirect
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
 	github.com/go-fonts/liberation v0.3.1 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.0 // indirect
