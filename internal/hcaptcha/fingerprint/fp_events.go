@@ -37,12 +37,9 @@ import (
 var (
 	Hardcode = true
 	hashs    = map[int]string{
-		//1101: "5976439626078859368",
-		201:  "17864504342478246445", // never change 13122422878918113034
-		3401: "12039597181259123542",
-		//2401: "3828429617252524255",
-		//2407: "13177607191192652685",
-		301: "8383473043360077444",
+		201:  "17864504342478246445",
+		3401: "4226317358175830201",
+		301:  "8383473043360077444",
 	}
 )
 
@@ -340,9 +337,15 @@ func (B *Builder) Event_803() FingerprintEvent {
 
 // Some voices fingerprinting data
 func (B *Builder) Event_901() FingerprintEvent {
+	data := "16132118391739044799"
+
+	if fp := B.CollectedFp.ParsedEvents[901]; fp != nil {
+		data = fp.(string)
+	}
+
 	return FingerprintEvent{
 		901,
-		B.GetByID(901, B.CollectedFp.ParsedEvents[901].(string)),
+		B.GetByID(901, data),
 	}
 }
 
@@ -407,6 +410,7 @@ func (B *Builder) Event_1101() FingerprintEvent {
 		1101,
 		//B.GetByID(1101, B.CollectedFp.Components.CanvasHash),
 		//B.GetByID(1101, B.GetByID(1101, hashs[1101])),
+		//utils.RandomHash(utils.RandomNumber(18, 20)),
 		B.GetByID(1101, B.CollectedFp.ParsedEvents[1101].(string)),
 	}
 }
@@ -642,6 +646,7 @@ func (B *Builder) Event_2002() FingerprintEvent {
 func (B *Builder) Event_2401() FingerprintEvent {
 	return FingerprintEvent{
 		2401,
+		//utils.RandomHash(utils.RandomNumber(18, 20)),
 		//B.GetByID(2401, hashs[2401]),
 		B.GetByID(2401, B.CollectedFp.ParsedEvents[2401].(string)),
 	}
@@ -910,8 +915,8 @@ func (B *Builder) Event_3211() FingerprintEvent {
 func (B *Builder) Event_3401() FingerprintEvent {
 	return FingerprintEvent{
 		3401,
-		//B.GetByID(3401, B.CollectedFp.ParsedEvents[3401].(string)),
-		B.GetByID(3401, hashs[3401]),
+		B.GetByID(3401, B.CollectedFp.ParsedEvents[3401].(string)),
+		//B.GetByID(3401, hashs[3401]),
 		//B.GetByID(3401, utils.RandomHash(20)),
 	}
 }
