@@ -64,7 +64,7 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 
 	switch c.Config.TaskType {
 	case TASKTYPE_ENTERPRISE:
-		n, err := c.ChallengeFingerprint.Build()
+		n, err := c.ChallengeFingerprint.Build(jwt)
 		if err != nil {
 			return "", err
 		}
@@ -74,7 +74,6 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 			panic(err)
 		}
 
-		// heure dâÃ©tÃ© dâEurope centrale
 		fp := base64.StdEncoding.EncodeToString(out)
 
 		end, _ := Endpoints.Next()

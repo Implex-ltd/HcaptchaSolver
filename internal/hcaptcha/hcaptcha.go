@@ -13,8 +13,7 @@ import (
 )
 
 const (
-	VERSION = "38b4fae"
-	LANG    = "fr"
+	LANG = "fr"
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
@@ -86,7 +85,7 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 
 	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=1", VERSION, c.Config.Domain, c.Config.SiteKey, swa),
+		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=1", fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey, swa),
 		Header: c.HeaderCheckSiteConfig(),
 	})
 	c.SiteConfigProcessing = time.Since(st)
@@ -143,7 +142,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 
 	payload := url.Values{}
 	for name, value := range map[string]string{
-		`v`:          VERSION,
+		`v`:          fingerprint.VERSION,
 		`sitekey`:    c.Config.SiteKey,
 		`host`:       c.Config.Domain,
 		`hl`:         LANG,
@@ -246,7 +245,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	})
 
 	payload, err = json.Marshal(&PayloadCheckChallenge{
-		V:            VERSION,
+		V:            fingerprint.VERSION,
 		Sitekey:      c.Config.SiteKey,
 		Serverdomain: c.Config.Domain,
 		JobMode:      captcha.RequestType,

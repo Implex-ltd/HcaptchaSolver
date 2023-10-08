@@ -920,7 +920,7 @@ func (B *Builder) Event_3403() FingerprintEvent {
 	data := B.Stringify([]interface{}{
 		[]interface{}{
 			[]interface{}{
-				fmt.Sprintf("https://newassets.hcaptcha.com/captcha/v1/%s/hcaptcha.js", B.HcapVersion),
+				fmt.Sprintf("https://newassets.hcaptcha.com/captcha/v1/%s/hcaptcha.js", VERSION),
 				0,
 				5,
 			},

@@ -4,6 +4,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/0xF7A4C6/GoCycle"
@@ -13,6 +17,9 @@ import (
 
 var (
 	CollectFpArray, _ = GoCycle.NewFromFile("../../assets/cleaned.txt")
+	hcRegex           = regexp.MustCompile(`/captcha/v1/[A-Za-z0-9]+/static/images`)
+	VERSION, _        = checkForUpdate()
+	WASM              = "1.40.1"
 )
 
 func NewFingerprintBuilder(useragent string) (*Builder, error) {
@@ -43,8 +50,7 @@ func NewFingerprintBuilder(useragent string) (*Builder, error) {
 	return &Builder{
 		UserAgent:   useragent,
 		CollectedFp: &data,
-		HcapVersion: "38b4fae",
-		HswVersion:  "1.40.1/7a7fc3d",
+		HcapVersion: VERSION,
 	}, nil
 }
 
@@ -108,14 +114,40 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 	return &p, nil
 }
 
-func (B *Builder) Build() (*Ndata, error) {
+func (B *Builder) Build(jwt string) (*Ndata, error) {
 	if B.Profile == nil {
 		return nil, fmt.Errorf("you need to generate profile first")
 	}
 
+	token, err := ParseJWT(jwt)
+	if err != nil {
+		return nil, err
+	}
+
+	/*
+		fmt.Println(token.PowData)
+		stamp, err := GetStamp(token.PowData)
+		if err != nil {
+			return nil, fmt.Errorf("pow error")
+		}
+	*/
+
+	V := strings.Split(token.Location, "https://newassets.hcaptcha.com/c/")
+	if len(V) == 1 {
+		return nil, fmt.Errorf("cant parse jwt location")
+	}
+
 	N := Ndata{
+		ProofSpec: ProofSpec{
+			Difficulty:      int64(token.Difficuly),
+			FingerprintType: int64(token.FingerprintType),
+			Type:            token.VmType,
+			Data:            token.PowData,
+			Location:        token.Location,
+			TimeoutValue:    int64(token.TimeoutValue),
+		},
 		Components: Components{
-			Version:                   B.HswVersion,
+			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
 			Navigator:                 B.Profile.Navigator,
 			Screen:                    B.Profile.Screen,
 			DevicePixelRatio:          B.CollectedFp.Components.DevicePixelRatio,
@@ -151,6 +183,7 @@ func (B *Builder) Build() (*Ndata, error) {
 		},
 		FingerprintEvents:           [][]interface{}{},
 		FingerprintSuspiciousEvents: []string{},
+		//Stamp:                       stamp,
 		Errs: Errs{
 			List: []string{},
 		},
@@ -239,4 +272,34 @@ func (B *Builder) Build() (*Ndata, error) {
 	}
 
 	return &N, nil
+}
+
+func checkForUpdate() (string, error) {
+	response, err := http.Get("https://hcaptcha.com/1/api.js?render=explicit&onload=hcaptchaOnLoad")
+	if err != nil {
+		return "", err
+	}
+
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var found string
+	for _, match := range hcRegex.FindAllStringSubmatch(string(body), -1) {
+		found = match[0]
+		break
+	}
+
+	if found == "" {
+		return "", fmt.Errorf("cant find version")
+	}
+
+	version := strings.Split(strings.Split(found, "v1/")[1], "/static")[0]
+
+	log.Println("load version", version)
+
+	return version, nil
 }

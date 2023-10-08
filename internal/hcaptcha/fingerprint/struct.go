@@ -1,7 +1,7 @@
 package fingerprint
 
 type Builder struct {
-	UserAgent, HcapVersion, HswVersion string
+	UserAgent, HcapVersion string
 	CollectedFp                        *NdataCollect
 	Profile                            *Profile
 }
@@ -35,15 +35,15 @@ type NdataCollect struct {
 }
 
 type Ndata struct {
-	//ProofSpec                   ProofSpec            `json:"proof_spec"`
-	Components        Components      `json:"components"`
-	FingerprintEvents [][]interface{} `json:"fingerprint_events"`
-	//Messages                    interface{}     `json:"messages"`
-	//StackData                   interface{}     `json:"stack_data"`
-	FingerprintSuspiciousEvents []string `json:"fingerprint_suspicious_events"`
-	//Stamp                       string          `json:"stamp"`
-	Errs Errs      `json:"errs"`
-	Perf [][]int64 `json:"perf"`
+	ProofSpec                   ProofSpec       `json:"proof_spec"`
+	Components                  Components      `json:"components"`
+	FingerprintEvents           [][]interface{} `json:"fingerprint_events"`
+	Messages                    interface{}     `json:"messages"`
+	StackData                   interface{}     `json:"stack_data"`
+	FingerprintSuspiciousEvents []string        `json:"fingerprint_suspicious_events"`
+	Stamp                       string          `json:"stamp"`
+	Errs                        Errs            `json:"errs"`
+	Perf                        [][]int64       `json:"perf"`
 }
 
 type Components struct {
