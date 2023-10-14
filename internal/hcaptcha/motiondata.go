@@ -377,7 +377,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				widget,
 			},
 			WidgetID: widget,
-			Href:     fmt.Sprintf("https://%s", c.Config.Domain),
+			Href:     c.Manager.Manager.Href,
 			Prev: Prev{
 				Escaped:          false,
 				Passed:           false,

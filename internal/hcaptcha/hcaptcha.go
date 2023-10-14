@@ -35,7 +35,7 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		return nil, err
 	}
 
-	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent)
+	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent, fmt.Sprintf("https://%s", config.Domain))
 	if err != nil {
 		return nil, err
 	}

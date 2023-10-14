@@ -23,8 +23,8 @@ var (
 var (
 	cc = goccm.New(1500)
 
-	readTimeout, _  = time.ParseDuration("15s")
-	writeTimeout, _ = time.ParseDuration("15s")
+	readTimeout, _  = time.ParseDuration("10s")
+	writeTimeout, _ = time.ParseDuration("10s")
 
 	headerContentTypeJson = []byte("application/json")
 	Client                = &fasthttp.Client{
@@ -59,19 +59,19 @@ var (
 )
 
 func (c *Hcap) GetHsw(jwt string) (string, error) {
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 5; i++ {
 		req := fasthttp.AcquireRequest()
 
 		switch c.Config.TaskType {
 		case TASKTYPE_ENTERPRISE:
 			n, err := c.Manager.Build(jwt)
 			if err != nil {
-				return "", err
+				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
 			}
 
 			out, err := json.Marshal(n)
 			if err != nil {
-				panic(err)
+				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
 			}
 
 			fp := base64.StdEncoding.EncodeToString(out)
@@ -102,5 +102,5 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		return string(resp.Body()), nil
 	}
 
-	return "", fmt.Errorf("max hsw retry reached")
+	return "", fmt.Errorf("someone poop in the api and we got a shitty error")
 }

@@ -1,8 +1,8 @@
 package events
 
 type EventManager struct {
-	UserAgent, HcapVersion string
-	Fingerprint            *FpModel
+	UserAgent, HcapVersion, Href string
+	Fingerprint                  *FpModel
 }
 
 type FingerprintEvent struct {

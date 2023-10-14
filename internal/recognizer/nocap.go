@@ -274,6 +274,11 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 			utils.AppendLine(fmt.Sprintf("%s,%s,%d,%d", v["hash"], target, answer.Answers[i][0], answer.Answers[i][1]), "area_hash.csv")
 		}(i, v)
 
+		if i > len(answer.Answers) {
+			fmt.Println("doesn't got all answers")
+			break
+		}
+
 		ImMut.Lock()
 		out[v["key"]] = HashData{
 			Hash: v["hash"],
@@ -282,6 +287,11 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 		}
 		ImMut.Unlock()
 		i++
+
+		if i > len(answer.Answers) {
+			fmt.Println("doesn't got all answers")
+			break
+		}
 	}
 
 	return out, nil

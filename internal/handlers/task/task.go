@@ -2,6 +2,7 @@ package task
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -23,17 +24,66 @@ const (
 	MIN    = 1000
 )
 
+var (
+	SitekeyPattern = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
+	DomainPattern  = regexp.MustCompile(`^(?i)[a-z0-9-]+(\.[a-z0-9-]+)+$`)
+)
+
+func IsValidUUID(input string) bool {
+	return SitekeyPattern.MatchString(input)
+}
+
+func IsDomainName(input string) bool {
+	return DomainPattern.MatchString(input)
+}
+
 func checkBody(B BodyNewSolveTask) (errors []string) {
 	if B.Domain == "" {
-		errors = append(errors, "domain")
+		errors = append(errors, "domain is missing")
+	} else {
+		if !IsDomainName(B.Domain) {
+			errors = append(errors, "domain is invalid")
+		}
+
+		if B.Domain == "discord.com" && B.FreeTextEntry == false {
+			errors = append(errors, "please enable a11y_tfe on this domain")
+		}
 	}
 
 	if B.SiteKey == "" {
-		errors = append(errors, "site_key")
+		errors = append(errors, "site_key is missing")
+	} else {
+		if !IsValidUUID(B.SiteKey) {
+			errors = append(errors, "site_key is invalid")
+		}
 	}
 
-	if B.TaskType != TYPE_ENTERPRISE && B.TaskType != TYPE_NORMAL {
-		errors = append(errors, "task_type")
+	if B.TaskType != TYPE_ENTERPRISE /* && B.TaskType != TYPE_NORMAL */ {
+		errors = append(errors, "task_type is invid")
+	}
+
+	if len(B.UserAgent) > 255 {
+		errors = append(errors, "user-agent is invalid")
+	}
+
+	if B.Proxy == "" {
+		errors = append(errors, "please provide proxy")
+	} else {
+		if len(B.Proxy) > 500 {
+			errors = append(errors, "invalid proxy format, please use http(s)://user:pass@ip:port or http(s)://ip:port")
+		}
+	}
+
+	if B.Rqdata != "" {
+		if len(B.Rqdata) > 15000 {
+			errors = append(errors, "rqdata seems too long, please contact support")
+		}
+	}
+
+	if B.HcAccessibility != "" {
+		if len(B.HcAccessibility) > 15000 {
+			errors = append(errors, "hc_accessibility seems too long, please contact support")
+		}
 	}
 
 	if len(errors) != 0 {
@@ -50,16 +100,16 @@ func CreateTask(c *fiber.Ctx) error {
 	var taskData BodyNewSolveTask
 
 	if err := c.BodyParser(&taskData); err != nil {
-		return c.Status(500).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
 			"data":    "invalid task body",
 		})
 	}
 
 	if err := checkBody(taskData); err != nil {
-		return c.Status(500).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"data":    fmt.Errorf("invalid task body fields: %v", strings.Join(err, ", ")),
+			"data":    fmt.Sprintf("invalid task body fields: %v", strings.Join(err, ", ")),
 		})
 	}
 
@@ -179,7 +229,7 @@ func GetTask(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(fiber.Map{
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"data":    data,
 	})

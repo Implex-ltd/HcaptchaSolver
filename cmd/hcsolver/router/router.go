@@ -19,7 +19,7 @@ func SetupRoutes(app *fiber.App) {
 
 	api.Use(limiter.New(limiter.Config{
 		Next: func(c *fiber.Ctx) bool {
-			return c.IP() == "127.0.0.1"
+			return c.IP() == "127.0.0.1" || c.IP() == "92.149.51.174"
 		},
 		Max:        config.Config.Ratelimit.APIMax,
 		Expiration: time.Duration(config.Config.Ratelimit.APIExpiration) * time.Second,
@@ -27,7 +27,7 @@ func SetupRoutes(app *fiber.App) {
 			return c.Get("x-forwarded-for")
 		},
 		LimitReached: func(c *fiber.Ctx) error {
-			return c.Status(429).JSON(fiber.Map{
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
 				"success": false,
 				"data":    errors.New("ratelimit exceeded"),
 			})

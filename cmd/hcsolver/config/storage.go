@@ -70,11 +70,11 @@ func LoadSettings() {
 			zapcore.AddSync(colorable.NewColorableStdout()),
 			zapcore.DebugLevel,
 		),
-		zapcore.NewCore(
+		/*zapcore.NewCore(
 			zapcore.NewJSONEncoder(fileEncoder),
 			zapcore.AddSync(CreateLogFile()),
 			zapcore.DebugLevel,
-		),
+		),*/
 	)
 
 	Logger = zap.New(core)

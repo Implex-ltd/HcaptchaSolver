@@ -22,7 +22,7 @@ var (
 	WASM              = "1.40.7"
 )
 
-func NewFingerprintBuilder(useragent string) (*Builder, error) {
+func NewFingerprintBuilder(useragent, href string) (*Builder, error) {
 	fp, err := CollectFpArray.Next()
 	if err != nil {
 		panic(err)
@@ -41,6 +41,7 @@ func NewFingerprintBuilder(useragent string) (*Builder, error) {
 
 	return &Builder{
 		Manager: &events.EventManager{
+			Href:        href,
 			UserAgent:   useragent,
 			HcapVersion: VERSION,
 			Fingerprint: &data,
@@ -163,7 +164,7 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		FingerprintEvents:           B.Manager.BuildEvents(),
 		FingerprintSuspiciousEvents: []string{},
 		//Stamp:                       stamp,
-		Href: "https://discord.com",
+		Href: B.Manager.Href,
 		Errs: Errs{
 			List: []string{},
 		},
