@@ -10,4 +10,7 @@ func SetupTaskRoutes(router fiber.Router) {
 
 	user.Post("/new", taskHandler.CreateTask)
 	user.Get("/:taskId", taskHandler.GetTask)
+
+	misc := router.Group("/misc")
+	misc.Get("/check/:domainName", taskHandler.GetDomainSettings)
 }

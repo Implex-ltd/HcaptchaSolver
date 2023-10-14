@@ -8,6 +8,7 @@ import (
 
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
+	"github.com/Implex-ltd/hcsolver/internal/handlers/task/validator"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/model"
 	"github.com/surrealdb/surrealdb.go"
@@ -43,10 +44,6 @@ func checkBody(B BodyNewSolveTask) (errors []string) {
 	} else {
 		if !IsDomainName(B.Domain) {
 			errors = append(errors, "domain is invalid")
-		}
-
-		if B.Domain == "discord.com" && B.FreeTextEntry == false {
-			errors = append(errors, "please enable a11y_tfe on this domain")
 		}
 	}
 
@@ -113,6 +110,14 @@ func CreateTask(c *fiber.Ctx) error {
 		})
 	}
 
+	settings, err := validator.Validate(taskData.Domain)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    err.Error(),
+		})
+	}
+
 	switch taskData.Turbo {
 	case true:
 		if taskData.TurboSt < 1000 {
@@ -123,6 +128,25 @@ func CreateTask(c *fiber.Ctx) error {
 		}
 	case false:
 		taskData.TurboSt = SUBMIT
+	}
+
+	if settings != nil {
+		if settings.AlwaysText && !taskData.FreeTextEntry {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    fmt.Sprintf("bad config 'a11y_tfe' for the current domain '%s', please check required settings in documentation", taskData.Domain),
+			})
+		}
+
+		if taskData.Turbo {
+			if taskData.TurboSt < settings.MinSubmitTime || taskData.TurboSt > settings.MaxSubmitTime {
+				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+					"success": false,
+					"data":    fmt.Sprintf("bad config 'turbo_st' for the current domain '%s', please check required settings in documentation", taskData.Domain),
+				})
+			}
+		}
+
 	}
 
 	T, err := Newtask(&hcaptcha.Config{
@@ -233,4 +257,35 @@ func GetTask(c *fiber.Ctx) error {
 		"success": true,
 		"data":    data,
 	})
+}
+
+func GetDomainSettings(c *fiber.Ctx) error {
+	id := c.Params("domainName")
+
+	if !IsDomainName(id) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    "invalid domain",
+		})
+	}
+
+	settings, err := validator.Validate(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    err.Error(),
+		})
+	}
+
+	if settings == nil {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"success": true,
+			"data":    "this domain doesn't have any restrictions",
+		})
+	} else {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": true,
+			"data":    settings,
+		})
+	}
 }
