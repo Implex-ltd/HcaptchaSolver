@@ -22,6 +22,18 @@ func RandomNumber(a, b int) int {
 	return rand.Intn(b-a+1) + a
 }
 
+func RandomFloat64Precission(a, b float64, prec float64) float64 {
+	if a >= b {
+		panic("Invalid range: a must be less than b")
+	}
+
+	randomFloat := a + rand.Float64()*(b-a)
+	randomFloat *= prec
+	randomFloat = float64(int(randomFloat)) / prec
+
+	return randomFloat
+}
+
 func RandomFloat64(a, b float64) float64 {
 	if a >= b {
 		panic("Invalid range: a must be less than b")

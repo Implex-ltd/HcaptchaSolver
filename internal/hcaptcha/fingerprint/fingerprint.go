@@ -79,7 +79,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "2556339636007144308",
+			ParrentWindow: utils.RandomHash(19), //"2556339636007144308",
 		},
 		Misc: Misc{
 			UniqueKeys:    "platform,hcaptchaOnLoad,DiscordSentry,__localeData__,setImmediate,IntlPolyfill,0,GLOBAL_ENV,__timingFunction,grecaptcha,__OVERLAY__,_,__SENTRY__,clearImmediate,DiscordErrors,1,hcaptcha,__SECRET_EMOTION__,regeneratorRuntime,__BILLING_STANDALONE__,__sentry_instrumentation_handlers__,webpackChunkdiscord_app,__DISCORD_WINDOW_ID", //B.CollectedFp.Components.UniqueKeys,
@@ -102,10 +102,10 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		return nil, err
 	}
 
-	stamp, err := GetStamp(token.PowData)
+	/*stamp, err := GetStamp(token.PowData)
 	if err != nil {
 		return nil, fmt.Errorf("pow error")
-	}
+	}*/
 
 	V := strings.Split(token.Location, "https://newassets.hcaptcha.com/c/")
 	if len(V) == 1 {
@@ -122,7 +122,8 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			TimeoutValue:    int64(token.TimeoutValue),
 		},
 		Rand: []float64{
-			utils.RandomFloat64(0, 1),
+			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
+			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
 		},
 		Components: Components{
 			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
@@ -161,8 +162,8 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		},
 		FingerprintEvents:           B.Manager.BuildEvents(),
 		FingerprintSuspiciousEvents: []string{},
-		Stamp:                       stamp,
-		Href:                        "https://discord.com/invite/KzG7CycC",
+		//Stamp:                       stamp,
+		Href: "https://discord.com",
 		Errs: Errs{
 			List: []string{},
 		},
