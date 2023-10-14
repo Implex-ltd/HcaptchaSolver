@@ -301,8 +301,8 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			UserAgentData: UserAgentData{
 				Brands: []Brand{
 					{
-						Brand:   "Not/A)Brand",
-						Version: "8",
+						Brand:   "Not=A?Brand",
+						Version: "99",
 					},
 					{
 						Brand:   "Google Chrome",

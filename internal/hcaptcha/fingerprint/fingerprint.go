@@ -79,11 +79,11 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: utils.RandomHash(19), //"2556339636007144308",
+			ParrentWindow: "10998633144029387648",
 		},
 		Misc: Misc{
-			UniqueKeys:    "platform,hcaptchaOnLoad,DiscordSentry,__localeData__,setImmediate,IntlPolyfill,0,GLOBAL_ENV,__timingFunction,grecaptcha,__OVERLAY__,_,__SENTRY__,clearImmediate,DiscordErrors,1,hcaptcha,__SECRET_EMOTION__,regeneratorRuntime,__BILLING_STANDALONE__,__sentry_instrumentation_handlers__,webpackChunkdiscord_app,__DISCORD_WINDOW_ID", //B.CollectedFp.Components.UniqueKeys,
-			InvUniqueKeys: "image_label_binary,__wdata,localStorage,hsw,_sharedLibs,sessionStorage",
+			UniqueKeys:    "_,regeneratorRuntime,IntlPolyfill,__DISCORD_WINDOW_ID,2,__OVERLAY__,__sentry_instrumentation_handlers__,platform,__BILLING_STANDALONE__,clearImmediate,__timingFunction,hcaptcha,GLOBAL_ENV,__SENTRY__,webpackChunkdiscord_app,grecaptcha,0,__SECRET_EMOTION__,hcaptchaOnLoad,__localeData__,1,setImmediate,DiscordSentry,DiscordErrors",
+			InvUniqueKeys: "sessionStorage,_sharedLibs,image_label_binary,text_free_entry,__wdata,localStorage,hsw",
 		},
 	}
 
@@ -167,6 +167,7 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		Errs: Errs{
 			List: []string{},
 		},
+		StackData: []string{},
 		Perf: [][]int64{
 			{
 				1,

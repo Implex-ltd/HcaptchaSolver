@@ -6,17 +6,19 @@ package events
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
 func (B *EventManager) Event_604() FingerprintEvent {
 	event := B.Fingerprint.Events["702"].(map[string]interface{})
+	log.Println(B.Fingerprint.Browser.UserAgent)
 
 	return FingerprintEvent{
 		604,
 		Stringify([]interface{}{
 			B.Fingerprint.Browser.AppVersion,
-			B.UserAgent,
+			B.Fingerprint.Browser.UserAgent,
 			B.Fingerprint.Browser.DeviceMemory,
 			B.Fingerprint.Browser.HardwareConcurrency,
 			B.Fingerprint.Browser.Language,
@@ -25,7 +27,7 @@ func (B *EventManager) Event_604() FingerprintEvent {
 			nil,
 			[]interface{}{
 				fmt.Sprintf("Google Chrome %s", strings.Split(event["BrowserVersion"].(string), ".")[0]),
-				"Not;A=Brand 8",
+				"Not=A?Brand 99",
 				fmt.Sprintf("Chromium %s", strings.Split(event["BrowserVersion"].(string), "."))[0],
 			},
 			B.Fingerprint.Browser.Mobile,
@@ -33,14 +35,16 @@ func (B *EventManager) Event_604() FingerprintEvent {
 			B.Fingerprint.Properties.MIMETypes,
 			B.Fingerprint.Properties.Plugins,
 			B.Fingerprint.Browser.PDFViewerEnabled,
-			false,
-			50,
-			false,
-			false,
-			true,
+
+			B.Fingerprint.Connection.DownlinkMax, // "downlinkMax" in navigator.connection,
+			B.Fingerprint.Connection.Rtt,         // null == navigator.connection ? void 0 : navigator.connection.rtt,
+			false,                                // navigator.webdriver,
+			false,                                // null === (result = window.clientInformation) || void 0 === result ? void 0 : result.webdriver,
+			true,                                 // "share" in navigator,
+
 			"[object Keyboard]",
-			strings.Contains(strings.ToLower(B.UserAgent), "brave"),
-			strings.Contains(strings.ToLower(B.UserAgent), "duckduckgo"),
+			strings.Contains(strings.ToLower(B.Fingerprint.Browser.UserAgent), "brave"),
+			strings.Contains(strings.ToLower(B.Fingerprint.Browser.UserAgent), "duckduckgo"),
 		}),
 	}
 }

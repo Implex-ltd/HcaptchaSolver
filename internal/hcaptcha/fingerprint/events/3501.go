@@ -10,11 +10,11 @@ func (B *EventManager) Event_3501() FingerprintEvent {
 	return FingerprintEvent{
 		3501,
 		Stringify([]interface{}{
-			[]interface{}{
+			/*[]interface{}{
 				"img:imgs.hcaptcha.com",
 				0,
 				utils.RandomFloat64(20, 60),
-			},
+			},*/
 			[]interface{}{
 				"navigation:newassets.hcaptcha.com",
 				utils.RandomFloat64(10, 50),

@@ -14,10 +14,16 @@ type FpModel struct {
 	Hash       map[string]any         `json:"hash"`
 	Properties Properties             `json:"properties"`
 	Browser    Browser                `json:"browser"`
+	Connection Connection             `json:"connection"`
 	Timezone   []interface{}          `json:"timezone"`
 	Screen     map[string]interface{} `json:"screen"`
 	Webgl      Webgl                  `json:"webgl"`
 	Events     map[string]interface{} `json:"events"`
+}
+
+type Connection struct {
+	DownlinkMax bool    `json:"downlinkMax"`
+	Rtt         float64 `json:"rtt"`
 }
 
 type Properties struct {

@@ -29,7 +29,7 @@ type Ndata struct {
 	Components                  Components      `json:"components"`
 	FingerprintEvents           [][]interface{} `json:"fingerprint_events"`
 	Messages                    interface{}     `json:"messages"`
-	StackData                   interface{}     `json:"stack_data"`
+	StackData                   []string        `json:"stack_data"`
 	FingerprintSuspiciousEvents []string        `json:"fingerprint_suspicious_events"`
 	Stamp                       string          `json:"stamp"`
 	Errs                        Errs            `json:"errs"`
