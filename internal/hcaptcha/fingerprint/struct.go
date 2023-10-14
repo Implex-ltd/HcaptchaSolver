@@ -1,10 +1,6 @@
 package fingerprint
 
-type Builder struct {
-	UserAgent, HcapVersion string
-	CollectedFp                        *NdataCollect
-	Profile                            *Profile
-}
+import "github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint/events"
 
 type Profile struct {
 	UserAgent string
@@ -14,28 +10,22 @@ type Profile struct {
 	Misc      Misc
 }
 
+type Builder struct {
+	Manager *events.EventManager
+	Profile *Profile
+}
+
 type Misc struct {
-	HasTouch, Chrome, Mobile, PDFViewerEnabled               bool
-	UniqueKeys, InvUniqueKeys                                string
-	DeviceMemory, HardwareConcurrency                        int
-	ChromeVersion, Os, Arch, CPU, BrowserVersion, AppVersion string
-	Vendor, Renderer                                         string
+	UniqueKeys, InvUniqueKeys string
 }
 
 type Hash struct {
 	Performance, Canvas, WebGL, WebRTC, Audio, ParrentWindow string
 }
 
-type NdataCollect struct {
-	FingerprintEvents []interface{} `json:"fingerprint_events"`
-	Components        Components    `json:"components"`
-	Errs              Errs          `json:"errs"`
-	Perf              [][]int64     `json:"perf"`
-	ParsedEvents      map[int]interface{}
-}
-
 type Ndata struct {
 	ProofSpec                   ProofSpec       `json:"proof_spec"`
+	Rand                        []float64       `json:"rand"`
 	Components                  Components      `json:"components"`
 	FingerprintEvents           [][]interface{} `json:"fingerprint_events"`
 	Messages                    interface{}     `json:"messages"`
@@ -43,6 +33,7 @@ type Ndata struct {
 	FingerprintSuspiciousEvents []string        `json:"fingerprint_suspicious_events"`
 	Stamp                       string          `json:"stamp"`
 	Errs                        Errs            `json:"errs"`
+	Href                        string          `json:"href"`
 	Perf                        [][]int64       `json:"perf"`
 }
 
@@ -63,7 +54,7 @@ type Components struct {
 	ErrFirefox                interface{} `json:"err_firefox"`
 	RBotScore                 int64       `json:"r_bot_score"`
 	RBotScoreSuspiciousKeys   []string    `json:"r_bot_score_suspicious_keys"`
-	RBotScore2                int64       `json:"r_bot_score_2"`
+	RBotScore2                int64       `json:"r_bot_scorevents"`
 	AudioHash                 string      `json:"audio_hash"`
 	Extensions                []bool      `json:"extensions"`
 	ParentWinHash             string      `json:"parent_win_hash"`
@@ -87,19 +78,19 @@ type Navigator struct {
 	Language                    string      `json:"language"`
 	Languages                   []string    `json:"languages"`
 	Platform                    string      `json:"platform"`
-	MaxTouchPoints              int64       `json:"max_touch_points"`
+	MaxTouchPoints              float64     `json:"max_touch_points"`
 	Webdriver                   bool        `json:"webdriver"`
 	NotificationQueryPermission interface{} `json:"notification_query_permission"`
 	PluginsUndefined            bool        `json:"plugins_undefined"`
 }
 
 type Screen struct {
-	ColorDepth  int64 `json:"color_depth"`
-	PixelDepth  int64 `json:"pixel_depth"`
-	Width       int64 `json:"width"`
-	Height      int64 `json:"height"`
-	AvailWidth  int64 `json:"avail_width"`
-	AvailHeight int64 `json:"avail_height"`
+	ColorDepth  float64 `json:"color_depth"`
+	PixelDepth  float64 `json:"pixel_depth"`
+	Width       float64 `json:"width"`
+	Height      float64 `json:"height"`
+	AvailWidth  float64 `json:"avail_width"`
+	AvailHeight float64 `json:"avail_height"`
 }
 
 type Errs struct {
@@ -113,9 +104,4 @@ type ProofSpec struct {
 	Data            string `json:"data"`
 	Location        string `json:"_location"`
 	TimeoutValue    int64  `json:"timeout_value"`
-}
-
-type FingerprintEvent struct {
-	EventID int64
-	Value   string
 }

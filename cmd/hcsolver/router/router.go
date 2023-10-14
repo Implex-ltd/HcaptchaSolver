@@ -29,7 +29,6 @@ func SetupRoutes(app *fiber.App) {
 		LimitReached: func(c *fiber.Ctx) error {
 			return c.Status(429).JSON(fiber.Map{
 				"success": false,
-				"message": "ratelimit exceeded",
 				"data":    errors.New("ratelimit exceeded"),
 			})
 		},

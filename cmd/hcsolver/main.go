@@ -11,15 +11,6 @@ import (
 	"github.com/surrealdb/surrealdb.go"
 )
 
-/*
-	addr, err := utils.Lookup("158.46.169.117")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(addr)
-*/
-
 type Fingerprint struct {
 	ID          string `json:"id,omitempty"`
 	Fingerprint string `json:"fp"`

@@ -20,16 +20,16 @@ import (
 	"time"
 )
 
-// StampHash provides an implementation of hashcash v1.
+const dateFormat = "2006-01-02"
+
 type StampHash struct {
-	hasher  hash.Hash // SHA-1
-	bits    uint      // Number of zero bits
-	zeros   uint      // Number of zero digits
-	saltLen uint      // Random salt length
-	extra   string    // Extension to add to the minted stamp
+	hasher  hash.Hash
+	bits    uint
+	zeros   uint
+	saltLen uint
+	extra   string
 }
 
-// New creates a new Hash with specified options.
 func New(bits uint, saltLen uint, extra string) *StampHash {
 	h := &StampHash{
 		hasher:  sha1.New(),
@@ -40,15 +40,10 @@ func New(bits uint, saltLen uint, extra string) *StampHash {
 	return h
 }
 
-// NewStd creates a new Hash with 2 bits of collision and 8 bytes of salt chars.
 func NewStd() *StampHash {
 	return New(2, 8, "")
 }
 
-// Date field format
-const dateFormat = "2006-01-02"
-
-// Mint a new hashcash stamp for resource.
 func (h *StampHash) Mint(resource string) (string, error) {
 	salt, err := h.getSalt()
 	if err != nil {
@@ -67,7 +62,6 @@ func (h *StampHash) Mint(resource string) (string, error) {
 	}
 }
 
-// Check whether a hashcash stamp is valid.
 func (h *StampHash) Check(stamp string) bool {
 	if h.checkDate(stamp) {
 		return h.checkZeros(stamp)
@@ -75,7 +69,6 @@ func (h *StampHash) Check(stamp string) bool {
 	return false
 }
 
-// CheckNoDate checks whether a hashcash stamp is valid ignoring date.
 func (h *StampHash) CheckNoDate(stamp string) bool {
 	return h.checkZeros(stamp)
 }

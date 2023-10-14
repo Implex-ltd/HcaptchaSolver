@@ -1,6 +1,8 @@
 package task
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
@@ -17,26 +19,55 @@ const (
 	TYPE_ENTERPRISE = 0
 	TYPE_NORMAL     = 1
 
-	SUBMIT = 5000
+	SUBMIT = 7000
+	MIN    = 1000
 )
+
+func checkBody(B BodyNewSolveTask) (errors []string) {
+	if B.Domain == "" {
+		errors = append(errors, "domain")
+	}
+
+	if B.SiteKey == "" {
+		errors = append(errors, "site_key")
+	}
+
+	if B.TaskType != TYPE_ENTERPRISE && B.TaskType != TYPE_NORMAL {
+		errors = append(errors, "task_type")
+	}
+
+	if len(errors) != 0 {
+		return errors
+	}
+
+	return nil
+}
 
 func CreateTask(c *fiber.Ctx) error {
 	db := database.TaskDB
 	task := new(model.Task)
 
 	var taskData BodyNewSolveTask
-	err := c.BodyParser(&taskData)
-	if err != nil {
-		config.Logger.Error("error-CreateTask", zap.Error(err))
+
+	if err := c.BodyParser(&taskData); err != nil {
 		return c.Status(500).JSON(fiber.Map{
-			"message": "Review your input",
-			"data":    err.Error(),
-			"status":  "error",
+			"success": false,
+			"data":    "invalid task body",
+		})
+	}
+
+	if err := checkBody(taskData); err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"data":    fmt.Errorf("invalid task body fields: %v", strings.Join(err, ", ")),
 		})
 	}
 
 	switch taskData.Turbo {
 	case true:
+		if taskData.TurboSt < 1000 {
+			taskData.TurboSt = 1000
+		}
 		if taskData.TurboSt > 10000 {
 			taskData.TurboSt = 10000
 		}
@@ -61,11 +92,9 @@ func CreateTask(c *fiber.Ctx) error {
 	})
 
 	if err := T.Create(); err != nil {
-		config.Logger.Error("error-T.Create", zap.Error(err))
 		return c.Status(500).JSON(fiber.Map{
-			"status":  "error",
-			"message": "could not create new task",
-			"data":    err.Error(),
+			"success": false,
+			"data":    fmt.Sprintf("could not create new task: %v", err.Error()),
 		})
 	}
 
@@ -74,14 +103,23 @@ func CreateTask(c *fiber.Ctx) error {
 
 	data, err := db.Create("task", task)
 	if err != nil {
-		config.Logger.Error("error-", zap.Error(err))
-		panic(err)
+		config.Logger.Error("db-error", zap.Error(err))
+
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"data":    fmt.Sprintf("db error (please report to admin): %v", err.Error()),
+		})
 	}
 
 	createTask := make([]model.Task, 1)
 	err = surrealdb.Unmarshal(data, &createTask)
 	if err != nil {
-		panic(err)
+		config.Logger.Error("db-error", zap.Error(err))
+
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"data":    fmt.Sprintf("db error (please report to admin): %v", err.Error()),
+		})
 	}
 
 	go func(task *model.Task) {
@@ -95,8 +133,8 @@ func CreateTask(c *fiber.Ctx) error {
 			task.Error = err.Error()
 
 			if _, err = db.Change(createTask[0].ID, task); err != nil {
-				config.Logger.Error("error-db.Change", zap.Error(err))
-				panic(err)
+				config.Logger.Error("db-error", zap.Error(err))
+				return
 			}
 
 			go func() {
@@ -112,8 +150,9 @@ func CreateTask(c *fiber.Ctx) error {
 		task.Token = captcha.GeneratedPassUUID
 		task.Expiration = captcha.Expiration
 
-		if _, err = db.Update(createTask[0].ID, task); err != nil {
-			panic(err)
+		if _, err := db.Update(createTask[0].ID, task); err != nil {
+			config.Logger.Error("db-error", zap.Error(err))
+			return
 		}
 
 		go func() {
@@ -123,7 +162,6 @@ func CreateTask(c *fiber.Ctx) error {
 	}(task)
 
 	return c.Status(200).JSON(fiber.Map{
-		"message": "Created task",
 		"success": true,
 		"data":    data,
 	})
@@ -136,15 +174,13 @@ func GetTask(c *fiber.Ctx) error {
 	if err != nil {
 		config.Logger.Error("error-GetTask", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  "error",
-			"message": err.Error(),
+			"success": false,
 			"data":    err.Error(),
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "task Found",
+		"success": true,
 		"data":    data,
 	})
 }

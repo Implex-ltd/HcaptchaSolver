@@ -1,17 +1,4 @@
-# **Hcaptcha enterprise challenge solver**
-
-## Hsw endpoint
-
-```
-- Enterprise HSW
-	port: 1234
-	endpoint: /n
-	body: {"jwt": "req.."}
-		
-- Normal HSW
-	port: 4321
-	endpoint: /n?req=jwt	
-```
+# **Crapsolver backend API**
 
 ## **Running SurrealDB**
 
@@ -25,3 +12,7 @@ docker run --rm --pull always -p 8000:8000 -v /mydata:/mydata surrealdb/surreald
 ```
 surreal.exe start --user root --pass root --bind 0.0.0.0:8080 file:mydatabase.db
 ```
+
+## Todo
+
+- `Event 604` add connection

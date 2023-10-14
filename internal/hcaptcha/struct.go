@@ -39,13 +39,8 @@ type Hcap struct {
 	GetProcessing        time.Duration
 	SiteConfigProcessing time.Duration
 
-	// ip
-	//Infos *utils.IpInfos
-
-	Logger *zap.Logger
-
-	// ndata spoofing
-	ChallengeFingerprint *fingerprint.Builder
+	Logger  *zap.Logger
+	Manager *fingerprint.Builder
 }
 
 type Motion struct {
@@ -174,7 +169,9 @@ type CheckData struct {
 }
 
 type GetData struct {
-	St int64 `json:"st"`
+	St       int64    `json:"st"`
+	V        int64    `json:"v"`
+	TopLevel TopLevel `json:"topLevel"`
 
 	Mm   [][]int64 `json:"mm"`
 	MmMp float64   `json:"mm-mp"`
@@ -184,9 +181,6 @@ type GetData struct {
 
 	Mu   [][]int64 `json:"mu"`
 	MuMp float64   `json:"mu-mp"`
-
-	V        int64    `json:"v"`
-	TopLevel TopLevel `json:"topLevel"`
 
 	Session    []string `json:"session"`
 	WidgetList []string `json:"widgetList"`
@@ -216,6 +210,7 @@ type TopLevel struct {
 	//MdMp int64     `json:"md-mp"`
 	//Mu   [][]int64 `json:"mu"`
 	//MuMp int64     `json:"mu-mp"`
+	//Lpt int64 `json:"lpt"`
 }
 
 type Nv struct {
@@ -228,7 +223,7 @@ type Nv struct {
 	VendorSub              string        `json:"vendorSub"`
 	ProductSub             string        `json:"productSub"`
 	Vendor                 string        `json:"vendor"`
-	MaxTouchPoints         int64         `json:"maxTouchPoints"`
+	MaxTouchPoints         float64         `json:"maxTouchPoints"`
 	Scheduling             Empty         `json:"scheduling"`
 	UserActivation         Empty         `json:"userActivation"`
 	DoNotTrack             interface{}   `json:"doNotTrack"`

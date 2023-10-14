@@ -11,10 +11,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var (
-	hsj = false
-)
-
 func Newtask(config *hcaptcha.Config) (*HcaptchaTask, error) {
 	T := HcaptchaTask{
 		Status: TaskStatus{
@@ -54,7 +50,7 @@ func (T *HcaptchaTask) Create() error {
 func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 	st := time.Now()
 
-	site, err := T.Captcha.CheckSiteConfig(hsj)
+	site, err := T.Captcha.CheckSiteConfig()
 	if err != nil {
 		return nil, err
 	}
@@ -63,16 +59,7 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		return nil, fmt.Errorf("checksiteconfig wont pass")
 	}
 
-	if hsj {
-		captcha, err := T.Captcha.GetChallenge(site, hsj)
-		if err != nil {
-			return nil, err
-		}
-
-		site.C = captcha.C
-	}
-
-	captcha, err := T.Captcha.GetChallenge(site, false)
+	captcha, err := T.Captcha.GetChallenge(site)
 	if err != nil {
 		return nil, err
 	}

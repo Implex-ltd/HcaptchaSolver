@@ -7,12 +7,13 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
+
 	"regexp"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 	"github.com/cespare/xxhash"
 	"github.com/zenthangplus/goccm"
 )
@@ -276,7 +277,6 @@ func (R *Recognizer) LabelBinary() (*SolveResponse, error) {
 }
 
 func (R *Recognizer) HashExistSelect(hashString string) (*HashData, error) {
-	// Load the Selectlist value for the target prompt.
 	value, _ := Selectlist.Load(R.Target)
 
 	if value != nil {
@@ -288,7 +288,6 @@ func (R *Recognizer) HashExistSelect(hashString string) (*HashData, error) {
 		}
 	}
 
-	// Iterate over the sync.Map to check other prompts.
 	Selectlist.Range(func(key, value interface{}) bool {
 		prompt := key.(string)
 		if prompt != R.Target {
@@ -466,19 +465,15 @@ func (R *Recognizer) TextFreeEntry() (*SolveResponse, error) {
 		if ok {
 			res = val.(string)
 		} else {
-			file, err := os.OpenFile("../../assets/nop.txt", os.O_APPEND|os.O_WRONLY, 0644)
-			if err != nil {
-				return nil, err
-			}
-			defer file.Close()
-
-			file.WriteString(fmt.Sprintf("%s|%s", question, res+"\n"))
+			utils.AppendLine(fmt.Sprintf("%s|%s", question, res), "nop.txt")
 		}
 
 		answers[questions.TaskKey] = AnswerStruct{
 			Text: res,
 		}
 	}
+
+	// Todo: check if yes/yes/no or no/no/yes
 
 	return &SolveResponse{
 		Success: true,

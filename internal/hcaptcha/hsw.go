@@ -12,8 +12,7 @@ import (
 )
 
 var (
-	ENTERPRISE_ADDR = "http://127.0.0.1:1234"
-	NORMAL_ADDR     = "http://127.0.0.1:4321"
+	NORMAL_ADDR = "http://127.0.0.1:4321"
 )
 
 var (
@@ -22,7 +21,7 @@ var (
 )
 
 var (
-	cc = goccm.New(700)
+	cc = goccm.New(1500)
 
 	readTimeout, _  = time.ParseDuration("15s")
 	writeTimeout, _ = time.ParseDuration("15s")
@@ -60,44 +59,48 @@ var (
 )
 
 func (c *Hcap) GetHsw(jwt string) (string, error) {
-	req := fasthttp.AcquireRequest()
+	for i := 0; i < 3; i++ {
+		req := fasthttp.AcquireRequest()
 
-	switch c.Config.TaskType {
-	case TASKTYPE_ENTERPRISE:
-		n, err := c.ChallengeFingerprint.Build(jwt)
-		if err != nil {
-			return "", err
+		switch c.Config.TaskType {
+		case TASKTYPE_ENTERPRISE:
+			n, err := c.Manager.Build(jwt)
+			if err != nil {
+				return "", err
+			}
+
+			out, err := json.Marshal(n)
+			if err != nil {
+				panic(err)
+			}
+
+			fp := base64.StdEncoding.EncodeToString(out)
+
+			end, _ := Endpoints.Next()
+			req.Header.SetMethod(fasthttp.MethodPost)
+			req.Header.SetContentTypeBytes(headerContentTypeJson)
+			req.SetRequestURI(fmt.Sprintf("%s/n", end))
+			req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s", "fp": "%s"}`, jwt, fp)))
+		case TASKTYPE_NORMAL:
+			req.Header.SetMethod(fasthttp.MethodGet)
+			req.SetRequestURI(fmt.Sprintf("%s/n?req=%s", NORMAL_ADDR, jwt))
 		}
 
-		out, err := json.Marshal(n)
+		resp := fasthttp.AcquireResponse()
+
+		cc.Wait()
+		err := Client.Do(req, resp)
+		cc.Done()
+
+		fasthttp.ReleaseRequest(req)
+		defer fasthttp.ReleaseResponse(resp)
+
 		if err != nil {
-			panic(err)
+			continue
 		}
 
-		fp := base64.StdEncoding.EncodeToString(out)
-
-		end, _ := Endpoints.Next()
-		req.Header.SetMethod(fasthttp.MethodPost)
-		req.Header.SetContentTypeBytes(headerContentTypeJson)
-		req.SetRequestURI(fmt.Sprintf("%s/n", end))
-		req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s", "fp": "%s"}`, jwt, fp)))
-	case TASKTYPE_NORMAL:
-		req.Header.SetMethod(fasthttp.MethodGet)
-		req.SetRequestURI(fmt.Sprintf("%s/n?req=%s", NORMAL_ADDR, jwt))
+		return string(resp.Body()), nil
 	}
 
-	resp := fasthttp.AcquireResponse()
-
-	cc.Wait()
-	err := Client.Do(req, resp)
-	cc.Done()
-
-	fasthttp.ReleaseRequest(req)
-	defer fasthttp.ReleaseResponse(resp)
-
-	if err != nil {
-		return "", err
-	}
-
-	return string(resp.Body()), nil
+	return "", fmt.Errorf("max hsw retry reached")
 }

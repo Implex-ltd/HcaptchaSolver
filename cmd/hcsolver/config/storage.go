@@ -122,7 +122,7 @@ func LoadSettings() {
 
 	recognizer.LoadAnswer("../../assets/questions.txt")
 
-	// hsw client
+	// recognizer http client
 	t := http.DefaultTransport.(*http.Transport).Clone()
 	t.MaxIdleConns = 500
 	t.MaxConnsPerHost = 500

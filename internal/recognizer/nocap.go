@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"sync"
 	"time"
+
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 var (
@@ -131,14 +132,7 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 				}
 
 				Hashlist.Store(target, updatedValue)
-
-				file, err := os.OpenFile("../../assets/hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
-				if err != nil {
-					return
-				}
-				defer file.Close()
-
-				file.WriteString(fmt.Sprintf("%s,%s", v["hash"], target) + "\n")
+				utils.AppendLine(fmt.Sprintf("%s,%s", v["hash"], target), "hash.csv")
 			} else {
 				SmMut.Lock()
 				defer SmMut.Unlock()
@@ -152,14 +146,7 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 				}
 
 				Hashlist.Store(target, updatedValue)
-
-				file, err := os.OpenFile("../../assets/hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
-				if err != nil {
-					return
-				}
-				defer file.Close()
-
-				file.WriteString(fmt.Sprintf("%s,not_%s", v["hash"], target) + "\n")
+				utils.AppendLine(fmt.Sprintf("%s,not_%s", v["hash"], target), "hash.csv")
 			}
 		}(v)
 
@@ -284,13 +271,7 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 			}
 			Selectlist.Store(target, updatedValue)
 
-			file, err := os.OpenFile("../../assets/area_hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
-			if err != nil {
-				return
-			}
-			defer file.Close()
-
-			file.WriteString(fmt.Sprintf("%s,%s,%d,%d", v["hash"], target, answer.Answers[i][0], answer.Answers[i][1]) + "\n")
+			utils.AppendLine(fmt.Sprintf("%s,%s,%d,%d", v["hash"], target, answer.Answers[i][0], answer.Answers[i][1]), "area_hash.csv")
 		}(i, v)
 
 		ImMut.Lock()

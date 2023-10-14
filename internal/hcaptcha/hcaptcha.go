@@ -10,6 +10,7 @@ import (
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 const (
@@ -44,11 +45,11 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 	}
 
 	return &Hcap{
-		Fingerprint:          fp,
-		Config:               config,
-		Http:                 c,
-		Logger:               config.Logger,
-		ChallengeFingerprint: builder,
+		Fingerprint: fp,
+		Config:      config,
+		Http:        c,
+		Logger:      config.Logger,
+		Manager:     builder,
 	}, nil
 }
 
@@ -64,28 +65,18 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 	infos := cleanhttp.ParseUserAgent(config.UserAgent)
 
 	fp.Navigator.UserAgent = config.UserAgent
-	fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1] // can crash
+	fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1]
 	fp.Navigator.Platform = infos.OSName
-
-	// get ipinfos
-	/*if config.Proxy != "" {
-		infos, err := utils.Lookup(Address)
-
-	}*/
 
 	return fp, nil
 }
 
-func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
+func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
 	st := time.Now()
-	swa := "1"
-	if hsw {
-		swa = "0"
-	}
 
 	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=1", fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey, swa),
+		Url:    fmt.Sprintf("https://%shcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=1", utils.RandomElementString([]string{"api2.", ""}), fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey),
 		Header: c.HeaderCheckSiteConfig(),
 	})
 	c.SiteConfigProcessing = time.Since(st)
@@ -109,19 +100,17 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 	return &config, nil
 }
 
-func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
+func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 	var pow string
 	var err error
 
 	st := time.Now()
 
-	pow = "fail"
-	if !hsj {
-		pow, err = c.GetHsw(config.C.Req)
-		if err != nil {
-			return nil, err
-		}
+	pow, err = c.GetHsw(config.C.Req)
+	if err != nil {
+		return nil, err
 	}
+
 	c.AnswerProcessing = time.Since(st)
 
 	pdc, _ := json.Marshal(&Pdc{

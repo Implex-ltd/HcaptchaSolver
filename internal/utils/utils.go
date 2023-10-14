@@ -1,12 +1,17 @@
 package utils
 
-import "math/rand"
+import (
+	"fmt"
+	"math/rand"
+	"os"
+)
 
 const (
 	charset      = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	hash_charset = "0123456789"
 
 	precision = 10000000000000.0
+	basePath  = "../../assets"
 )
 
 func RandomNumber(a, b int) int {
@@ -55,4 +60,18 @@ func RandomElementInt(slice []int) int {
 func RandomElementString(slice []string) string {
 	index := rand.Intn(len(slice))
 	return slice[index]
+}
+
+func AppendLine(text, fileName string) error {
+	file, err := os.OpenFile(fmt.Sprintf("%s/%s", basePath, fileName), os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	if _, err := file.WriteString(text + "\n"); err != nil {
+		return err
+	}
+
+	return nil
 }
