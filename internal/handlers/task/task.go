@@ -1,10 +1,14 @@
 package task
 
 import (
+	"fmt"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
+	"github.com/Implex-ltd/hcsolver/internal/handlers/task/validator"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/model"
 	"github.com/surrealdb/surrealdb.go"
@@ -17,31 +21,153 @@ const (
 	TYPE_ENTERPRISE = 0
 	TYPE_NORMAL     = 1
 
-	SUBMIT = 5000
+	SUBMIT = 7000
+	MIN    = 1000
 )
 
+var (
+	SitekeyPattern = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
+	DomainPattern  = regexp.MustCompile(`^(?i)[a-z0-9-]+(\.[a-z0-9-]+)+$`)
+)
+
+func IsValidUUID(input string) bool {
+	return SitekeyPattern.MatchString(input)
+}
+
+func IsDomainName(input string) bool {
+	return DomainPattern.MatchString(input)
+}
+
+func checkBody(B BodyNewSolveTask) (errors []string) {
+	if B.Domain == "" {
+		errors = append(errors, "domain is missing")
+	} else {
+		if !IsDomainName(B.Domain) {
+			errors = append(errors, "domain is invalid")
+		}
+	}
+
+	if B.SiteKey == "" {
+		errors = append(errors, "site_key is missing")
+	} else {
+		if !IsValidUUID(B.SiteKey) {
+			errors = append(errors, "site_key is invalid")
+		}
+	}
+
+	if B.TaskType != TYPE_ENTERPRISE /* && B.TaskType != TYPE_NORMAL */ {
+		errors = append(errors, "task_type is invid")
+	}
+
+	if len(B.UserAgent) > 255 {
+		errors = append(errors, "user-agent is invalid")
+	}
+
+	if B.Proxy == "" {
+		errors = append(errors, "please provide proxy")
+	} else {
+		if len(B.Proxy) > 500 {
+			errors = append(errors, "invalid proxy format, please use http(s)://user:pass@ip:port or http(s)://ip:port")
+		}
+	}
+
+	if B.Rqdata != "" {
+		if len(B.Rqdata) > 15000 {
+			errors = append(errors, "rqdata seems too long, please contact support")
+		}
+	}
+
+	if B.HcAccessibility != "" {
+		if len(B.HcAccessibility) > 15000 {
+			errors = append(errors, "hc_accessibility seems too long, please contact support")
+		}
+	}
+
+	if len(errors) != 0 {
+		return errors
+	}
+
+	return nil
+}
+
 func CreateTask(c *fiber.Ctx) error {
-	db := database.DB
+	db := database.TaskDB
 	task := new(model.Task)
 
 	var taskData BodyNewSolveTask
-	err := c.BodyParser(&taskData)
+
+	if err := c.BodyParser(&taskData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    "invalid task body",
+		})
+	}
+
+	if err := checkBody(taskData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    fmt.Sprintf("invalid task body fields: %v", strings.Join(err, ", ")),
+		})
+	}
+
+	settings, err := validator.Validate(taskData.SiteKey)
 	if err != nil {
-		config.Logger.Error("error-CreateTask", zap.Error(err))
-		return c.Status(500).JSON(fiber.Map{
-			"message": "Review your input",
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
 			"data":    err.Error(),
-			"status":  "error",
 		})
 	}
 
 	switch taskData.Turbo {
 	case true:
+		if taskData.TurboSt < 1000 {
+			taskData.TurboSt = 1000
+		}
 		if taskData.TurboSt > 10000 {
 			taskData.TurboSt = 10000
 		}
 	case false:
 		taskData.TurboSt = SUBMIT
+	}
+
+	if settings != nil {
+		if !settings.Enabled {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    "this site-key is disabled, please contact support",
+			})
+		}
+
+		if settings.AlwaysText && !taskData.FreeTextEntry {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    fmt.Sprintf("bad config 'a11y_tfe' for the current domain '%s', please check required settings using '/api/misc/check/%s'", taskData.Domain, taskData.Domain),
+			})
+		}
+
+		if taskData.Turbo {
+			if taskData.TurboSt < settings.MinSubmitTime || taskData.TurboSt > settings.MaxSubmitTime {
+				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+					"success": false,
+					"data":    fmt.Sprintf("bad config 'turbo_st' for the current domain '%s', please check required settings using '/api/misc/check/%s'", taskData.Domain, taskData.Domain),
+				})
+			}
+		}
+
+		if !taskData.OneclickOnly && settings.OneclickOnly {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    fmt.Sprintf("bad config 'oneclick_only' for the current domain '%s', please check required settings using '/api/misc/check/%s'", taskData.Domain, taskData.Domain),
+			})
+		}
+
+		if taskData.Domain != settings.Domain {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    "domain doesn't match the site-key",
+			})
+		}
+
 	}
 
 	T, err := Newtask(&hcaptcha.Config{
@@ -57,14 +183,13 @@ func CreateTask(c *fiber.Ctx) error {
 		TurboSt:         taskData.TurboSt,
 		HcAccessibility: taskData.HcAccessibility,
 		OneClick:        taskData.OneclickOnly,
+		Rqdata:          taskData.Rqdata,
 	})
 
 	if err := T.Create(); err != nil {
-		config.Logger.Error("error-T.Create", zap.Error(err))
 		return c.Status(500).JSON(fiber.Map{
-			"status":  "error",
-			"message": "could not create new task",
-			"data":    err.Error(),
+			"success": false,
+			"data":    fmt.Sprintf("could not create new task: %v", err.Error()),
 		})
 	}
 
@@ -73,14 +198,23 @@ func CreateTask(c *fiber.Ctx) error {
 
 	data, err := db.Create("task", task)
 	if err != nil {
-		config.Logger.Error("error-", zap.Error(err))
-		panic(err)
+		config.Logger.Error("db-error", zap.Error(err))
+
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"data":    fmt.Sprintf("db error (please report to admin): %v", err.Error()),
+		})
 	}
-	
+
 	createTask := make([]model.Task, 1)
 	err = surrealdb.Unmarshal(data, &createTask)
 	if err != nil {
-		panic(err)
+		config.Logger.Error("db-error", zap.Error(err))
+
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"data":    fmt.Sprintf("db error (please report to admin): %v", err.Error()),
+		})
 	}
 
 	go func(task *model.Task) {
@@ -92,15 +226,15 @@ func CreateTask(c *fiber.Ctx) error {
 			task.Status = STATUS_ERROR
 			task.Success = false
 			task.Error = err.Error()
-			
+
 			if _, err = db.Change(createTask[0].ID, task); err != nil {
-				config.Logger.Error("error-db.Change", zap.Error(err))
-				panic(err)
+				config.Logger.Error("db-error", zap.Error(err))
+				return
 			}
 
 			go func() {
 				time.Sleep(120 * time.Second)
-				database.DB.Delete(createTask[0].ID)
+				database.TaskDB.Delete(createTask[0].ID)
 			}()
 
 			return
@@ -111,18 +245,18 @@ func CreateTask(c *fiber.Ctx) error {
 		task.Token = captcha.GeneratedPassUUID
 		task.Expiration = captcha.Expiration
 
-		if _, err = db.Change(createTask[0].ID, task); err != nil {
-			panic(err)
+		if _, err := db.Update(createTask[0].ID, task); err != nil {
+			config.Logger.Error("db-error", zap.Error(err))
+			return
 		}
 
 		go func() {
 			time.Sleep(time.Duration(task.Expiration) * time.Second)
-			database.DB.Delete(createTask[0].ID)
+			database.TaskDB.Delete(createTask[0].ID)
 		}()
 	}(task)
 
 	return c.Status(200).JSON(fiber.Map{
-		"message": "Created task",
 		"success": true,
 		"data":    data,
 	})
@@ -131,19 +265,48 @@ func CreateTask(c *fiber.Ctx) error {
 func GetTask(c *fiber.Ctx) error {
 	id := c.Params("taskId")
 
-	data, err := database.DB.Select(id)
+	data, err := database.TaskDB.Select(id)
 	if err != nil {
 		config.Logger.Error("error-GetTask", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  "error",
-			"message": err.Error(),
+			"success": false,
 			"data":    err.Error(),
 		})
 	}
 
-	return c.JSON(fiber.Map{
-		"status":  "success",
-		"message": "task Found",
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
 		"data":    data,
 	})
+}
+
+func GetSitekeySettings(c *fiber.Ctx) error {
+	id := c.Params("siteKey")
+
+	if !IsValidUUID(id) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    "invalid site-key",
+		})
+	}
+
+	settings, err := validator.Validate(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    err.Error(),
+		})
+	}
+
+	if settings == nil {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"success": true,
+			"data":    "this site-key doesn't have any restrictions",
+		})
+	} else {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": true,
+			"data":    settings,
+		})
+	}
 }

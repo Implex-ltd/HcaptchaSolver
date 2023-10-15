@@ -3,18 +3,18 @@ package hcaptcha
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/url"
 	"strings"
 	"time"
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 const (
-	VERSION = "12aefcf"
-	LANG    = "fr"
+	LANG = "fr"
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
@@ -23,12 +23,24 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		return nil, err
 	}
 
-	c, err := cleanhttp.NewCleanHttpClient(&cleanhttp.Config{
-		Proxy:     config.Proxy,
-		BrowserFp: fp,
-		Timeout:   5,
+	c, err := cleanhttp.NewFastCleanHttpClient(&cleanhttp.Config{
+		Proxy:               config.Proxy,
+		BrowserFp:           fp,
+		Timeout:             15,
+		ReadTimeout:         time.Second * 15,
+		WriteTimeout:        time.Second * 15,
+		MaxIdleConnDuration: time.Minute,
 	})
 	if err != nil {
+		return nil, err
+	}
+
+	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent, fmt.Sprintf("https://%s", config.Domain))
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := builder.GenerateProfile(); err != nil {
 		return nil, err
 	}
 
@@ -37,6 +49,7 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		Config:      config,
 		Http:        c,
 		Logger:      config.Logger,
+		Manager:     builder,
 	}, nil
 }
 
@@ -52,28 +65,18 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 	infos := cleanhttp.ParseUserAgent(config.UserAgent)
 
 	fp.Navigator.UserAgent = config.UserAgent
-	fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1] // can crash
+	fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1]
 	fp.Navigator.Platform = infos.OSName
-
-	// get ipinfos
-	/*if config.Proxy != "" {
-		infos, err := utils.Lookup(Address)
-
-	}*/
 
 	return fp, nil
 }
 
-func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
+func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
 	st := time.Now()
-	swa := "1"
-	if hsw {
-		swa = "0"
-	}
 
-	resp, err := c.Http.Do(cleanhttp.RequestOption{
+	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://hcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=%s&spst=0", VERSION, c.Config.Domain, c.Config.SiteKey, swa),
+		Url:    fmt.Sprintf("https://%shcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=1", utils.RandomElementString([]string{"api2.", ""}), fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey),
 		Header: c.HeaderCheckSiteConfig(),
 	})
 	c.SiteConfigProcessing = time.Since(st)
@@ -81,20 +84,8 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 		return nil, err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("checksiteconfig", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var config SiteConfig
-	if err := json.Unmarshal(body, &config); err != nil {
+	if err := json.Unmarshal(body.Body(), &config); err != nil {
 		return nil, err
 	}
 
@@ -109,19 +100,17 @@ func (c *Hcap) CheckSiteConfig(hsw bool) (*SiteConfig, error) {
 	return &config, nil
 }
 
-func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
+func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 	var pow string
 	var err error
 
 	st := time.Now()
 
-	pow = "fail"
-	if !hsj {
-		pow, err = c.GetHsw(config.C.Req)
-		if err != nil {
-			return nil, err
-		}
+	pow, err = c.GetHsw(config.C.Req)
+	if err != nil {
+		return nil, err
 	}
+
 	c.AnswerProcessing = time.Since(st)
 
 	pdc, _ := json.Marshal(&Pdc{
@@ -142,7 +131,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 
 	payload := url.Values{}
 	for name, value := range map[string]string{
-		`v`:          VERSION,
+		`v`:          fingerprint.VERSION,
 		`sitekey`:    c.Config.SiteKey,
 		`host`:       c.Config.Domain,
 		`hl`:         LANG,
@@ -150,7 +139,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 		`pdc`:        string(pdc),
 		`n`:          pow,
 		`c`:          string(C),
-		//`pst`:        `false`,
+		`pst`:        `false`,
 	} {
 		payload.Set(name, value)
 	}
@@ -169,7 +158,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 	}
 
 	t := time.Now()
-	resp, err := c.Http.Do(cleanhttp.RequestOption{
+	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
 		Url:    fmt.Sprintf("https://hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
 		Body:   strings.NewReader(payload.Encode()),
@@ -180,24 +169,16 @@ func (c *Hcap) GetChallenge(config *SiteConfig, hsj bool) (*Captcha, error) {
 		return nil, err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("checkcap", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
+	if body == nil {
+		return nil, fmt.Errorf("GetChallenge body is nil")
 	}
 
-	if resp.StatusCode == 429 {
+	if body.StatusCode() == 429 {
 		return nil, fmt.Errorf("ip is ratelimited")
 	}
 
 	var captcha Captcha
-	if err := json.Unmarshal(body, &captcha); err != nil {
+	if err := json.Unmarshal(body.Body(), &captcha); err != nil {
 		return nil, err
 	}
 
@@ -253,7 +234,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	})
 
 	payload, err = json.Marshal(&PayloadCheckChallenge{
-		V:            VERSION,
+		V:            fingerprint.VERSION,
 		Sitekey:      c.Config.SiteKey,
 		Serverdomain: c.Config.Domain,
 		JobMode:      captcha.RequestType,
@@ -270,7 +251,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	time.Sleep((time.Millisecond * time.Duration(c.Config.TurboSt)) - time.Since(st))
 
 	t := time.Now()
-	resp, err := c.Http.Do(cleanhttp.RequestOption{
+	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Url:    fmt.Sprintf("https://hcaptcha.com/checkcaptcha/%s/%s", c.Config.SiteKey, captcha.Key),
 		Body:   strings.NewReader(string(payload)),
 		Method: "POST",
@@ -282,25 +263,13 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 		return nil, err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("checkcap2", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var Resp ResponseCheckCaptcha
-	if json.Unmarshal([]byte(body), &Resp) != nil {
+	if json.Unmarshal([]byte(body.Body()), &Resp) != nil {
 		return nil, fmt.Errorf("checkCaptcha-unmarshal: %+v", err)
 	}
 
 	if !Resp.Pass {
-		return nil, fmt.Errorf("checkCaptcha: failed to pass: %+v", string(body))
+		return nil, fmt.Errorf("checkCaptcha: failed to pass: %+v", string(body.Body()))
 	}
 
 	return &Resp, nil

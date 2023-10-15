@@ -5,6 +5,7 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"go.uber.org/zap"
 )
@@ -28,7 +29,7 @@ type Config struct {
 
 type Hcap struct {
 	Config      *Config
-	Http        *cleanhttp.CleanHttp
+	Http        *cleanhttp.FastCleanHttp
 	Fingerprint *fpclient.Fingerprint
 
 	// metrics
@@ -38,10 +39,8 @@ type Hcap struct {
 	GetProcessing        time.Duration
 	SiteConfigProcessing time.Duration
 
-	// ip
-	//Infos *utils.IpInfos
-
-	Logger *zap.Logger
+	Logger  *zap.Logger
+	Manager *fingerprint.Builder
 }
 
 type Motion struct {
@@ -162,10 +161,17 @@ type CheckData struct {
 
 	TopLevel TopLevel `json:"topLevel"`
 	V        int64    `json:"v"`
+
+	//Kd   [][]int64 `json:"kd"`
+	//KdMp int64     `json:"kd-mp"`
+	//Ku   [][]int64 `json:"ku"`
+	//KuMp int64     `json:"ku-mp"`
 }
 
 type GetData struct {
-	St int64 `json:"st"`
+	St       int64    `json:"st"`
+	V        int64    `json:"v"`
+	TopLevel TopLevel `json:"topLevel"`
 
 	Mm   [][]int64 `json:"mm"`
 	MmMp float64   `json:"mm-mp"`
@@ -175,9 +181,6 @@ type GetData struct {
 
 	Mu   [][]int64 `json:"mu"`
 	MuMp float64   `json:"mu-mp"`
-
-	V        int64    `json:"v"`
-	TopLevel TopLevel `json:"topLevel"`
 
 	Session    []string `json:"session"`
 	WidgetList []string `json:"widgetList"`
@@ -207,6 +210,7 @@ type TopLevel struct {
 	//MdMp int64     `json:"md-mp"`
 	//Mu   [][]int64 `json:"mu"`
 	//MuMp int64     `json:"mu-mp"`
+	//Lpt int64 `json:"lpt"`
 }
 
 type Nv struct {
@@ -215,54 +219,55 @@ type Nv struct {
 			- Standalone bool `json:"standalone"`
 	*/
 
-	Clipboard              Empty         `json:"clipboard"`
-	VendorSub              string        `json:"vendorSub"`
-	ProductSub             string        `json:"productSub"`
-	Vendor                 string        `json:"vendor"`
-	MaxTouchPoints         int64         `json:"maxTouchPoints"`
-	Scheduling             Empty         `json:"scheduling"`
-	UserActivation         Empty         `json:"userActivation"`
-	DoNotTrack             interface{}   `json:"doNotTrack"`
-	Geolocation            Empty         `json:"geolocation"`
-	Connection             Empty         `json:"connection"`
-	PDFViewerEnabled       bool          `json:"pdfViewerEnabled"`
-	WebkitTemporaryStorage Empty         `json:"webkitTemporaryStorage"`
-	HardwareConcurrency    int64         `json:"hardwareConcurrency"`
-	CookieEnabled          bool          `json:"cookieEnabled"`
-	AppCodeName            string        `json:"appCodeName"`
-	AppName                string        `json:"appName"`
-	AppVersion             string        `json:"appVersion"`
-	Platform               string        `json:"platform"`
-	Product                string        `json:"product"`
-	UserAgent              string        `json:"userAgent"`
-	Language               string        `json:"language"`
-	Languages              []string      `json:"languages"`
-	OnLine                 bool          `json:"onLine"`
-	Webdriver              bool          `json:"webdriver"`
-	Bluetooth              Empty         `json:"bluetooth"`
-	Credentials            Empty         `json:"credentials"`
-	Keyboard               Empty         `json:"keyboard"`
-	Managed                Empty         `json:"managed"`
-	MediaDevices           Empty         `json:"mediaDevices"`
-	Storage                Empty         `json:"storage"`
-	ServiceWorker          Empty         `json:"serviceWorker"`
-	VirtualKeyboard        Empty         `json:"virtualKeyboard"`
-	WakeLock               Empty         `json:"wakeLock"`
-	DeviceMemory           int64         `json:"deviceMemory"`
-	Ink                    Empty         `json:"ink"`
-	HID                    Empty         `json:"hid"`
-	Locks                  Empty         `json:"locks"`
-	MediaCapabilities      Empty         `json:"mediaCapabilities"`
-	MediaSession           Empty         `json:"mediaSession"`
-	Permissions            Empty         `json:"permissions"`
-	Presentation           Empty         `json:"presentation"`
-	Serial                 Empty         `json:"serial"`
-	GPU                    Empty         `json:"gpu"`
-	USB                    Empty         `json:"usb"`
-	WindowControlsOverlay  Empty         `json:"windowControlsOverlay"`
-	Xr                     Empty         `json:"xr"`
-	UserAgentData          UserAgentData `json:"userAgentData"`
-	Plugins                []string      `json:"plugins"`
+	Clipboard                                Empty         `json:"clipboard"`
+	VendorSub                                string        `json:"vendorSub"`
+	ProductSub                               string        `json:"productSub"`
+	Vendor                                   string        `json:"vendor"`
+	MaxTouchPoints                           float64       `json:"maxTouchPoints"`
+	Scheduling                               Empty         `json:"scheduling"`
+	UserActivation                           Empty         `json:"userActivation"`
+	DoNotTrack                               interface{}   `json:"doNotTrack"`
+	Geolocation                              Empty         `json:"geolocation"`
+	Connection                               Empty         `json:"connection"`
+	PDFViewerEnabled                         bool          `json:"pdfViewerEnabled"`
+	WebkitTemporaryStorage                   Empty         `json:"webkitTemporaryStorage"`
+	HardwareConcurrency                      int64         `json:"hardwareConcurrency"`
+	CookieEnabled                            bool          `json:"cookieEnabled"`
+	AppCodeName                              string        `json:"appCodeName"`
+	AppName                                  string        `json:"appName"`
+	AppVersion                               string        `json:"appVersion"`
+	Platform                                 string        `json:"platform"`
+	Product                                  string        `json:"product"`
+	UserAgent                                string        `json:"userAgent"`
+	Language                                 string        `json:"language"`
+	Languages                                []string      `json:"languages"`
+	OnLine                                   bool          `json:"onLine"`
+	Webdriver                                bool          `json:"webdriver"`
+	DeprecatedRunAdAuctionEnforcesKAnonymity bool          `json:"deprecatedRunAdAuctionEnforcesKAnonymity"`
+	Bluetooth                                Empty         `json:"bluetooth"`
+	Credentials                              Empty         `json:"credentials"`
+	Keyboard                                 Empty         `json:"keyboard"`
+	Managed                                  Empty         `json:"managed"`
+	MediaDevices                             Empty         `json:"mediaDevices"`
+	Storage                                  Empty         `json:"storage"`
+	ServiceWorker                            Empty         `json:"serviceWorker"`
+	VirtualKeyboard                          Empty         `json:"virtualKeyboard"`
+	WakeLock                                 Empty         `json:"wakeLock"`
+	DeviceMemory                             int64         `json:"deviceMemory"`
+	Ink                                      Empty         `json:"ink"`
+	HID                                      Empty         `json:"hid"`
+	Locks                                    Empty         `json:"locks"`
+	MediaCapabilities                        Empty         `json:"mediaCapabilities"`
+	MediaSession                             Empty         `json:"mediaSession"`
+	Permissions                              Empty         `json:"permissions"`
+	Presentation                             Empty         `json:"presentation"`
+	Serial                                   Empty         `json:"serial"`
+	GPU                                      Empty         `json:"gpu"`
+	USB                                      Empty         `json:"usb"`
+	WindowControlsOverlay                    Empty         `json:"windowControlsOverlay"`
+	Xr                                       Empty         `json:"xr"`
+	UserAgentData                            UserAgentData `json:"userAgentData"`
+	Plugins                                  []string      `json:"plugins"`
 }
 
 type Brand struct {

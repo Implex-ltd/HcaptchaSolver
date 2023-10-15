@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
-	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
+	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
@@ -70,11 +70,11 @@ func LoadSettings() {
 			zapcore.AddSync(colorable.NewColorableStdout()),
 			zapcore.DebugLevel,
 		),
-		zapcore.NewCore(
+		/*zapcore.NewCore(
 			zapcore.NewJSONEncoder(fileEncoder),
 			zapcore.AddSync(CreateLogFile()),
 			zapcore.DebugLevel,
-		),
+		),*/
 	)
 
 	Logger = zap.New(core)
@@ -122,19 +122,16 @@ func LoadSettings() {
 
 	recognizer.LoadAnswer("../../assets/questions.txt")
 
-	// hsw client
+	// recognizer http client
 	t := http.DefaultTransport.(*http.Transport).Clone()
 	t.MaxIdleConns = 500
 	t.MaxConnsPerHost = 500
 	t.MaxIdleConnsPerHost = 500
 
-	hcaptcha.Client = &http.Client{
-		Timeout:   15 * time.Second,
-		Transport: t,
-	}
-
 	recognizer.Client = &http.Client{
 		Timeout:   15 * time.Second,
 		Transport: t,
 	}
+
+	fingerprint.CollectFpArray.RandomiseIndex()
 }

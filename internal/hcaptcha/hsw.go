@@ -1,18 +1,18 @@
 package hcaptcha
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"strings"
+	"time"
 
+	"github.com/0xF7A4C6/GoCycle"
+	"github.com/valyala/fasthttp"
 	"github.com/zenthangplus/goccm"
 )
 
 var (
-	ENTERPRISE_ADDR = "http://127.0.0.1:1234"
-	NORMAL_ADDR     = "http://127.0.0.1:4321"
-	cc              = goccm.New(150) // 200
+	NORMAL_ADDR = "http://127.0.0.1:4321"
 )
 
 var (
@@ -20,45 +20,87 @@ var (
 	TASKTYPE_NORMAL     = 1
 )
 
-var Client *http.Client
+var (
+	cc = goccm.New(1500)
+
+	readTimeout, _  = time.ParseDuration("10s")
+	writeTimeout, _ = time.ParseDuration("10s")
+
+	headerContentTypeJson = []byte("application/json")
+	Client                = &fasthttp.Client{
+		ReadTimeout:                   readTimeout,
+		WriteTimeout:                  writeTimeout,
+		MaxIdleConnDuration:           time.Second * 15,
+		NoDefaultUserAgentHeader:      true,
+		DisableHeaderNamesNormalizing: true,
+		DisablePathNormalizing:        true,
+		Dial: (&fasthttp.TCPDialer{
+			Concurrency:      4096,
+			DNSCacheDuration: time.Hour,
+		}).Dial,
+	}
+)
+
+var (
+	Endpoints = GoCycle.New(&[]string{
+		"http://127.0.0.1:1235",
+		"http://127.0.0.1:1236",
+		"http://127.0.0.1:1237",
+		"http://127.0.0.1:1238",
+		"http://127.0.0.1:1239",
+		"http://127.0.0.1:1240",
+		"http://127.0.0.1:1241",
+		"http://127.0.0.1:1242",
+		"http://127.0.0.1:1243",
+		"http://127.0.0.1:1244",
+		"http://127.0.0.1:1245",
+		"http://127.0.0.1:1246",
+	})
+)
 
 func (c *Hcap) GetHsw(jwt string) (string, error) {
-	var req *http.Request
-	var err error
+	for i := 0; i < 5; i++ {
+		req := fasthttp.AcquireRequest()
 
-	switch c.Config.TaskType {
-	case TASKTYPE_ENTERPRISE:
-		req, err = http.NewRequest("POST", fmt.Sprintf("%s/n", ENTERPRISE_ADDR), strings.NewReader(fmt.Sprintf(`{"jwt": "%s"}`, jwt)))
-		if err != nil {
-			return "", err
+		switch c.Config.TaskType {
+		case TASKTYPE_ENTERPRISE:
+			n, err := c.Manager.Build(jwt)
+			if err != nil {
+				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+			}
+
+			out, err := json.Marshal(n)
+			if err != nil {
+				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+			}
+
+			fp := base64.StdEncoding.EncodeToString(out)
+
+			end, _ := Endpoints.Next()
+			req.Header.SetMethod(fasthttp.MethodPost)
+			req.Header.SetContentTypeBytes(headerContentTypeJson)
+			req.SetRequestURI(fmt.Sprintf("%s/n", end))
+			req.SetBodyRaw([]byte(fmt.Sprintf(`{"jwt": "%s", "fp": "%s"}`, jwt, fp)))
+		case TASKTYPE_NORMAL:
+			req.Header.SetMethod(fasthttp.MethodGet)
+			req.SetRequestURI(fmt.Sprintf("%s/n?req=%s", NORMAL_ADDR, jwt))
 		}
 
-		req.Header.Set("content-type", "application/json")
-	case TASKTYPE_NORMAL:
-		req, err = http.NewRequest("GET", fmt.Sprintf("%s/n?req=%s", NORMAL_ADDR, jwt), nil)
+		resp := fasthttp.AcquireResponse()
+
+		cc.Wait()
+		err := Client.Do(req, resp)
+		cc.Done()
+
+		fasthttp.ReleaseRequest(req)
+		defer fasthttp.ReleaseResponse(resp)
+
 		if err != nil {
-			return "", err
+			continue
 		}
+
+		return string(resp.Body()), nil
 	}
 
-	cc.Wait()
-	resp, err := Client.Do(req)
-	cc.Done()
-	if err != nil {
-		return "", err
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("hsw", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(body), nil
+	return "", fmt.Errorf("someone poop in the api and we got a shitty error")
 }

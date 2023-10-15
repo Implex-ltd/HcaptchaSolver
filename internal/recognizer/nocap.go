@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"sync"
+	"time"
+
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 var (
@@ -49,6 +51,7 @@ type NoCapAnswerSelect struct {
 	ProcessingTime string  `json:"processing_time"`
 	Solution       []any   `json:"solution"`
 	Status         string  `json:"status"`
+	Url            string  `json:"url"`
 }
 
 func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[string]string, error) {
@@ -129,14 +132,7 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 				}
 
 				Hashlist.Store(target, updatedValue)
-
-				file, err := os.OpenFile("../../assets/hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
-				if err != nil {
-					return
-				}
-				defer file.Close()
-
-				file.WriteString(fmt.Sprintf("%s,%s", v["hash"], target) + "\n")
+				utils.AppendLine(fmt.Sprintf("%s,%s", v["hash"], target), "hash.csv")
 			} else {
 				SmMut.Lock()
 				defer SmMut.Unlock()
@@ -150,14 +146,7 @@ func SolvePic(toSolve map[string]map[string]string, prompt, target string) (map[
 				}
 
 				Hashlist.Store(target, updatedValue)
-
-				file, err := os.OpenFile("../../assets/hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
-				if err != nil {
-					return
-				}
-				defer file.Close()
-
-				file.WriteString(fmt.Sprintf("%s,not_%s", v["hash"], target) + "\n")
+				utils.AppendLine(fmt.Sprintf("%s,not_%s", v["hash"], target), "hash.csv")
 			}
 		}(v)
 
@@ -222,8 +211,44 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 		return out, err
 	}
 
+	if answer.Status == "new" {
+		time.Sleep(time.Second)
+
+		req, err := http.NewRequest("GET", answer.Url, nil)
+		if err != nil {
+			return out, err
+		}
+
+		req.Header.Set("Content-type", "application/json")
+		req.Header.Set("apikey", apikey)
+
+		resp, err := Client.Do(req)
+		if err != nil {
+			return out, err
+		}
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				fmt.Println("nocap2", err)
+			}
+		}(resp.Body)
+
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return out, err
+		}
+
+		if err := json.Unmarshal(bodyBytes, &answer); err != nil {
+			return out, err
+		}
+	}
+
+	if answer.Status == "skip" {
+		return out, fmt.Errorf("cant solve images (skip)")
+	}
+
 	if len(answer.Answers) == 0 {
-		return out, fmt.Errorf("cant solve answers, (0 found)")
+		return out, fmt.Errorf("can solve images, (0 found)")
 	}
 
 	i := 0
@@ -246,14 +271,13 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 			}
 			Selectlist.Store(target, updatedValue)
 
-			file, err := os.OpenFile("../../assets/area_hash.csv", os.O_APPEND|os.O_WRONLY, 0644)
-			if err != nil {
-				return
-			}
-			defer file.Close()
-
-			file.WriteString(fmt.Sprintf("%s,%s,%d,%d", v["hash"], target, answer.Answers[i][0], answer.Answers[i][1]) + "\n")
+			utils.AppendLine(fmt.Sprintf("%s,%s,%d,%d", v["hash"], target, answer.Answers[i][0], answer.Answers[i][1]), "area_hash.csv")
 		}(i, v)
+
+		if i > len(answer.Answers) {
+			fmt.Println("doesn't got all answers")
+			break
+		}
 
 		ImMut.Lock()
 		out[v["key"]] = HashData{
@@ -263,6 +287,11 @@ func SolvePicSelect(toSolve map[string]map[string]string, prompt, target string)
 		}
 		ImMut.Unlock()
 		i++
+
+		if i > len(answer.Answers) {
+			fmt.Println("doesn't got all answers")
+			break
+		}
 	}
 
 	return out, nil

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image/color"
 	"math/rand"
-	"strings"
 	"time"
 
 	"github.com/Implex-ltd/hcsolver/internal/utils"
@@ -225,23 +224,6 @@ func calculateMeanPeriod(events [][]int64) float64 {
 	return meanPeriod
 }
 
-// Todo: implement
-// generateRandomBrowserSize generates a random browser width and height. minSize and maxSize specify the range of possible values.
-func generateRandomBrowserSize(minSize, maxSize int) (width, height int64) {
-	aspectRatios := []float64{16.0 / 9.0, 16.0 / 10.0, 4.0 / 3.0}
-
-	rand.Shuffle(len(aspectRatios), func(i, j int) {
-		aspectRatios[i], aspectRatios[j] = aspectRatios[j], aspectRatios[i]
-	})
-
-	aspectRatio := aspectRatios[0]
-
-	width = int64(rand.Intn(maxSize-minSize+1) + minSize)
-	height = int64(float64(width) / aspectRatio)
-
-	return width, height
-}
-
 func genBoxToClick(answers map[string]string) []int {
 	var num = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	var items []int
@@ -274,67 +256,53 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 
 	toClick := genBoxToClick(m.Answers)
 
-	// Generate all mouse curves
 	CaptchaPath := Click(toClick, st, duration, utils.RandomNumber(3, 6))
 	MdPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(8, 16))
 	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
 	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
-	//WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
 
 	//PlotPoints(CaptchaPath)
-
-	platform := ""
-	plat := c.Fingerprint.Navigator.Platform
-	if strings.Contains(c.Config.UserAgent, "Windows") {
-		platform = "Windows"
-		plat = "Win32"
-	} else if strings.Contains(c.Config.UserAgent, "Macintosh") {
-		platform = "macOS"
-		plat = "MacIntel"
-	} else {
-		platform = "Linux"
-	}
 
 	topLevel := TopLevel{
 		St: st,
 		Sc: Sc{
-			AvailWidth:  int64(c.Fingerprint.Screen.AvailWidth),
-			AvailHeight: int64(c.Fingerprint.Screen.AvailHeight),
-			Width:       int64(c.Fingerprint.Screen.Width),
-			Height:      int64(c.Fingerprint.Screen.Height),
-			ColorDepth:  int64(c.Fingerprint.Screen.ColorDepth),
-			PixelDepth:  int64(c.Fingerprint.Screen.PixelDepth),
+			AvailWidth:  int64(c.Manager.Profile.Screen.AvailWidth),
+			AvailHeight: int64(c.Manager.Profile.Screen.AvailHeight),
+			Width:       int64(c.Manager.Profile.Screen.Width),
+			Height:      int64(c.Manager.Profile.Screen.Height),
+			ColorDepth:  int64(c.Manager.Profile.Screen.ColorDepth),
+			PixelDepth:  int64(c.Manager.Profile.Screen.PixelDepth),
 			AvailLeft:   int64(c.Fingerprint.Screen.AvailLeft),
 			AvailTop:    int64(c.Fingerprint.Screen.AvailTop),
 			Onchange:    nil,
 			IsExtended:  true,
 		},
 		Nv: Nv{
-			HardwareConcurrency: int64(c.Fingerprint.Navigator.HardwareConcurrency),
-			DeviceMemory:        int64(c.Fingerprint.Navigator.DeviceMemory),
+			HardwareConcurrency: int64(c.Manager.Manager.Fingerprint.Browser.HardwareConcurrency),
+			DeviceMemory:        int64(c.Manager.Manager.Fingerprint.Browser.DeviceMemory),
 			Webdriver:           false,
-			MaxTouchPoints:      int64(c.Fingerprint.Navigator.MaxTouchPoints),
+			MaxTouchPoints:      c.Manager.Profile.Navigator.MaxTouchPoints,
 			CookieEnabled:       true,
 			AppCodeName:         c.Fingerprint.Navigator.AppCodeName,
 			AppName:             c.Fingerprint.Navigator.AppName,
-			AppVersion:          c.Fingerprint.Navigator.AppVersion,
-			Platform:            plat,
+			AppVersion:          c.Manager.Manager.Fingerprint.Browser.AppVersion,
+			Platform:            c.Manager.Profile.Navigator.Platform,
 			Product:             c.Fingerprint.Navigator.Product,
 			ProductSub:          c.Fingerprint.Navigator.ProductSub,
-			UserAgent:           c.Fingerprint.Navigator.UserAgent,
+			UserAgent:           c.Manager.Manager.UserAgent,
 			Vendor:              c.Fingerprint.Navigator.Vendor,
 			VendorSub:           c.Fingerprint.Navigator.VendorSub,
-			Language:            c.Fingerprint.Navigator.Language,
-			Languages:           c.Fingerprint.Navigator.Languages,
+			Language:            c.Manager.Profile.Navigator.Language,
+			Languages:           c.Manager.Profile.Navigator.Languages,
 			OnLine:              true,
-			PDFViewerEnabled:    true,
+			PDFViewerEnabled:    c.Manager.Manager.Fingerprint.Browser.PDFViewerEnabled,
 			DoNotTrack:          c.Fingerprint.Navigator.DoNotTrack,
 			Plugins:             []string{"internal-pdf-viewer", "internal-pdf-viewer", "internal-pdf-viewer", "internal-pdf-viewer", "internal-pdf-viewer"},
 			UserAgentData: UserAgentData{
 				Brands: []Brand{
 					{
-						Brand:   "Not/A)Brand",
-						Version: "24",
+						Brand:   "Not=A?Brand",
+						Version: "99",
 					},
 					{
 						Brand:   "Google Chrome",
@@ -345,17 +313,17 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 						Version: c.Http.BaseHeader.UaInfo.UaVersion,
 					},
 				},
-				Mobile:   false,
-				Platform: platform,
+				Mobile:   c.Manager.Manager.Fingerprint.Browser.Mobile,
+				Platform: c.Manager.Manager.Fingerprint.Events["702"].(map[string]interface{})["OsName"].(string),
 			},
 		},
-		DR:   "", //"https://balance.vanillagift.com",
+		DR:   "",
 		Inv:  c.Config.Invisible,
-		Exec: false, //true, //false <--n
+		Exec: false,
 		Wn:   [][]int64{
 			/*{
-				int64(c.Fingerprint.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
-				int64(c.Fingerprint.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
+				int64(c.Manager.Profile.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
+				int64(c.Manager.Profile.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
 				1,                                       // mt.System.dpr()
 				addTime(st, WnTime),                     // Date.now()
 			},*/
@@ -365,7 +333,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			/*{
 				0, // mt.Browser.scrollX(),  // ---> return window.pageXOffset !== undefined ? window.pageXOffset : WnTime.isCSS1 ? document.documentElement.scrollLeft : document.body.scrollLeft;
 				0, // mt.Browser.scrollY(),  // ---> return window.pageYOffset !== undefined ? window.pageYOffset : WnTime.isCSS1 ? document.documentElement.scrollTop : document.body.scrollTop;
-				int64(c.Fingerprint.Screen.AvailWidth) / (int64(c.Fingerprint.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
+				int64(c.Manager.Profile.Screen.AvailWidth) / (int64(c.Manager.Profile.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
 				addTime(st, WnTime), // Date.now()
 			},*/
 		},
@@ -409,7 +377,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				widget,
 			},
 			WidgetID: widget,
-			Href:     "https://discord.com", //fmt.Sprintf("https://%s", c.Config.Domain),
+			Href:     c.Manager.Manager.Href,
 			Prev: Prev{
 				Escaped:          false,
 				Passed:           false,
