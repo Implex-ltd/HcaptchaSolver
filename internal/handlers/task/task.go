@@ -66,7 +66,7 @@ func checkBody(B BodyNewSolveTask) (errors []string) {
 	if B.Proxy == "" {
 		errors = append(errors, "please provide proxy")
 	} else {
-		if len(B.Proxy) > 500 {
+		if len(B.Proxy) > 500 || !strings.HasPrefix(B.Proxy, "http") {
 			errors = append(errors, "invalid proxy format, please use http(s)://user:pass@ip:port or http(s)://ip:port")
 		}
 	}
@@ -264,6 +264,13 @@ func CreateTask(c *fiber.Ctx) error {
 
 func GetTask(c *fiber.Ctx) error {
 	id := c.Params("taskId")
+
+	if !strings.HasPrefix(id, "task:") {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"data":    "please provide 'task:id' format",
+		})
+	}
 
 	data, err := database.TaskDB.Select(id)
 	if err != nil {
