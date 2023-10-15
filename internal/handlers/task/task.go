@@ -131,10 +131,17 @@ func CreateTask(c *fiber.Ctx) error {
 	}
 
 	if settings != nil {
+		if !settings.Enabled {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    "this site-key is disabled, please contact support",
+			})
+		}
+
 		if settings.AlwaysText && !taskData.FreeTextEntry {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"success": false,
-				"data":    fmt.Sprintf("bad config 'a11y_tfe' for the current domain '%s', please check required settings in documentation", taskData.Domain),
+				"data":    fmt.Sprintf("bad config 'a11y_tfe' for the current domain '%s', please check required settings using '/api/misc/check/%s'", taskData.Domain, taskData.Domain),
 			})
 		}
 
@@ -142,9 +149,23 @@ func CreateTask(c *fiber.Ctx) error {
 			if taskData.TurboSt < settings.MinSubmitTime || taskData.TurboSt > settings.MaxSubmitTime {
 				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 					"success": false,
-					"data":    fmt.Sprintf("bad config 'turbo_st' for the current domain '%s', please check required settings in documentation", taskData.Domain),
+					"data":    fmt.Sprintf("bad config 'turbo_st' for the current domain '%s', please check required settings using '/api/misc/check/%s'", taskData.Domain, taskData.Domain),
 				})
 			}
+		}
+
+		if !taskData.OneclickOnly && settings.OneclickOnly {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    fmt.Sprintf("bad config 'oneclick_only' for the current domain '%s', please check required settings using '/api/misc/check/%s'", taskData.Domain, taskData.Domain),
+			})
+		}
+
+		if taskData.Domain != settings.Domain {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    "domain doesn't match the site-key",
+			})
 		}
 
 	}
@@ -259,13 +280,13 @@ func GetTask(c *fiber.Ctx) error {
 	})
 }
 
-func GetDomainSettings(c *fiber.Ctx) error {
-	id := c.Params("domainName")
+func GetSitekeySettings(c *fiber.Ctx) error {
+	id := c.Params("siteKey")
 
-	if !IsDomainName(id) {
+	if !IsValidUUID(id) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"data":    "invalid domain",
+			"data":    "invalid site-key",
 		})
 	}
 
@@ -280,7 +301,7 @@ func GetDomainSettings(c *fiber.Ctx) error {
 	if settings == nil {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"success": true,
-			"data":    "this domain doesn't have any restrictions",
+			"data":    "this site-key doesn't have any restrictions",
 		})
 	} else {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

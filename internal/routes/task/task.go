@@ -12,5 +12,5 @@ func SetupTaskRoutes(router fiber.Router) {
 	user.Get("/:taskId", taskHandler.GetTask)
 
 	misc := router.Group("/misc")
-	misc.Get("/check/:domainName", taskHandler.GetDomainSettings)
+	misc.Get("/check/:siteKey", taskHandler.GetSitekeySettings)
 }
