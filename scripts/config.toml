@@ -1,8 +1,8 @@
 [api]
-port = 3000
+port = 80
 
 [ratelimit]
-api_max = 500
+api_max = 250
 api_expiration = 1
 
 [database]

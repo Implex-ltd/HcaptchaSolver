@@ -73,7 +73,7 @@ func main() {
 	config.LoadSettings()
 	database.ConnectDB(config.Config.Database.IP, config.Config.Database.Username, config.Config.Database.Password, config.Config.Database.Port)
 
-	//save_fp()
+	save_fp()
 
 	app := fiber.New()
 	router.SetupRoutes(app)

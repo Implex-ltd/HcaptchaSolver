@@ -75,12 +75,12 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            true,
 		},
 		Hash: Hash{
-			Performance:   "2372271609278715010",
+			Performance:   utils.RandomHash(19),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "10998633144029387648",
+			ParrentWindow: utils.RandomHash(19),
 		},
 		Misc: Misc{
 			UniqueKeys:    "_,regeneratorRuntime,IntlPolyfill,__DISCORD_WINDOW_ID,2,__OVERLAY__,__sentry_instrumentation_handlers__,platform,__BILLING_STANDALONE__,clearImmediate,__timingFunction,hcaptcha,GLOBAL_ENV,__SENTRY__,webpackChunkdiscord_app,grecaptcha,0,__SECRET_EMOTION__,hcaptchaOnLoad,__localeData__,1,setImmediate,DiscordSentry,DiscordErrors",

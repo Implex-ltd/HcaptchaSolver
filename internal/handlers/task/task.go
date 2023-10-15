@@ -110,7 +110,7 @@ func CreateTask(c *fiber.Ctx) error {
 		})
 	}
 
-	settings, err := validator.Validate(taskData.Domain)
+	settings, err := validator.Validate(taskData.SiteKey)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -304,7 +304,7 @@ func GetSitekeySettings(c *fiber.Ctx) error {
 			"data":    "this site-key doesn't have any restrictions",
 		})
 	} else {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"success": true,
 			"data":    settings,
 		})
