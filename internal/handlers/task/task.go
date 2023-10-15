@@ -167,7 +167,6 @@ func CreateTask(c *fiber.Ctx) error {
 				"data":    "domain doesn't match the site-key",
 			})
 		}
-
 	}
 
 	T, err := Newtask(&hcaptcha.Config{
@@ -206,9 +205,16 @@ func CreateTask(c *fiber.Ctx) error {
 		})
 	}
 
+	if data == nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"data":    "your payload is probably wrong, or a backend issue. please read documentation.",
+		})
+	}
+
 	createTask := make([]model.Task, 1)
-	err = surrealdb.Unmarshal(data, &createTask)
-	if err != nil {
+
+	if err := surrealdb.Unmarshal(data, &createTask); err != nil {
 		config.Logger.Error("db-error", zap.Error(err))
 
 		return c.Status(500).JSON(fiber.Map{
