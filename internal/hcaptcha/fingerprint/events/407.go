@@ -30,6 +30,8 @@ func (B *EventManager) Event_407() FingerprintEvent {
 				"_sharedLibs",
 				"hsw",
 				"__wdata",
+				"image_label_binary",
+				"text_free_entry",
 			},
 			[]interface{}{
 				[]interface{}{

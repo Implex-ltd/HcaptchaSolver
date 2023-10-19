@@ -42,7 +42,7 @@ var (
 			MaxSubmitTime: 13000,
 			AlwaysText:    true,
 			Domain:        "discord.com",
-			Enabled:       false,
+			Enabled:       true,
 		},
 	}
 )

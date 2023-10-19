@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  surrealdb:
+    container_name: surrealdb
+    image: surrealdb/surrealdb:1.0.0-beta.9-20230402
+    command: start --log debug --user root --pass 56484qsd844qsdq48sd4 file://database.db
+    ports:
+      - "88:8000"
+    volumes:
+      - ./data/database.db:/database.db

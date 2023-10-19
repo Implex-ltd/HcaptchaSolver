@@ -55,6 +55,8 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 		return nil, fmt.Errorf("invalid UA")
 	}
 
+	B.Manager.UserAgent = B.Manager.Fingerprint.Browser.UserAgent
+
 	p := Profile{
 		UserAgent: B.Manager.UserAgent,
 		Screen: Screen{
@@ -75,16 +77,16 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            true,
 		},
 		Hash: Hash{
-			Performance:   utils.RandomHash(19),
+			Performance:   "2372271609278715010", //utils.RandomHash(19),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: utils.RandomHash(19),
+			ParrentWindow: "5905781408711575698", //utils.RandomHash(19),
 		},
 		Misc: Misc{
-			UniqueKeys:    "_,regeneratorRuntime,IntlPolyfill,__DISCORD_WINDOW_ID,2,__OVERLAY__,__sentry_instrumentation_handlers__,platform,__BILLING_STANDALONE__,clearImmediate,__timingFunction,hcaptcha,GLOBAL_ENV,__SENTRY__,webpackChunkdiscord_app,grecaptcha,0,__SECRET_EMOTION__,hcaptchaOnLoad,__localeData__,1,setImmediate,DiscordSentry,DiscordErrors",
-			InvUniqueKeys: "sessionStorage,_sharedLibs,image_label_binary,text_free_entry,__wdata,localStorage,hsw",
+			UniqueKeys:    "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,2,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__",
+			InvUniqueKeys: "__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",
 		},
 	}
 
@@ -136,9 +138,9 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			HasIndexedDB:              true,
 			WebGlHash:                 Profile.Hash.WebGL,
 			CanvasHash:                Profile.Hash.Canvas,
-			HasTouch:                  false,
+			HasTouch:                  B.Manager.Fingerprint.Events["107"].(map[string]interface{})["touchEvent"].(bool),
 			NotificationAPIPermission: "Denied",
-			Chrome:                    true,
+			Chrome:                    true, //strings.Contains(B.Manager.Fingerprint.Browser.UserAgent, "Chrome"),
 			ToStringLength:            33,
 			ErrFirefox:                nil,
 			RBotScore:                 0,
@@ -164,7 +166,7 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		FingerprintEvents:           B.Manager.BuildEvents(),
 		FingerprintSuspiciousEvents: []string{},
 		//Stamp:                       stamp,
-		Href: B.Manager.Href,
+		Href: B.Manager.Href + "/invite/D9FafxDt",
 		Errs: Errs{
 			List: []string{},
 		},
@@ -180,7 +182,7 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			},
 			{
 				3,
-				int64(utils.RandomNumber(0, 5)),
+				0.0, //int64(utils.RandomNumber(0, 5)),
 			},
 		},
 	}

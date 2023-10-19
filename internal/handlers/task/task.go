@@ -9,6 +9,7 @@ import (
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
 	"github.com/Implex-ltd/hcsolver/internal/handlers/task/validator"
+	"github.com/Implex-ltd/hcsolver/internal/handlers/user"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/model"
 	"github.com/surrealdb/surrealdb.go"
@@ -91,6 +92,14 @@ func checkBody(B BodyNewSolveTask) (errors []string) {
 }
 
 func CreateTask(c *fiber.Ctx) error {
+	authToken, ok := c.GetReqHeaders()["Authorization"]
+	if !ok {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    "you must provide api-key for this endpoint",
+		})
+	}
+
 	db := database.TaskDB
 	task := new(model.Task)
 
@@ -167,6 +176,37 @@ func CreateTask(c *fiber.Ctx) error {
 				"data":    "domain doesn't match the site-key",
 			})
 		}
+	}
+
+	authUser, err := user.GetUserByID(authToken)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    "invalid api-key",
+		})
+	}
+
+	selectedUser := new(model.User)
+	err = surrealdb.Unmarshal(authUser, &selectedUser)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"data":    "failed to parse user, please report to admin",
+		})
+	}
+
+	if selectedUser.Balance <= 0 {
+		return c.Status(fiber.StatusTeapot).JSON(fiber.Map{
+			"success": false,
+			"data":    "no credit left, please refill balance",
+		})
+	}
+
+	if selectedUser.ThreadUsedHcaptcha >= selectedUser.ThreadMaxHcaptcha {
+		return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+			"success": false,
+			"data":    "you reached max thread limit, please buy more slot",
+		})
 	}
 
 	T, err := Newtask(&hcaptcha.Config{
@@ -250,6 +290,7 @@ func CreateTask(c *fiber.Ctx) error {
 		task.Success = true
 		task.Token = captcha.GeneratedPassUUID
 		task.Expiration = captcha.Expiration
+		task.UserAgent = T.Captcha.Manager.Manager.Fingerprint.Browser.UserAgent
 
 		if _, err := db.Update(createTask[0].ID, task); err != nil {
 			config.Logger.Error("db-error", zap.Error(err))
@@ -257,6 +298,18 @@ func CreateTask(c *fiber.Ctx) error {
 		}
 
 		go func() {
+			database.UserDB.Query(`
+BEGIN TRANSACTION;
+
+UPDATE $user SET balance -= $to_add;
+UPDATE $user SET solved_hcaptcha += $to_add;
+
+COMMIT TRANSACTION;
+			`, map[string]any{
+				"user":   authToken,
+				"to_add": 1,
+			})
+
 			time.Sleep(time.Duration(task.Expiration) * time.Second)
 			database.TaskDB.Delete(createTask[0].ID)
 		}()
@@ -272,7 +325,7 @@ func GetTask(c *fiber.Ctx) error {
 	id := c.Params("taskId")
 
 	if !strings.HasPrefix(id, "task:") {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
 			"data":    "please provide 'task:id' format",
 		})

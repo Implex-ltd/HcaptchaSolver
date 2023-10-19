@@ -35,7 +35,7 @@ func (c *Hcap) HeaderCheckSiteConfig() http.Header {
 		`sec-fetch-dest`:     {`empty`},
 		`sec-fetch-mode`:     {`cors`},
 		`sec-fetch-site`:     {`same-site`},
-		`user-agent`:         {c.Fingerprint.Navigator.UserAgent},
+		`user-agent`:         {c.Manager.Manager.Fingerprint.Browser.UserAgent},
 
 		http.HeaderOrderKey: order,
 	}
@@ -55,7 +55,7 @@ func (c *Hcap) HeaderGetCaptcha() http.Header {
 		`sec-fetch-dest`:     {`empty`},
 		`sec-fetch-mode`:     {`cors`},
 		`sec-fetch-site`:     {`same-site`},
-		`user-agent`:         {c.Fingerprint.Navigator.UserAgent},
+		`user-agent`:         {c.Manager.Manager.Fingerprint.Browser.UserAgent},
 
 		http.HeaderOrderKey: order,
 	}
@@ -75,7 +75,7 @@ func (c *Hcap) HeaderCheckCaptcha() http.Header {
 		`sec-fetch-dest`:     {`empty`},
 		`sec-fetch-mode`:     {`cors`},
 		`sec-fetch-site`:     {`same-site`},
-		`user-agent`:         {c.Fingerprint.Navigator.UserAgent},
+		`user-agent`:         {c.Manager.Manager.Fingerprint.Browser.UserAgent},
 
 		http.HeaderOrderKey: order,
 	}
