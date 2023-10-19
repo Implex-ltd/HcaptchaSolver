@@ -6,12 +6,13 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
-	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
-	"github.com/Implex-ltd/hcsolver/internal/model"
 	"github.com/gofiber/fiber/v2"
 	"github.com/surrealdb/surrealdb.go"
 	"go.uber.org/zap"
+
+	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
+	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
+	"github.com/Implex-ltd/hcsolver/internal/model"
 )
 
 var (
@@ -92,11 +93,18 @@ func CreateUser(c *fiber.Ctx) error {
 func GetUser(c *fiber.Ctx) error {
 	id := c.Params("userId")
 
+	if id == "" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": false,
+			"data":    "invalid user ID",
+		})
+	}
+
 	data, err := GetUserByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"success": false,
-			"data":    "failed to fetch DB",
+			"data":    err.Error(),
 		})
 	}
 

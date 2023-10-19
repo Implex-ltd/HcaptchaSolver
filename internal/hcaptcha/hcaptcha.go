@@ -9,8 +9,10 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
+
 )
 
 const (

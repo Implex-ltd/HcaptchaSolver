@@ -6,16 +6,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
+	"github.com/surrealdb/surrealdb.go"
+	"go.uber.org/zap"
+
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
 	"github.com/Implex-ltd/hcsolver/internal/handlers/task/validator"
 	"github.com/Implex-ltd/hcsolver/internal/handlers/user"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/model"
-	"github.com/surrealdb/surrealdb.go"
-	"go.uber.org/zap"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 const (
@@ -84,6 +84,10 @@ func checkBody(B BodyNewSolveTask) (errors []string) {
 		}
 	}
 
+	if !B.FreeTextEntry {
+		errors = append(errors, "please enable a11y_tfe, if your target doesn't support it, we can't solve your captchas for now")
+	}
+
 	if len(errors) != 0 {
 		return errors
 	}
@@ -99,6 +103,7 @@ func CreateTask(c *fiber.Ctx) error {
 			"data":    "you must provide api-key for this endpoint",
 		})
 	}
+	auth := authToken[0]
 
 	db := database.TaskDB
 	task := new(model.Task)
@@ -178,7 +183,7 @@ func CreateTask(c *fiber.Ctx) error {
 		}
 	}
 
-	authUser, err := user.GetUserByID(authToken)
+	authUser, err := user.GetUserByID(auth)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -286,6 +291,7 @@ func CreateTask(c *fiber.Ctx) error {
 			return
 		}
 
+		task.Req = captcha.C.Req
 		task.Status = STATUS_SOLVED
 		task.Success = true
 		task.Token = captcha.GeneratedPassUUID
@@ -306,7 +312,7 @@ UPDATE $user SET solved_hcaptcha += $to_add;
 
 COMMIT TRANSACTION;
 			`, map[string]any{
-				"user":   authToken,
+				"user":   auth,
 				"to_add": 1,
 			})
 
