@@ -7,10 +7,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Implex-ltd/hcsolver/internal/utils"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
+
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 var boxes = map[int]Box{
@@ -378,7 +379,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				widget,
 			},
 			WidgetID: widget,
-			Href:     c.Manager.Manager.Href + "/invite/D9FafxDt",
+			Href:     c.Manager.Manager.Href,
 			Prev: Prev{
 				Escaped:          false,
 				Passed:           false,

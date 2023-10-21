@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/0xF7A4C6/GoCycle"
+
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint/events"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
@@ -77,12 +78,12 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            true,
 		},
 		Hash: Hash{
-			Performance:   "2372271609278715010", //utils.RandomHash(19),
+			Performance:   utils.RandomHash(19),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "5905781408711575698", //utils.RandomHash(19),
+			ParrentWindow: utils.RandomHash(19),
 		},
 		Misc: Misc{
 			UniqueKeys:    "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,2,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__",
@@ -166,7 +167,7 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		FingerprintEvents:           B.Manager.BuildEvents(),
 		FingerprintSuspiciousEvents: []string{},
 		//Stamp:                       stamp,
-		Href: B.Manager.Href + "/invite/D9FafxDt",
+		Href: B.Manager.Href,
 		Errs: Errs{
 			List: []string{},
 		},
