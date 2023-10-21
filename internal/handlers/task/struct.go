@@ -35,4 +35,5 @@ type BodyNewSolveTask struct {
 	TurboSt         int    `json:"turbo_st"`
 	HcAccessibility string `json:"hc_accessibility"`
 	OneclickOnly    bool   `json:"oneclick_only"`
+	Href            string `json:"href"`
 }

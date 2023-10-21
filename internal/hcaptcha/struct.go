@@ -23,6 +23,7 @@ type Config struct {
 	TurboSt         int
 	HcAccessibility string
 	OneClick        bool
+	Href            string
 
 	Logger *zap.Logger
 }

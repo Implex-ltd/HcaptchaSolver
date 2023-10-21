@@ -42,4 +42,5 @@ func SetupUserRoutes(router fiber.Router) {
 
 	internalApi.Post("/new", userHandler.CreateUser)
 	internalApi.Post("/refill", userHandler.AddBalance)
+	internalApi.Post("/set-bypass", userHandler.SetypassRestricted)
 }

@@ -66,12 +66,12 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		case TASKTYPE_ENTERPRISE:
 			n, err := c.Manager.Build(jwt)
 			if err != nil {
-				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+				return "", fmt.Errorf("someone poop in the api and we got a error")
 			}
 
 			out, err := json.Marshal(n)
 			if err != nil {
-				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+				return "", fmt.Errorf("someone poop in the api and we got a error")
 			}
 
 			fp := base64.StdEncoding.EncodeToString(out)
@@ -102,5 +102,5 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		return string(resp.Body()), nil
 	}
 
-	return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+	return "", fmt.Errorf("someone poop in the api and we got a error")
 }

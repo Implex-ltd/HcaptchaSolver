@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/0xF7A4C6/GoCycle"
-
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint/events"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
 )

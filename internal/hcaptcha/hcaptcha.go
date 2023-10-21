@@ -9,10 +9,8 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
-
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
-
 )
 
 const (
@@ -20,7 +18,7 @@ const (
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
-	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent, fmt.Sprintf("https://%s", config.Domain))
+	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent, config.Href)
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +180,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 	}
 
 	if body.StatusCode() == 429 {
-		return nil, fmt.Errorf("ip is ratelimited")
+		return nil, fmt.Errorf("ip is ratelimited or site-key is geo-restricted, please switch your proxy")
 	}
 
 	var captcha Captcha

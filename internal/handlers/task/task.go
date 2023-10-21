@@ -2,13 +2,10 @@ package task
 
 import (
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/surrealdb/surrealdb.go"
-	"go.uber.org/zap"
 
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
@@ -16,6 +13,9 @@ import (
 	"github.com/Implex-ltd/hcsolver/internal/handlers/user"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha"
 	"github.com/Implex-ltd/hcsolver/internal/model"
+	"github.com/gofiber/fiber/v2"
+	"github.com/surrealdb/surrealdb.go"
+	"go.uber.org/zap"
 )
 
 const (
@@ -39,7 +39,7 @@ func IsDomainName(input string) bool {
 	return DomainPattern.MatchString(input)
 }
 
-func checkBody(B BodyNewSolveTask) (errors []string) {
+func checkBody(B *BodyNewSolveTask) (errors []string) {
 	if B.Domain == "" {
 		errors = append(errors, "domain is missing")
 	} else {
@@ -57,7 +57,7 @@ func checkBody(B BodyNewSolveTask) (errors []string) {
 	}
 
 	if B.TaskType != TYPE_ENTERPRISE /* && B.TaskType != TYPE_NORMAL */ {
-		errors = append(errors, "task_type is invid")
+		errors = append(errors, "task_type is invalid")
 	}
 
 	if len(B.UserAgent) > 255 {
@@ -76,6 +76,19 @@ func checkBody(B BodyNewSolveTask) (errors []string) {
 		if len(B.Rqdata) > 15000 {
 			errors = append(errors, "rqdata seems too long, please contact support")
 		}
+	}
+
+	if B.Href != "" {
+		if len(B.Href) > 5000 {
+			errors = append(errors, "href seems too long, please contact support")
+		}
+
+		_, err := url.Parse(B.Href)
+		if err != nil {
+			errors = append(errors, "cannot parse href, please provide right link (get it from your motionData on chrome devtools)")
+		}
+	} else {
+		B.Href = fmt.Sprintf("https://%s", B.Domain)
 	}
 
 	if B.HcAccessibility != "" {
@@ -117,7 +130,7 @@ func CreateTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := checkBody(taskData); err != nil {
+	if err := checkBody(&taskData); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
 			"data":    fmt.Sprintf("invalid task body fields: %v", strings.Join(err, ", ")),
@@ -128,7 +141,7 @@ func CreateTask(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"data":    err.Error(),
+			"data":    "cannot validate this site-key",
 		})
 	}
 
@@ -145,13 +158,6 @@ func CreateTask(c *fiber.Ctx) error {
 	}
 
 	if settings != nil {
-		if !settings.Enabled {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"success": false,
-				"data":    "this site-key is disabled, please contact support",
-			})
-		}
-
 		if settings.AlwaysText && !taskData.FreeTextEntry {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"success": false,
@@ -214,6 +220,15 @@ func CreateTask(c *fiber.Ctx) error {
 		})
 	}
 
+	if settings != nil {
+		if !settings.Enabled && !selectedUser.BypassRestrictedSites {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"data":    "this site-key is disabled, please contact support",
+			})
+		}
+	}
+
 	T, err := Newtask(&hcaptcha.Config{
 		UserAgent:       taskData.UserAgent,
 		SiteKey:         taskData.SiteKey,
@@ -228,7 +243,15 @@ func CreateTask(c *fiber.Ctx) error {
 		HcAccessibility: taskData.HcAccessibility,
 		OneClick:        taskData.OneclickOnly,
 		Rqdata:          taskData.Rqdata,
+		Href:            taskData.Href,
 	})
+
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"data":    fmt.Sprintf("new task initialization failed: %v", err.Error()),
+		})
+	}
 
 	if err := T.Create(); err != nil {
 		return c.Status(500).JSON(fiber.Map{
