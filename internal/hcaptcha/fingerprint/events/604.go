@@ -27,7 +27,7 @@ func (B *EventManager) Event_604() FingerprintEvent {
 			nil,
 			[]interface{}{
 				fmt.Sprintf("Google Chrome %s", strings.Split(event["BrowserVersion"].(string), ".")[0]),
-				"Not=A?Brand 99",
+				"Not=A?Brand 8",
 				fmt.Sprintf("Chromium %s", strings.Split(event["BrowserVersion"].(string), "."))[0],
 			},
 			B.Fingerprint.Browser.Mobile,

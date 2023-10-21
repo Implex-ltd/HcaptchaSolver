@@ -9,6 +9,7 @@ import (
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 
 	taskRoutes "github.com/Implex-ltd/hcsolver/internal/routes/task"
+	userRoutes "github.com/Implex-ltd/hcsolver/internal/routes/user"
 
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -35,4 +36,5 @@ func SetupRoutes(app *fiber.App) {
 	}))
 
 	taskRoutes.SetupTaskRoutes(api)
+	userRoutes.SetupUserRoutes(api)
 }

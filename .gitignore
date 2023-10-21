@@ -31,3 +31,7 @@ Dockerfile
 # assets
 assets/logs/*
 assets/old_questions.txt
+assets/cleaned.txt
+
+
+data/*

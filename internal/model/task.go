@@ -11,4 +11,6 @@ type Task struct {
 	Error      string `json:"error"`
 	Success    bool   `json:"success"`
 	Expiration int    `json:"expiration"`
+	UserAgent  string `json:"user_agent"`
+	Req        string `json:"req"`
 }

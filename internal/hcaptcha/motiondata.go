@@ -7,10 +7,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Implex-ltd/hcsolver/internal/utils"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
+
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 var boxes = map[int]Box{
@@ -261,6 +262,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
 	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
 
+	//WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
 	//PlotPoints(CaptchaPath)
 
 	topLevel := TopLevel{
@@ -302,7 +304,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				Brands: []Brand{
 					{
 						Brand:   "Not=A?Brand",
-						Version: "99",
+						Version: "8",
 					},
 					{
 						Brand:   "Google Chrome",
@@ -324,8 +326,8 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			/*{
 				int64(c.Manager.Profile.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
 				int64(c.Manager.Profile.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
-				1,                                       // mt.System.dpr()
-				addTime(st, WnTime),                     // Date.now()
+				1,                   // mt.System.dpr()
+				addTime(st, WnTime), // Date.now()
 			},*/
 		},
 		WnMp: 0,
@@ -359,7 +361,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			V:        1,
 		})
 	case false:
-		widget := "0" + utils.RandomString(11)
+		widget := "1" + utils.RandomString(10)
 
 		output, _ = json.Marshal(&GetData{
 			St:       st,

@@ -9,6 +9,7 @@ import (
 var (
 	TaskDB *surrealdb.DB
 	FpDB   *surrealdb.DB
+	UserDB *surrealdb.DB
 )
 
 func ConnectDB(Ip, User, Pass string, Port int) {
@@ -43,6 +44,22 @@ func ConnectDB(Ip, User, Pass string, Port int) {
 	}
 
 	if _, err = FpDB.Use("fingerprint", "fp"); err != nil {
+		panic(err)
+	}
+
+	UserDB, err = surrealdb.New(fmt.Sprintf("ws://%s:%d/rpc", Ip, Port))
+	if err != nil {
+		panic(err)
+	}
+
+	if _, err = UserDB.Signin(map[string]interface{}{
+		"user": User,
+		"pass": Pass,
+	}); err != nil {
+		panic(err)
+	}
+
+	if _, err = UserDB.Use("users", "user"); err != nil {
 		panic(err)
 	}
 }

@@ -9,8 +9,10 @@ import (
 
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
+
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
+
 )
 
 const (
@@ -18,10 +20,26 @@ const (
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
+	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent, fmt.Sprintf("https://%s", config.Domain))
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := builder.GenerateProfile(); err != nil {
+		return nil, err
+	}
+
+	config.UserAgent = builder.Manager.Fingerprint.Browser.UserAgent
+
 	fp, err := ApplyFingerprint(config)
 	if err != nil {
 		return nil, err
 	}
+
+	// edit fp to match scrapped one
+	fp.Navigator.Languages = builder.Profile.Navigator.Languages
+	fp.Navigator.Language = builder.Profile.Navigator.Language
+	fp.Navigator.Platform = builder.Profile.Navigator.Platform
 
 	c, err := cleanhttp.NewFastCleanHttpClient(&cleanhttp.Config{
 		Proxy:               config.Proxy,
@@ -32,15 +50,6 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		MaxIdleConnDuration: time.Minute,
 	})
 	if err != nil {
-		return nil, err
-	}
-
-	builder, err := fingerprint.NewFingerprintBuilder(config.UserAgent, fmt.Sprintf("https://%s", config.Domain))
-	if err != nil {
-		return nil, err
-	}
-
-	if _, err := builder.GenerateProfile(); err != nil {
 		return nil, err
 	}
 
@@ -65,7 +74,6 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 	infos := cleanhttp.ParseUserAgent(config.UserAgent)
 
 	fp.Navigator.UserAgent = config.UserAgent
-	fp.Navigator.AppVersion = strings.Split(config.UserAgent, "Mozilla/")[1]
 	fp.Navigator.Platform = infos.OSName
 
 	return fp, nil
@@ -76,7 +84,7 @@ func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
 
 	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://%shcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=1", utils.RandomElementString([]string{"api2.", ""}), fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey),
+		Url:    fmt.Sprintf("https://%shcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=0", utils.RandomElementString([]string{"api2.", ""}), fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey),
 		Header: c.HeaderCheckSiteConfig(),
 	})
 	c.SiteConfigProcessing = time.Since(st)
@@ -116,7 +124,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 	pdc, _ := json.Marshal(&Pdc{
 		S:   st.UTC().UnixNano() / 1e6,
 		N:   0,
-		P:   0,
+		P:   1,
 		Gcs: int(time.Since(st).Milliseconds()),
 	})
 
@@ -139,7 +147,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		`pdc`:        string(pdc),
 		`n`:          pow,
 		`c`:          string(C),
-		`pst`:        `false`,
+		//`pst`:        `false`,
 	} {
 		payload.Set(name, value)
 	}

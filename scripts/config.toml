@@ -1,5 +1,5 @@
 [api]
-port = 80
+port = 1337
 
 [ratelimit]
 api_max = 250
@@ -7,6 +7,6 @@ api_expiration = 1
 
 [database]
 username = "root"
-password = "56484qsd844qsdq48sd4" #"rootnikoontoplmao5245"
-ip = "45.32.219.33"               #"144.172.76.66"
+password = "rootnikoontoplmao5245"
+ip = "127.0.0.1"                  #"144.172.76.66"             
 port = 88                         # 8000
