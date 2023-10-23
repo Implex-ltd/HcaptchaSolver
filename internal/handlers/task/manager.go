@@ -59,9 +59,18 @@ func (T *HcaptchaTask) Solve() (*hcaptcha.ResponseCheckCaptcha, error) {
 		return nil, fmt.Errorf("checksiteconfig wont pass")
 	}
 
-	captcha, err := T.Captcha.GetChallenge(site)
-	if err != nil {
-		return nil, err
+	var captcha *hcaptcha.Captcha
+
+	if !T.Config.FreeTextEntry {
+		captcha, err = T.Captcha.GetChallenge(site)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		captcha, err = T.Captcha.GetChallengeFreeTextEntry(site)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if captcha.GeneratedPassUUID != "" {

@@ -32,8 +32,8 @@ type Ndata struct {
 	StackData                   []string        `json:"stack_data"`
 	FingerprintSuspiciousEvents []string        `json:"fingerprint_suspicious_events"`
 	Stamp                       string          `json:"stamp"`
-	Errs                        Errs            `json:"errs"`
 	Href                        string          `json:"href"`
+	Errs                        Errs            `json:"errs"`
 	Perf                        [][]int64       `json:"perf"`
 }
 

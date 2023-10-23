@@ -42,6 +42,9 @@ type Hcap struct {
 
 	Logger  *zap.Logger
 	Manager *fingerprint.Builder
+
+	Sessions     [][]string
+	WidgetIDList []string
 }
 
 type Motion struct {
@@ -183,11 +186,11 @@ type GetData struct {
 	Mu   [][]int64 `json:"mu"`
 	MuMp float64   `json:"mu-mp"`
 
-	Session    []string `json:"session"`
-	WidgetList []string `json:"widgetList"`
-	WidgetID   string   `json:"widgetId"`
-	Href       string   `json:"href"`
-	Prev       Prev     `json:"prev"`
+	Session    [][]string `json:"session"`
+	WidgetList []string   `json:"widgetList"`
+	WidgetID   string     `json:"widgetId"`
+	Href       string     `json:"href"`
+	Prev       Prev       `json:"prev"`
 }
 
 type TopLevel struct {

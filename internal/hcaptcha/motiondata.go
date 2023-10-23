@@ -7,11 +7,10 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
-
-	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 var boxes = map[int]Box{
@@ -168,6 +167,10 @@ func Point2path(p []Point) [][]int64 {
 	return convertedPath
 }
 
+func addTime(st int64, toAdd time.Duration) int64 {
+	return st + toAdd.Milliseconds()
+}
+
 func Click(boxesToClick []int, startTime, duration int64, curveAmount int) [][]int64 {
 	var path []Point
 	timeIncrement := duration / int64(len(boxesToClick))
@@ -192,10 +195,6 @@ func Click(boxesToClick []int, startTime, duration int64, curveAmount int) [][]i
 	}
 
 	return Point2path(path)
-}
-
-func addTime(st int64, toAdd time.Duration) int64 {
-	return st + toAdd.Milliseconds()
 }
 
 func GetRandomBox() Box {
@@ -248,7 +247,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	duration := int64(utils.RandomNumber(100, 500))
 
 	if !m.IsCheck {
-		m.Answers = map[string]string{"x": "x", "y": "y", "z": "z", "d": "z", "a": "z", "i": "z"}
+		m.Answers = map[string]string{"x": "x", "y": "y", "z": "z", "d": "z", "a": "z"}
 	}
 
 	for i := 0; i < utils.RandomNumber(1, 5); i++ {
@@ -262,7 +261,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
 	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
 
-	//WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
+	WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
 	//PlotPoints(CaptchaPath)
 
 	topLevel := TopLevel{
@@ -323,21 +322,21 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 		Inv:  c.Config.Invisible,
 		Exec: false,
 		Wn:   [][]int64{
-			/*{
+			{
 				int64(c.Manager.Profile.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
 				int64(c.Manager.Profile.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
 				1,                   // mt.System.dpr()
 				addTime(st, WnTime), // Date.now()
-			},*/
+			},
 		},
 		WnMp: 0,
 		Xy:   [][]int64{
-			/*{
+			{
 				0, // mt.Browser.scrollX(),  // ---> return window.pageXOffset !== undefined ? window.pageXOffset : WnTime.isCSS1 ? document.documentElement.scrollLeft : document.body.scrollLeft;
 				0, // mt.Browser.scrollY(),  // ---> return window.pageYOffset !== undefined ? window.pageYOffset : WnTime.isCSS1 ? document.documentElement.scrollTop : document.body.scrollTop;
 				int64(c.Manager.Profile.Screen.AvailWidth) / (int64(c.Manager.Profile.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
 				addTime(st, WnTime), // Date.now()
-			},*/
+			},
 		},
 		XyMp: 0,
 		Mm:   MmPath,
@@ -361,7 +360,9 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			V:        1,
 		})
 	case false:
-		widget := "1" + utils.RandomString(10)
+		widget := "0" + utils.RandomString(10)
+
+		c.WidgetIDList = append(c.WidgetIDList, widget)
 
 		output, _ = json.Marshal(&GetData{
 			St:       st,
@@ -374,7 +375,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			TopLevel: topLevel,
 			V:        1,
 
-			Session: []string{},
+			Session: c.Sessions,
 			WidgetList: []string{
 				widget,
 			},

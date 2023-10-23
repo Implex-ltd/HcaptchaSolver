@@ -77,15 +77,15 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            true,
 		},
 		Hash: Hash{
-			Performance:   utils.RandomHash(19),
+			Performance:   "2047758435847122209", //utils.RandomHash(19),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: utils.RandomHash(19),
+			ParrentWindow: "2556339636007144308", //utils.RandomHash(19),
 		},
 		Misc: Misc{
-			UniqueKeys:    "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,2,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__",
+			UniqueKeys:    "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__",
 			InvUniqueKeys: "__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",
 		},
 	}
@@ -95,10 +95,10 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 }
 
 func (B *Builder) Build(jwt string) (*Ndata, error) {
-	Profile, err := B.GenerateProfile()
+	/*Profile, err := B.GenerateProfile()
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
 	token, err := ParseJWT(jwt)
 	if err != nil {
@@ -130,14 +130,14 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		},
 		Components: Components{
 			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
-			Navigator:                 Profile.Navigator,
-			Screen:                    Profile.Screen,
+			Navigator:                 B.Profile.Navigator,
+			Screen:                    B.Profile.Screen,
 			DevicePixelRatio:          B.Manager.Fingerprint.Screen["DevicePixelRatio"].(float64),
 			HasSessionStorage:         true,
 			HasLocalStorage:           true,
 			HasIndexedDB:              true,
-			WebGlHash:                 Profile.Hash.WebGL,
-			CanvasHash:                Profile.Hash.Canvas,
+			WebGlHash:                 B.Profile.Hash.WebGL,
+			CanvasHash:                B.Profile.Hash.Canvas,
 			HasTouch:                  B.Manager.Fingerprint.Events["107"].(map[string]interface{})["touchEvent"].(bool),
 			NotificationAPIPermission: "Denied",
 			Chrome:                    true, //strings.Contains(B.Manager.Fingerprint.Browser.UserAgent, "Chrome"),
@@ -146,15 +146,15 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			RBotScore:                 0,
 			RBotScoreSuspiciousKeys:   []string{},
 			RBotScore2:                0,
-			AudioHash:                 Profile.Hash.Audio,
+			AudioHash:                 B.Profile.Hash.Audio,
 			Extensions: []bool{
 				false,
 			},
-			ParentWinHash:   Profile.Hash.ParrentWindow,
-			WebrtcHash:      Profile.Hash.WebRTC,
-			PerformanceHash: Profile.Hash.Performance,
-			UniqueKeys:      Profile.Misc.UniqueKeys,
-			InvUniqueKeys:   Profile.Misc.InvUniqueKeys,
+			ParentWinHash:   B.Profile.Hash.ParrentWindow,
+			WebrtcHash:      B.Profile.Hash.WebRTC,
+			PerformanceHash: B.Profile.Hash.Performance,
+			UniqueKeys:      B.Profile.Misc.UniqueKeys,
+			InvUniqueKeys:   B.Profile.Misc.InvUniqueKeys,
 			Features: Features{
 				PerformanceEntries: true,
 				WebAudio:           true,
@@ -180,10 +180,10 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 				2,
 				int64(utils.RandomNumber(20, 300)),
 			},
-			{
+			/*{
 				3,
 				0.0, //int64(utils.RandomNumber(0, 5)),
-			},
+			},*/
 		},
 	}
 

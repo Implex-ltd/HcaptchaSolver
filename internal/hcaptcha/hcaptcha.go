@@ -11,6 +11,7 @@ import (
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
+
 )
 
 const (
@@ -51,13 +52,20 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		return nil, err
 	}
 
-	return &Hcap{
+	hc := &Hcap{
 		Fingerprint: fp,
 		Config:      config,
 		Http:        c,
 		Logger:      config.Logger,
 		Manager:     builder,
-	}, nil
+		Sessions:    [][]string{},
+	}
+	
+	if _, err := hc.Manager.GenerateProfile(); err != nil {
+		return nil, fmt.Errorf("cant generate fingerprint profile")
+	}
+
+	return hc, nil
 }
 
 func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
@@ -82,7 +90,7 @@ func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
 
 	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://%shcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=0", utils.RandomElementString([]string{"api2.", ""}), fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey),
+		Url:    fmt.Sprintf("https://%shcaptcha.com/checksiteconfig?v=%s&host=%s&sitekey=%s&sc=1&swa=1&spst=1", utils.RandomElementString([]string{"api2.", ""}), fingerprint.VERSION, c.Config.Domain, c.Config.SiteKey),
 		Header: c.HeaderCheckSiteConfig(),
 	})
 	c.SiteConfigProcessing = time.Since(st)
@@ -122,8 +130,8 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 	pdc, _ := json.Marshal(&Pdc{
 		S:   st.UTC().UnixNano() / 1e6,
 		N:   0,
-		P:   1,
-		Gcs: int(time.Since(st).Milliseconds()),
+		P:   0,
+		Gcs: utils.RandomNumber(40, 110), //int(time.Since(st).Milliseconds()),
 	})
 
 	motion := c.NewMotionData(&Motion{
@@ -145,7 +153,107 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 		`pdc`:        string(pdc),
 		`n`:          pow,
 		`c`:          string(C),
-		//`pst`:        `false`,
+		`pst`:        `false`,
+	} {
+		payload.Set(name, value)
+	}
+
+	if c.Config.Rqdata != "" {
+		payload.Set("rqdata", c.Config.Rqdata)
+	}
+
+	/*if c.Config.FreeTextEntry {
+		payload.Set(`a11y_tfe`, `true`)
+	}*/
+
+	header := c.HeaderGetCaptcha()
+	if c.Config.HcAccessibility != "" {
+		header.Add("cookie", fmt.Sprintf("hc_accessibility=%s", c.Config.HcAccessibility))
+	}
+
+	t := time.Now()
+	body, err := c.Http.Do(cleanhttp.RequestOption{
+		Method: "POST",
+		Url:    fmt.Sprintf("https://hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
+		Body:   strings.NewReader(payload.Encode()),
+		Header: header,
+	})
+	c.GetProcessing = time.Since(t)
+	if err != nil {
+		return nil, err
+	}
+
+	if body == nil {
+		return nil, fmt.Errorf("GetChallenge body is nil")
+	}
+
+	if body.StatusCode() == 429 {
+		return nil, fmt.Errorf("ip is ratelimited or site-key is geo-restricted, please switch your proxy")
+	}
+
+	var captcha Captcha
+	if err := json.Unmarshal(body.Body(), &captcha); err != nil {
+		return nil, err
+	}
+
+	return &captcha, nil
+}
+
+func (c *Hcap) GetChallengeFreeTextEntry(config *SiteConfig) (*Captcha, error) {
+	var pow string
+	var err error
+
+	chall, err := c.GetChallenge(config)
+	if err != nil {
+		return nil, err
+	}
+
+	c.Sessions = append(c.Sessions, []string{
+		chall.Key,
+		c.WidgetIDList[0],
+	})
+
+	st := time.Now()
+
+	pow, err = c.GetHsw(chall.C.Req)
+	if err != nil {
+		return nil, err
+	}
+
+	c.AnswerProcessing = time.Since(st)
+
+	pdc, _ := json.Marshal(&Pdc{
+		S:   st.UTC().UnixNano() / 1e6,
+		N:   1,
+		P:   1,
+		Gcs: utils.RandomNumber(40, 110), //int(time.Since(st).Milliseconds()),
+	})
+
+	motion := c.NewMotionData(&Motion{
+		IsCheck: false,
+	})
+
+	C, _ := json.Marshal(&C{
+		Type: chall.C.Type,
+		Req:  chall.C.Req,
+	})
+
+	TextChall, _ := json.Marshal(&chall)
+
+	payload := url.Values{}
+	for name, value := range map[string]string{
+		`v`:          fingerprint.VERSION,
+		`sitekey`:    c.Config.SiteKey,
+		`host`:       c.Config.Domain,
+		`hl`:         LANG,
+		`action`:     `challenge-refresh`,
+		`extraData`:  string(TextChall),
+		`motionData`: motion,
+		`pdc`:        string(pdc),
+		`old_ekey`:   chall.Key,
+		`n`:          pow,
+		`c`:          string(C),
+		`pst`:        `false`,
 	} {
 		payload.Set(name, value)
 	}
