@@ -24,6 +24,8 @@ type Config struct {
 	HcAccessibility string
 	OneClick        bool
 	Href            string
+	Exec            bool
+	Dr              string
 
 	Logger *zap.Logger
 }

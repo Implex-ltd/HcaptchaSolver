@@ -35,5 +35,9 @@ type BodyNewSolveTask struct {
 	TurboSt         int    `json:"turbo_st"`
 	HcAccessibility string `json:"hc_accessibility"`
 	OneclickOnly    bool   `json:"oneclick_only"`
-	Href            string `json:"href"`
+
+	// motion data customisation
+	Href string `json:"href"`
+	Exec bool   `json:"exec"`
+	Dr   string `json:"dr"`
 }

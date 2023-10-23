@@ -318,10 +318,10 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 				Platform: c.Manager.Manager.Fingerprint.Events["702"].(map[string]interface{})["OsName"].(string),
 			},
 		},
-		DR:   "",
+		DR:   c.Config.Dr,
 		Inv:  c.Config.Invisible,
-		Exec: false,
-		Wn:   [][]int64{
+		Exec: c.Config.Exec,
+		Wn: [][]int64{
 			{
 				int64(c.Manager.Profile.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
 				int64(c.Manager.Profile.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
@@ -330,7 +330,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 			},
 		},
 		WnMp: 0,
-		Xy:   [][]int64{
+		Xy: [][]int64{
 			{
 				0, // mt.Browser.scrollX(),  // ---> return window.pageXOffset !== undefined ? window.pageXOffset : WnTime.isCSS1 ? document.documentElement.scrollLeft : document.body.scrollLeft;
 				0, // mt.Browser.scrollY(),  // ---> return window.pageYOffset !== undefined ? window.pageYOffset : WnTime.isCSS1 ? document.documentElement.scrollTop : document.body.scrollTop;

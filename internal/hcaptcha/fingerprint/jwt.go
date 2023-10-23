@@ -54,6 +54,11 @@ func ValidateJwtClaims(claims map[string]interface{}) error {
 
 func ParseJWT(token string) (*JwtData, error) {
 	payload, _ := jwt.Parse(token, nil)
+
+	if payload == nil {
+		return nil, fmt.Errorf("failed to parse jwt")
+	}
+
 	claims := payload.Claims.(jwt.MapClaims)
 
 	if err := ValidateJwtClaims(claims); err != nil {

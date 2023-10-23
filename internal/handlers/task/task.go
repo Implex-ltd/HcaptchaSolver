@@ -101,6 +101,12 @@ func checkBody(B *BodyNewSolveTask) (errors []string) {
 		errors = append(errors, "please enable a11y_tfe, if your target doesn't support it, we can't solve your captchas for now")
 	}
 
+	if B.Dr != "" {
+		if len(B.Dr) > 500 || !strings.HasPrefix(B.Proxy, "https") {
+			errors = append(errors, "dr must be a link")
+		}
+	}
+
 	if len(errors) != 0 {
 		return errors
 	}
@@ -244,6 +250,8 @@ func CreateTask(c *fiber.Ctx) error {
 		OneClick:        taskData.OneclickOnly,
 		Rqdata:          taskData.Rqdata,
 		Href:            taskData.Href,
+		Dr:              taskData.Dr,
+		Exec:            taskData.Exec,
 	})
 
 	if err != nil {
