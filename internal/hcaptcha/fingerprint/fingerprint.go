@@ -74,7 +74,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			Platform:                    B.Manager.Fingerprint.Browser.Platform,
 			MaxTouchPoints:              B.Manager.Fingerprint.Screen["MaxTouchPoints"].(float64),
 			NotificationQueryPermission: nil,
-			PluginsUndefined:            true,
+			PluginsUndefined:            false,
 		},
 		Hash: Hash{
 			Performance:   "2047758435847122209", //utils.RandomHash(19),
@@ -86,7 +86,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 		},
 		Misc: Misc{
 			UniqueKeys:    "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__",
-			InvUniqueKeys: "__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",
+			InvUniqueKeys: "__wdata,_sharedLibs,text_free_entry,sessionStorage,hsw,image_label_area_select,localStorage",
 		},
 	}
 
@@ -180,10 +180,10 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 				2,
 				int64(utils.RandomNumber(20, 300)),
 			},
-			/*{
+			{
 				3,
 				0.0, //int64(utils.RandomNumber(0, 5)),
-			},*/
+			},
 		},
 	}
 

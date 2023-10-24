@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Implex-ltd/hcsolver/internal/model"
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 	"github.com/surrealdb/surrealdb.go"
-
 )
 
 var (
@@ -39,6 +39,26 @@ func showUsers() {
 	for _, fp := range FingerprintSlice {
 		fmt.Println(fp.BypassRestrictedSites)
 
+	}
+}
+
+func doBackup() {
+	req, err := UserDB.Select("user")
+	if err != nil {
+		panic(err)
+	}
+
+	var FingerprintSlice []model.User
+	err = surrealdb.Unmarshal(req, &FingerprintSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, fp := range FingerprintSlice {
+		line := fmt.Sprintf("%s,%d,%d,%v", fp.ID, fp.Balance, fp.SolvedHcaptcha, fp.BypassRestrictedSites)
+		fmt.Println(line)
+
+		utils.AppendLine(line, "backup.csv")
 	}
 }
 
@@ -95,5 +115,6 @@ func ConnectDB(Ip, User, Pass string, Port int) {
 
 	//mergeAll()
 
-	showUsers()
+	//showUsers()
+	doBackup()
 }

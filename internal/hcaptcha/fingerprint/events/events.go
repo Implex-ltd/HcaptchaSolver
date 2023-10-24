@@ -64,8 +64,8 @@ func (E *EventManager) BuildEvents() (Events [][]interface{}) {
 		(*EventManager).Event_3502,
 		(*EventManager).Event_3503,
 		(*EventManager).Event_3504,
-		(*EventManager).Event_3801,
-		(*EventManager).Event_3802,
+		//(*EventManager).Event_3801,
+		//(*EventManager).Event_3802,
 	}
 
 	for _, eventMethod := range eventsMethods {
