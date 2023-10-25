@@ -195,6 +195,19 @@ type GetData struct {
 	Prev       Prev       `json:"prev"`
 }
 
+type CheckDataFreeTextEntry struct {
+	St  int64 `json:"st"`
+	Dct int64 `json:"dct"`
+
+	Kd   [][]int64 `json:"kd"`
+	KdMp float64   `json:"kd-mp"`
+	Ku   [][]int64 `json:"ku"`
+	KuMp float64   `json:"ku-mp"`
+
+	TopLevel TopLevel `json:"topLevel"`
+	V        int64    `json:"v"`
+}
+
 type TopLevel struct {
 	Inv  bool   `json:"inv"`
 	St   int64  `json:"st"`

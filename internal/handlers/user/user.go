@@ -94,7 +94,7 @@ func GetUser(c *fiber.Ctx) error {
 	id := c.Params("userId")
 
 	if id == "" {
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"success": false,
 			"data":    "invalid user ID",
 		})
@@ -102,7 +102,7 @@ func GetUser(c *fiber.Ctx) error {
 
 	data, err := GetUserByID(id)
 	if err != nil {
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"data":    err.Error(),
 		})

@@ -240,6 +240,89 @@ func genBoxToClick(answers map[string]string) []int {
 }
 
 /*
+	- free text entry generation
+	[key, timestamp]
+
+	> 8  = return
+	> 13 = enter
+	> 73 = i
+	> 78 = n
+	> 79 = o
+	> 85 = u
+*/
+
+const (
+	KEY_RETURN = 8
+	KEY_ENTER  = 13
+	KEY_I      = 73
+	KEY_N      = 78
+	KEY_O      = 79
+	KEY_U      = 85
+)
+
+func shuffleStrings(strings []string) []string {
+    for i := range strings {
+        j := rand.Intn(i + 1)
+        strings[i], strings[j] = strings[j], strings[i]
+    }
+
+    return strings
+}
+
+func genKd(answers []string) ([][]int64, float64) {
+	out := [][]int64{}
+	st := time.Now().UnixNano() / 1e6
+	increment := 2 * time.Millisecond
+
+	// Store times for each key press
+	keyTimes := []int64{}
+
+	getNo := func() []int64 {
+		keyStrokes := []int64{KEY_N, KEY_O, KEY_N}
+
+		for _, k := range keyStrokes {
+			keyTime := addTime(st, increment)
+			keyTimes = append(keyTimes, keyTime)
+			out = append(out, []int64{k, keyTime})
+			increment += time.Duration(rand.Intn(500)+500) * time.Millisecond
+		}
+
+		return keyTimes
+	}
+
+	getYes := func() []int64 {
+		keyStrokes := []int64{KEY_O, KEY_U, KEY_I}
+
+		for _, k := range keyStrokes {
+			keyTime := addTime(st, increment)
+			keyTimes = append(keyTimes, keyTime)
+			out = append(out, []int64{k, keyTime})
+			increment += time.Duration(rand.Intn(500)+500) * time.Millisecond
+		}
+
+		return keyTimes
+	}
+
+	for _, answer := range answers {
+		switch answer {
+		case "oui":
+			keyTimes = append(keyTimes, getYes()...)
+		case "non":
+			keyTimes = append(keyTimes, getNo()...)
+		}
+
+		increment += time.Duration(rand.Intn(1000)+1000) * time.Millisecond
+		out = append(out, []int64{KEY_ENTER, addTime(st, increment)})
+		keyTimes = append(keyTimes, addTime(st, increment))
+	}
+	
+	totalTime := keyTimes[len(keyTimes)-1] - keyTimes[0]
+	meanPeriod := float64(totalTime) / float64(len(keyTimes)-1)
+
+	return out, meanPeriod
+}
+
+/*
 * Todo: add right mouse moovements side, if box is lower/higher edit path to add right box
  */
 func (c *Hcap) NewMotionData(m *Motion) string {
@@ -261,7 +344,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	MuPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(3, 10))
 	MmPath := Click([]int{utils.RandomNumber(0, 8), utils.RandomNumber(0, 8), utils.RandomNumber(0, 8)}, st, duration, utils.RandomNumber(10, 20))
 
-	WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
+	//WnTime := time.Duration(utils.RandomNumber(20, 35)) * time.Millisecond
 	//PlotPoints(CaptchaPath)
 
 	topLevel := TopLevel{
@@ -322,21 +405,21 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 		Inv:  c.Config.Invisible,
 		Exec: c.Config.Exec,
 		Wn: [][]int64{
-			{
+			/*{
 				int64(c.Manager.Profile.Screen.AvailWidth),  // mt.Browser.width()   // ---> return window.innerWidth && window.document.documentElement.clientWidth ? Math.min(window.innerWidth, document.documentElement.clientWidth) : window.innerWidth || window.document.documentElement.clientWidth || document.body.clientWidth;
 				int64(c.Manager.Profile.Screen.AvailHeight), // mt.Browser.height()  // ---> return window.innerHeight || window.document.documentElement.clientHeight || document.body.clientHeight;
 				1,                   // mt.System.dpr()
 				addTime(st, WnTime), // Date.now()
-			},
+			},*/
 		},
 		WnMp: 0,
 		Xy: [][]int64{
-			{
+			/*{
 				0, // mt.Browser.scrollX(),  // ---> return window.pageXOffset !== undefined ? window.pageXOffset : WnTime.isCSS1 ? document.documentElement.scrollLeft : document.body.scrollLeft;
 				0, // mt.Browser.scrollY(),  // ---> return window.pageYOffset !== undefined ? window.pageYOffset : WnTime.isCSS1 ? document.documentElement.scrollTop : document.body.scrollTop;
 				int64(c.Manager.Profile.Screen.AvailWidth) / (int64(c.Manager.Profile.Screen.AvailWidth) * 2), // document.documentElement.clientWidth / mt.Browser.width(),
 				addTime(st, WnTime), // Date.now()
-			},
+			},*/
 		},
 		XyMp: 0,
 		Mm:   MmPath,
@@ -347,18 +430,34 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 
 	switch m.IsCheck {
 	case true:
-		output, _ = json.Marshal(&CheckData{
-			St:       st,
-			Dct:      st,
-			Mm:       CaptchaPath,
-			MmMp:     calculateMeanPeriod(CaptchaPath),
-			Md:       MdPath,
-			MdMp:     calculateMeanPeriod(MdPath),
-			Mu:       MuPath,
-			MuMp:     calculateMeanPeriod(MuPath),
-			TopLevel: topLevel,
-			V:        1,
-		})
+		if c.Config.FreeTextEntry {
+			keyData, meanPeriod  := genKd(shuffleStrings([]string{"oui", "oui", "non"}))
+
+			output, _ = json.Marshal(&CheckDataFreeTextEntry{
+				St:       st,
+				Dct:      st,
+				Kd:       keyData,
+				KdMp:     meanPeriod,
+				Ku:       keyData,
+				KuMp:     meanPeriod,
+				TopLevel: topLevel,
+				V:        1,
+			})
+		} else {
+			output, _ = json.Marshal(&CheckData{
+				St:       st,
+				Dct:      st,
+				Mm:       CaptchaPath,
+				MmMp:     calculateMeanPeriod(CaptchaPath),
+				Md:       MdPath,
+				MdMp:     calculateMeanPeriod(MdPath),
+				Mu:       MuPath,
+				MuMp:     calculateMeanPeriod(MuPath),
+				TopLevel: topLevel,
+				V:        1,
+			})
+		}
+
 	case false:
 		widget := "0" + utils.RandomString(10)
 

@@ -11,7 +11,6 @@ import (
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
-
 )
 
 const (
@@ -60,7 +59,7 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 		Manager:     builder,
 		Sessions:    [][]string{},
 	}
-	
+
 	if _, err := hc.Manager.GenerateProfile(); err != nil {
 		return nil, fmt.Errorf("cant generate fingerprint profile")
 	}

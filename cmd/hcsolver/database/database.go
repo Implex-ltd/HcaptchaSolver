@@ -6,6 +6,7 @@ import (
 	"github.com/Implex-ltd/hcsolver/internal/model"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
 	"github.com/surrealdb/surrealdb.go"
+
 )
 
 var (
@@ -60,6 +61,7 @@ func doBackup() {
 
 		utils.AppendLine(line, "backup.csv")
 	}
+	utils.AppendLine("-----------------------------------------", "backup.csv")
 }
 
 func ConnectDB(Ip, User, Pass string, Port int) {
