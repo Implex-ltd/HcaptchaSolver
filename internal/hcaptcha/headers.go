@@ -9,6 +9,7 @@ var (
 		`accept-language`,
 		`content-length`,
 		`content-type`,
+		`cookie`,
 		`origin`,
 		`referer`,
 		`sec-ch-ua`,

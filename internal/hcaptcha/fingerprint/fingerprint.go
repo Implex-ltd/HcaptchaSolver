@@ -82,11 +82,11 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "1945606911934343118", //utils.RandomHash(19),
+			ParrentWindow: "15431754258915566365", //utils.RandomHash(19),
 		},
 		Misc: Misc{
-			UniqueKeys:    "hcaptchaOnLoad,__OVERLAY__,__SENTRY__,__SECRET_EMOTION__,IntlPolyfill,grecaptcha,webpackChunkdiscord_app,DiscordErrors,regeneratorRuntime,__timingFunction,clearImmediate,0,2,__localeData__,platform,__BILLING_STANDALONE__,1,__DISCORD_WINDOW_ID,GLOBAL_ENV,hcaptcha,setImmediate",
-			InvUniqueKeys: "sessionStorage,hsw,localStorage,image_label_binary,_sharedLibs,__wdata",
+			UniqueKeys:    "__DISCORD_WINDOW_ID,IntlPolyfill,__timingFunction,hcaptcha,webpackChunkdiscord_app,grecaptcha,0,1,setImmediate,__SENTRY__,__localeData__,platform,__BILLING_STANDALONE__,__SECRET_EMOTION__,regeneratorRuntime,clearImmediate,GLOBAL_ENV,__OVERLAY__,DiscordErrors,hcaptchaOnLoad",
+			InvUniqueKeys: "text_free_entry,_sharedLibs,image_label_binary,sessionStorage,__wdata,hsw,localStorage",
 		},
 	}
 
