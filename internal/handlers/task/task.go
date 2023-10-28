@@ -156,8 +156,8 @@ func CreateTask(c *fiber.Ctx) error {
 		if taskData.TurboSt < 1000 {
 			taskData.TurboSt = 1000
 		}
-		if taskData.TurboSt > 10000 {
-			taskData.TurboSt = 10000
+		if taskData.TurboSt > 15000 {
+			taskData.TurboSt = 15000
 		}
 	case false:
 		taskData.TurboSt = SUBMIT
@@ -172,6 +172,7 @@ func CreateTask(c *fiber.Ctx) error {
 		}
 
 		if taskData.Turbo {
+			fmt.Println(taskData.TurboSt)
 			if taskData.TurboSt < settings.MinSubmitTime || taskData.TurboSt > settings.MaxSubmitTime {
 				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 					"success": false,

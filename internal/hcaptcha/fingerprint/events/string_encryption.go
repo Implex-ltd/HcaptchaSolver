@@ -3,14 +3,13 @@ package events
 import (
 	"encoding/base64"
 	"fmt"
+	"html"
 	"math/rand"
+	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode/utf8"
-)
-
-var (
-	charset = "abcdefghijklmnopqrstuvwxyz"
 )
 
 func Reverse(s string) string {
@@ -24,16 +23,6 @@ func Reverse(s string) string {
 	}
 
 	return string(buf)
-}
-
-func findCharIndex(char byte, charset string) int {
-	for i := 0; i < len(charset); i++ {
-		if charset[i] == char {
-			return i
-		}
-	}
-
-	return -1
 }
 
 func getRandNum(A, g int) int {
@@ -68,7 +57,7 @@ func EncStr(input string) []string {
 		return strings.Join(words, " ")
 	}(input)
 
-	b64 := Reverse(base64.RawURLEncoding.WithPadding(base64.StdPadding).EncodeToString([]byte(Reversed)))
+	b64 := Reverse(base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(Reversed))))
 	b64rand := getRandNum(1, len(b64)-1)
 
 	final := func(b64 string, i int) string {
@@ -87,4 +76,35 @@ func EncStr(input string) []string {
 		fmt.Sprintf("%x", b64rand),
 		inputArr,
 	}
+}
+
+func decode(s string) string {
+    if strings.IndexByte(s, ';') >= 0 {
+        s = html.UnescapeString(s)
+    }
+    return s
+}
+
+func DecStr(input []string) string {
+	b64rand, _ := strconv.ParseInt(input[2], 16, 64)
+	inputArr := input[3]
+	final := input[0]
+
+	// Step 1: Reverse character substitution
+	decrypted := regexp.MustCompile(fmt.Sprintf("[%v%s]", inputArr, strings.ToLower(inputArr))).ReplaceAllStringFunc(final, func(A string) string {
+		if A == strings.ToUpper(A) {
+			return strings.ToLower(A)
+		} else {
+			return strings.ToUpper(A)
+		}
+	})
+
+	// Step 2: Reverse the random Base64 offset
+	b64Len := len(decrypted)
+	reversedB64 := decrypted[b64Len-int(b64rand):] + decrypted[:b64Len-int(b64rand)]
+	decoded, _ := base64.StdEncoding.DecodeString(Reverse(reversedB64))
+
+	// Step 3: Reverse word reversal
+	reversedStr := decode(Reverse(string(decoded)))
+	return reversedStr
 }

@@ -77,16 +77,16 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            false,
 		},
 		Hash: Hash{
-			Performance:   "2047758435847122209", //utils.RandomHash(19),
+			Performance:   "2372271609278715010", //utils.RandomHash(19),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "4422642913808071616", //utils.RandomHash(19),
+			ParrentWindow: "1945606911934343118", //utils.RandomHash(19),
 		},
 		Misc: Misc{
-			UniqueKeys:    "platform,hcaptchaOnLoad,__localeData__,setImmediate,IntlPolyfill,0,GLOBAL_ENV,__timingFunction,grecaptcha,__OVERLAY__,__SENTRY__,clearImmediate,DiscordErrors,1,hcaptcha,2,__SECRET_EMOTION__,regeneratorRuntime,__BILLING_STANDALONE__,webpackChunkdiscord_app,__DISCORD_WINDOW_ID",
-			InvUniqueKeys: "image_label_binary,__wdata,localStorage,hsw,_sharedLibs,sessionStorage",
+			UniqueKeys:    "hcaptchaOnLoad,__OVERLAY__,__SENTRY__,__SECRET_EMOTION__,IntlPolyfill,grecaptcha,webpackChunkdiscord_app,DiscordErrors,regeneratorRuntime,__timingFunction,clearImmediate,0,2,__localeData__,platform,__BILLING_STANDALONE__,1,__DISCORD_WINDOW_ID,GLOBAL_ENV,hcaptcha,setImmediate",
+			InvUniqueKeys: "sessionStorage,hsw,localStorage,image_label_binary,_sharedLibs,__wdata",
 		},
 	}
 
@@ -124,10 +124,10 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			Location:        token.Location,
 			TimeoutValue:    int64(token.TimeoutValue),
 		},
-		Rand: []float64{
+		/*Rand: []float64{
 			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
 			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
-		},
+		},*/
 		Components: Components{
 			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
 			Navigator:                 B.Profile.Navigator,

@@ -19,7 +19,7 @@ var (
 
 var (
 	nocap  = true
-	apikey = "rorm-5cd874d2-0d3b-e49c-f760-f1e74b316467"
+	apikey = "uwusogaylmaoowo-0a5418e7-6826-c2c0-889f-120216260b2d" //"rorm-5cd874d2-0d3b-e49c-f760-f1e74b316467"
 	proapi = "https://pro.nocaptchaai.com/solve"
 )
 

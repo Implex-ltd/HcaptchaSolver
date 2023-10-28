@@ -59,7 +59,7 @@ var (
 )
 
 func (c *Hcap) GetHsw(jwt string) (string, error) {
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 10; i++ {
 		req := fasthttp.AcquireRequest()
 
 		switch c.Config.TaskType {
