@@ -25,10 +25,22 @@ func TestDecStr(t *testing.T) {
 			args: args{
 				input: []string{"Atm2EDnXEjn5IZm4", "2", "d", "PMXWVNTKZWOZB"},
 			},
-		},{
+		}, {
 			name: "3",
 			args: args{
 				input: []string{"ZmyudN2AdmWgTOxq", "3", "2", "MZCWFVLBUQBQD"},
+			},
+		},
+		{
+			name: "3",
+			args: args{
+				input: []string{"M0ADnxQzM1Uzn4Et", "2", "b", "KNTRWSGCLYFRB"},
+			},
+		},
+		{
+			name: "3",
+			args: args{
+				input: []string{"eTM5iTj1iTjxiTjkhJMlyGBVFGD2qdrzUSMuUzMweJM4ezMwAdnljkMl", "7", "31", "BVQJYNQIERDPC"},
 			},
 		},
 	}
