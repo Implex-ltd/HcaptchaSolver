@@ -405,7 +405,7 @@ func GetSitekeySettings(c *fiber.Ctx) error {
 	if settings == nil {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"success": true,
-			"data":    "this site-key doesn't have any restrictions",
+			"data":    "this site-key doesn't have any restrictions.",
 		})
 	} else {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{

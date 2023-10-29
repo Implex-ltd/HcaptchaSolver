@@ -10,11 +10,16 @@ import (
 	"github.com/Implex-ltd/cleanhttp/cleanhttp"
 	"github.com/Implex-ltd/fingerprint-client/fpclient"
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint"
+	"github.com/Implex-ltd/hcsolver/internal/recognizer"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
 
 const (
 	LANG = "fr"
+)
+
+var (
+	RETRY = 0
 )
 
 func NewHcaptcha(config *Config) (*Hcap, error) {
@@ -82,6 +87,35 @@ func ApplyFingerprint(config *Config) (*fpclient.Fingerprint, error) {
 	fp.Navigator.Platform = infos.OSName
 
 	return fp, nil
+}
+
+func (c *Hcap) SolveImages(captcha *Captcha) (any, error) {
+	retry := 0
+
+	for retry <= RETRY {
+		if len(captcha.Tasklist) <= 0 {
+			return nil, fmt.Errorf("no images found")
+		}
+
+		r, err := recognizer.NewRecognizer(c.Config.Proxy, captcha.RequestType, captcha.RequesterQuestion.En, captcha.RequesterRestrictedAnswerSet, captcha.Tasklist)
+		if err != nil {
+			return map[string]any{}, err
+		}
+
+		response, err := r.Recognize()
+		if err != nil {
+			return map[string]any{}, err
+		}
+
+		if !response.Success {
+			retry++
+			continue
+		}
+
+		return response.Data, nil
+	}
+
+	return nil, fmt.Errorf("max retry exceded")
 }
 
 func (c *Hcap) CheckSiteConfig() (*SiteConfig, error) {
