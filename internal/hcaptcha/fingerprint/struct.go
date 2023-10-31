@@ -21,7 +21,7 @@ type Misc struct {
 
 type Hash struct {
 	Performance, Canvas, WebGL, WebRTC, Audio, ParrentWindow string
-	CommonKeys                                               int
+	CommonKeys                                               uint32
 }
 
 type Ndata struct {
@@ -63,7 +63,7 @@ type Components struct {
 	PerformanceHash           string      `json:"performance_hash"`
 	UniqueKeys                string      `json:"unique_keys"`
 	InvUniqueKeys             string      `json:"inv_unique_keys"`
-	CommonKeysHash            int         `json:"common_keys_hash"`
+	CommonKeysHash            uint32         `json:"common_keys_hash"`
 	CommonKeysTail            string      `json:"common_keys_tail"`
 	Features                  Features    `json:"features"`
 }

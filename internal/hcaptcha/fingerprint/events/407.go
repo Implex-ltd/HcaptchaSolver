@@ -31,7 +31,7 @@ func (B *EventManager) Event_407() FingerprintEvent {
 				"hsw",
 				"__wdata",
 				"image_label_binary",
-				"text_free_entry",
+				//"text_free_entry",
 			},
 			[]interface{}{
 				[]interface{}{
