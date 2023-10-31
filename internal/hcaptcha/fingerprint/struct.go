@@ -16,11 +16,12 @@ type Builder struct {
 }
 
 type Misc struct {
-	UniqueKeys, InvUniqueKeys string
+	UniqueKeys, InvUniqueKeys, CommonKeysTails string
 }
 
 type Hash struct {
 	Performance, Canvas, WebGL, WebRTC, Audio, ParrentWindow string
+	CommonKeys                                               int
 }
 
 type Ndata struct {
@@ -34,7 +35,7 @@ type Ndata struct {
 	Stamp                       string          `json:"stamp"`
 	Href                        string          `json:"href"`
 	Errs                        Errs            `json:"errs"`
-	Perf                        [][]int64       `json:"perf"`
+	Perf                        [][]any         `json:"perf"`
 }
 
 type Components struct {
@@ -62,6 +63,8 @@ type Components struct {
 	PerformanceHash           string      `json:"performance_hash"`
 	UniqueKeys                string      `json:"unique_keys"`
 	InvUniqueKeys             string      `json:"inv_unique_keys"`
+	CommonKeysHash            int         `json:"common_keys_hash"`
+	CommonKeysTail            string      `json:"common_keys_tail"`
 	Features                  Features    `json:"features"`
 }
 

@@ -102,7 +102,7 @@ func checkBody(B *BodyNewSolveTask) (errors []string) {
 	}
 
 	if B.Dr != "" {
-		if len(B.Dr) > 500 || !strings.HasPrefix(B.Proxy, "https") {
+		if len(B.Dr) > 500 || !strings.HasPrefix(B.Dr, "https") {
 			errors = append(errors, "dr must be a link")
 		}
 	}

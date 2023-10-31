@@ -38,7 +38,7 @@ func TestNewFingerprintBuilder(t *testing.T) {
 				panic(err)
 			}
 
-			n, err := got.Build(JWT_TOKEN)
+			n, err := got.Build(JWT_TOKEN, false)
 			if err != nil {
 				panic(err)
 			}

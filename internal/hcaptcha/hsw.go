@@ -58,13 +58,13 @@ var (
 	})
 )
 
-func (c *Hcap) GetHsw(jwt string) (string, error) {
+func (c *Hcap) GetHsw(jwt string, isSubmit bool) (string, error) {
 	for i := 0; i < 10; i++ {
 		req := fasthttp.AcquireRequest()
 
 		switch c.Config.TaskType {
 		case TASKTYPE_ENTERPRISE:
-			n, err := c.Manager.Build(jwt)
+			n, err := c.Manager.Build(jwt, isSubmit)
 			if err != nil {
 				return "", fmt.Errorf("someone poop in the api and we got a error")
 			}

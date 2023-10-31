@@ -32,6 +32,12 @@ func TestDecStr(t *testing.T) {
 				input: []string{"LZkmLaVYyL2c=UUDy9gc", "1a", "8", "DTMLNQNOSLMAG"},
 			},
 		},
+		{
+			name: "3",
+			args: args{
+				input: []string{"o1cTMxEZMxYdNyKT", "17", "3", "OHZKBZZBLZLDD"},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

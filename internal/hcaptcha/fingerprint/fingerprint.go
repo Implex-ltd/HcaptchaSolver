@@ -19,7 +19,7 @@ var (
 	CollectFpArray, _ = GoCycle.NewFromFile("../../assets/cleaned.txt")
 	hcRegex           = regexp.MustCompile(`/captcha/v1/[A-Za-z0-9]+/static/images`)
 	VERSION, _        = checkForUpdate()
-	WASM              = "1.40.7"
+	WASM              = "1.40.10"
 )
 
 func NewFingerprintBuilder(useragent, href string) (*Builder, error) {
@@ -77,16 +77,18 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            false,
 		},
 		Hash: Hash{
-			Performance:   "2372271609278715010", //utils.RandomHash(19),
+			Performance:   HashString([]byte("img:imgs.hcaptcha.comnavigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "15431754258915566365", //utils.RandomHash(19),
+			ParrentWindow: "13419404057851147340", //utils.RandomHash(19),
+			CommonKeys:    2125906006,
 		},
 		Misc: Misc{
-			UniqueKeys:    "__DISCORD_WINDOW_ID,IntlPolyfill,__timingFunction,hcaptcha,webpackChunkdiscord_app,grecaptcha,0,1,setImmediate,__SENTRY__,__localeData__,platform,__BILLING_STANDALONE__,__SECRET_EMOTION__,regeneratorRuntime,clearImmediate,GLOBAL_ENV,__OVERLAY__,DiscordErrors,hcaptchaOnLoad",
-			InvUniqueKeys: "text_free_entry,_sharedLibs,image_label_binary,sessionStorage,__wdata,hsw,localStorage",
+			UniqueKeys:      "__localeData__,regeneratorRuntime,0,__BILLING_STANDALONE__,webpackChunkdiscord_app,platform,__SECRET_EMOTION__,__SENTRY__,hcaptcha,hcaptchaOnLoad,__timingFunction,DiscordErrors,clearImmediate,__OVERLAY__,grecaptcha,GLOBAL_ENV,setImmediate,1,IntlPolyfill,__DISCORD_WINDOW_ID",
+			InvUniqueKeys:   "__wdata,sessionStorage,localStorage,hsw,_sharedLibs",
+			CommonKeysTails: "chrome,fence,caches,cookieStore,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,launchQueue,sharedStorage,documentPictureInPicture,onbeforematch,getScreenDetails,openDatabase,queryLocalFonts,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,originAgentCluster,credentialless,speechSynthesis,oncontentvisibilityautostatechange,onscrollend,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,Raven", //"__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",
 		},
 	}
 
@@ -94,7 +96,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 	return &p, nil
 }
 
-func (B *Builder) Build(jwt string) (*Ndata, error) {
+func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 	/*Profile, err := B.GenerateProfile()
 	if err != nil {
 		return nil, err
@@ -105,10 +107,10 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		return nil, err
 	}
 
-	/*stamp, err := GetStamp(token.PowData)
+	stamp, err := GetStamp(uint(token.Difficuly), token.PowData)
 	if err != nil {
 		return nil, fmt.Errorf("pow error")
-	}*/
+	}
 
 	V := strings.Split(token.Location, "https://newassets.hcaptcha.com/c/")
 	if len(V) == 1 {
@@ -124,10 +126,9 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			Location:        token.Location,
 			TimeoutValue:    int64(token.TimeoutValue),
 		},
-		/*Rand: []float64{
+		Rand: []float64{
 			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
-			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
-		},*/
+		},
 		Components: Components{
 			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
 			Navigator:                 B.Profile.Navigator,
@@ -140,7 +141,7 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			CanvasHash:                B.Profile.Hash.Canvas,
 			HasTouch:                  B.Manager.Fingerprint.Events["107"].(map[string]interface{})["touchEvent"].(bool),
 			NotificationAPIPermission: "Denied",
-			Chrome:                    true, //strings.Contains(B.Manager.Fingerprint.Browser.UserAgent, "Chrome"),
+			Chrome:                    strings.Contains(B.Manager.Fingerprint.Browser.UserAgent, "Chrome"),
 			ToStringLength:            33,
 			ErrFirefox:                nil,
 			RBotScore:                 0,
@@ -155,6 +156,8 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			PerformanceHash: B.Profile.Hash.Performance,
 			UniqueKeys:      B.Profile.Misc.UniqueKeys,
 			InvUniqueKeys:   B.Profile.Misc.InvUniqueKeys,
+			CommonKeysHash:  B.Profile.Hash.CommonKeys,
+			CommonKeysTail:  B.Profile.Misc.CommonKeysTails,
 			Features: Features{
 				PerformanceEntries: true,
 				WebAudio:           true,
@@ -165,20 +168,20 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		},
 		FingerprintEvents:           B.Manager.BuildEvents(),
 		FingerprintSuspiciousEvents: []string{},
-		//Stamp:                       stamp,
-		Href: B.Manager.Href,
+		Stamp:                       stamp,
+		Href:                        B.Manager.Href,
 		Errs: Errs{
 			List: []string{},
 		},
-		//StackData: []string{},
-		Perf: [][]int64{
+		StackData: []string{},
+		Perf: [][]any{
 			{
 				1,
-				int64(utils.RandomNumber(5, 100)),
+				float64(utils.RandomNumber(5, 100)),
 			},
 			{
 				2,
-				int64(utils.RandomNumber(20, 300)),
+				float64(utils.RandomNumber(20, 300)),
 			},
 			{
 				3,
@@ -187,6 +190,25 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		},
 	}
 
+	log.Println(stamp)
+
+	if isSubmit {
+		N.StackData = []string{
+			"new Promise (<anonymous>)",
+		}
+	}
+
+	b, err := json.Marshal(N)
+	if err != nil {
+		panic(err)
+	}
+
+	_, rand_int := RandHash(b)
+	N.Rand = append(N.Rand, rand_int)
+
+
+	fmt.Println(N.Rand)
+	
 	return &N, nil
 }
 

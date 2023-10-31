@@ -153,7 +153,7 @@ func (c *Hcap) GetChallenge(config *SiteConfig) (*Captcha, error) {
 
 	st := time.Now()
 
-	pow, err = c.GetHsw(config.C.Req)
+	pow, err = c.GetHsw(config.C.Req, false)
 	if err != nil {
 		return nil, err
 	}
@@ -248,7 +248,7 @@ func (c *Hcap) GetChallengeFreeTextEntry(config *SiteConfig) (*Captcha, error) {
 
 	st := time.Now()
 
-	pow, err = c.GetHsw(chall.C.Req)
+	pow, err = c.GetHsw(chall.C.Req, false)
 	if err != nil {
 		return nil, err
 	}
@@ -353,7 +353,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 	}()
 
 	go func() {
-		pow, err = c.GetHsw(captcha.C.Req)
+		pow, err = c.GetHsw(captcha.C.Req, true)
 		if err != nil {
 			resultChans <- err
 			return
