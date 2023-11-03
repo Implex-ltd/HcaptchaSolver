@@ -27,6 +27,6 @@ func (B *EventManager) Event_107() FingerprintEvent {
 
 	return FingerprintEvent{
 		107,
-		data,
+		data, //"[3440,1440,3440,1392,24,24,false,0,1,0,0,true,true,true,false]",
 	}
 }

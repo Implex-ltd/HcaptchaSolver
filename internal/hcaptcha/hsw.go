@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	NORMAL_ADDR = "http://127.0.0.1:4321"
+	NORMAL_ADDR = "http://127.0.0.1:3030"
 )
 
 var (
@@ -66,6 +66,7 @@ func (c *Hcap) GetHsw(jwt string, isSubmit bool) (string, error) {
 		case TASKTYPE_ENTERPRISE:
 			n, err := c.Manager.Build(jwt, isSubmit)
 			if err != nil {
+				fmt.Println(err)
 				return "", fmt.Errorf("someone poop in the api and we got a error")
 			}
 

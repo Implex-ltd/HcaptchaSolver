@@ -79,12 +79,12 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            false,
 		},
 		Hash: Hash{
-			Performance:   HashString([]byte("navigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
+			Performance:   "11097854906383886648", //HashString([]byte("navigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: utils.RandomHash(19),
+			ParrentWindow: "13419404057851147340", //utils.RandomHash(19),
 			CommonKeys:    hash,
 		},
 		Misc: Misc{
@@ -129,7 +129,9 @@ func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 			TimeoutValue:    int64(token.TimeoutValue),
 		},
 		Rand: []float64{
-			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
+			// 0.13396570613838654
+			utils.RandomFloat64Precission(0, 1, 10000000000000000.0),
+			//0.0004674382952947198,
 		},
 		Components: Components{
 			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
@@ -192,23 +194,19 @@ func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 		},
 	}
 
-	log.Println(stamp)
-
 	if isSubmit {
 		N.StackData = []string{
 			"new Promise (<anonymous>)",
 		}
+
+		b, err := json.Marshal(N)
+		if err != nil {
+			panic(err)
+		}
+
+		_, rand_int := RandHash(b)
+		N.Rand = append(N.Rand, rand_int)
 	}
-
-	b, err := json.Marshal(N)
-	if err != nil {
-		panic(err)
-	}
-
-	_, rand_int := RandHash(b)
-	N.Rand = append(N.Rand, rand_int)
-
-	fmt.Println(N.Rand)
 
 	return &N, nil
 }

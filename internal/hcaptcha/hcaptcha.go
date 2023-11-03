@@ -41,8 +41,8 @@ func NewHcaptcha(config *Config) (*Hcap, error) {
 
 	// edit fp to match scrapped one
 	fp.Navigator.Languages = builder.Profile.Navigator.Languages
-	fp.Navigator.Language = builder.Profile.Navigator.Language
-	fp.Navigator.Platform = builder.Profile.Navigator.Platform
+	fp.Navigator.Language =  builder.Profile.Navigator.Language
+	fp.Navigator.Platform =  builder.Profile.Navigator.Platform
 
 	c, err := cleanhttp.NewFastCleanHttpClient(&cleanhttp.Config{
 		Proxy:               config.Proxy,
@@ -258,7 +258,7 @@ func (c *Hcap) GetChallengeFreeTextEntry(config *SiteConfig) (*Captcha, error) {
 	pdc, _ := json.Marshal(&Pdc{
 		S:   st.UTC().UnixNano() / 1e6,
 		N:   1,
-		P:   1,
+		P:   2,
 		Gcs: utils.RandomNumber(40, 110), //int(time.Since(st).Milliseconds()),
 	})
 

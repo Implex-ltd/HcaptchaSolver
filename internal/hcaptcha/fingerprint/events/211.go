@@ -7,6 +7,6 @@ package events
 func (B *EventManager) Event_211() FingerprintEvent {
 	return FingerprintEvent{
 		211,
-		Stringify(B.Fingerprint.Events["211"]),
+		"[-6.172840118408203,-20.710678100585938,120.71067810058594,-20.710678100585938,141.42135620117188,120.71067810058594,-20.710678100585938,141.42135620117188,-20.710678100585938,-20.710678100585938,0,0,400,600,true]", //Stringify(B.Fingerprint.Events["211"]),
 	}
 }
