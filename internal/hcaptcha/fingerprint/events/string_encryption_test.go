@@ -17,28 +17,26 @@ func TestDecStr(t *testing.T) {
 		{
 			name: "1",
 			args: args{
-				input: EncStr("Europe/Paris"),
+				input: EncStr("Google Inc. (NVIDIA)"),
 			},
-		},
-		{
-			name: "2",
+		},{
+			name: "1",
 			args: args{
-				input: []string{"Atm2EDnXEjn5IZm4", "2", "d", "PMXWVNTKZWOZB"},
+				input: EncStr("Google Inc. (NVIDIA)"),
 			},
-		},
-		{
-			name: "3",
+		},{
+			name: "1",
 			args: args{
-				input: []string{"LZkmLaVYyL2c=UUDy9gc", "1a", "8", "DTMLNQNOSLMAG"},
+				input: EncStr("Google Inc. (NVIDIA)"),
 			},
-		},
-		{
-			name: "3",
+		},{
+			name: "1",
 			args: args{
-				input: []string{"o1cTMxEZMxYdNyKT", "17", "3", "OHZKBZZBLZLDD"},
+				input: EncStr("Google Inc. (NVIDIA)"),
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fmt.Println(tt.args.input)

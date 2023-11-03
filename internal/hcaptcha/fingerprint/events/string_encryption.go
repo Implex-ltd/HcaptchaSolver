@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"html"
 	"math/rand"
-	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
+)
+
+const (
+	charset = "abcdefghijklmnopqrstuvwxyz"
 )
 
 func Reverse(s string) string {
@@ -33,6 +36,11 @@ func getRandomChar(min, max int) byte {
 	return byte(rand.Intn(max-min+1) + min)
 }
 
+func indexOf(str, substr string) int {
+	index := strings.Index(str, substr)
+	return index
+}
+
 func EncStr(input string) []string {
 	inputArr := func() string {
 		var out []byte
@@ -54,10 +62,32 @@ func EncStr(input string) []string {
 			words = append(words, Reverse(word))
 		}
 
-		return strings.Join(words, " ")
+		chars := strings.Split(strings.Join(words, " "), "")
+
+		swap := func(c string) string {
+			if !strings.Contains(charset, strings.ToLower(c)) {
+				return c
+			}
+
+			i := indexOf(charset, strings.ToLower(c))
+			b := string(charset[(i+randA)%26])
+
+			if c == strings.ToUpper(c) {
+				return strings.ToUpper(b)
+			} else {
+				return b
+			}
+		}
+
+		output := []string{}
+		for _, c := range chars {
+			output = append(output, swap(c))
+		}
+
+		return strings.Join(output, "")
 	}(input)
 
-	b64 := Reverse(base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(Reversed))))
+	b64 := Reverse(base64.StdEncoding.EncodeToString([]byte(Reversed)))
 	b64rand := getRandNum(1, len(b64)-1)
 
 	final := func(b64 string, i int) string {
@@ -79,10 +109,10 @@ func EncStr(input string) []string {
 }
 
 func decode(s string) string {
-    if strings.IndexByte(s, ';') >= 0 {
-        s = html.UnescapeString(s)
-    }
-    return s
+	if strings.IndexByte(s, ';') >= 0 {
+		s = html.UnescapeString(s)
+	}
+	return s
 }
 
 func DecStr(input []string) string {

@@ -57,7 +57,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 
 	B.Manager.UserAgent = B.Manager.Fingerprint.Browser.UserAgent
 
-	hash, _ := RandHash([]byte("Raven,alert,atob,blur,btoa,caches,cancelAnimationFrame,cancelIdleCallback,captureEvents,chrome,clearInterval,clearTimeout,clientInformation,close,closed,confirm,cookieStore,createImageBitmap,credentialless,crossOriginIsolated,crypto,customElements,devicePixelRatio,document,documentPictureInPicture,external,fence,fetch,find,focus,frameElement,frames,getComputedStyle,getScreenDetails,getSelection,history,indexedDB,innerHeight,innerWidth,isSecureContext,launchQueue,length,localStorage,location,locationbar,matchMedia,menubar,moveBy,moveTo,name,navigation,navigator,onabort,onafterprint,onanimationend,onanimationiteration,onanimationstart,onappinstalled,onauxclick,onbeforeinput,onbeforeinstallprompt,onbeforematch,onbeforeprint,onbeforetoggle,onbeforeunload,onbeforexrselect,onblur,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontentvisibilityautostatechange,oncontextlost,oncontextmenu,oncontextrestored,oncuechange,ondblclick,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,onerror,onfocus,onformdata,ongotpointercapture,onhashchange,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onlanguagechange,onload,onloadeddata,onloadedmetadata,onloadstart,onlostpointercapture,onmessage,onmessageerror,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onoffline,ononline,onpagehide,onpageshow,onpause,onplay,onplaying,onpointercancel,onpointerdown,onpointerenter,onpointerleave,onpointermove,onpointerout,onpointerover,onpointerrawupdate,onpointerup,onpopstate,onprogress,onratechange,onrejectionhandled,onreset,onresize,onscroll,onscrollend,onsearch,onsecuritypolicyviolation,onseeked,onseeking,onselect,onselectionchange,onselectstart,onslotchange,onstalled,onstorage,onsubmit,onsuspend,ontimeupdate,ontoggle,ontransitioncancel,ontransitionend,ontransitionrun,ontransitionstart,onunhandledrejection,onunload,onvolumechange,onwaiting,onwebkitanimationend,onwebkitanimationiteration,onwebkitanimationstart,onwebkittransitionend,onwheel,open,openDatabase,opener,origin,originAgentCluster,outerHeight,outerWidth,pageXOffset,pageYOffset,parent,performance,personalbar,postMessage,print,prompt,queryLocalFonts,queueMicrotask,releaseEvents,reportError,requestAnimationFrame,requestIdleCallback,resizeBy,resizeTo,scheduler,screen,screenLeft,screenTop,screenX,screenY,scroll,scrollBy,scrollTo,scrollX,scrollY,scrollbars,self,sessionStorage,setInterval,setTimeout,sharedStorage,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,speechSynthesis,status,statusbar,stop,structuredClone,styleMedia,toolbar,top,trustedTypes,visualViewport,webkitCancelAnimationFrame,webkitRequestAnimationFrame,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,window"))
+	//hash, _ := RandHash([]byte("Raven,alert,atob,blur,btoa,caches,cancelAnimationFrame,cancelIdleCallback,captureEvents,chrome,clearInterval,clearTimeout,clientInformation,close,closed,confirm,cookieStore,createImageBitmap,credentialless,crossOriginIsolated,crypto,customElements,devicePixelRatio,document,documentPictureInPicture,external,fence,fetch,find,focus,frameElement,frames,getComputedStyle,getScreenDetails,getSelection,history,indexedDB,innerHeight,innerWidth,isSecureContext,launchQueue,length,localStorage,location,locationbar,matchMedia,menubar,moveBy,moveTo,name,navigation,navigator,onabort,onafterprint,onanimationend,onanimationiteration,onanimationstart,onappinstalled,onauxclick,onbeforeinput,onbeforeinstallprompt,onbeforematch,onbeforeprint,onbeforetoggle,onbeforeunload,onbeforexrselect,onblur,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontentvisibilityautostatechange,oncontextlost,oncontextmenu,oncontextrestored,oncuechange,ondblclick,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,onerror,onfocus,onformdata,ongotpointercapture,onhashchange,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onlanguagechange,onload,onloadeddata,onloadedmetadata,onloadstart,onlostpointercapture,onmessage,onmessageerror,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onoffline,ononline,onpagehide,onpageshow,onpause,onplay,onplaying,onpointercancel,onpointerdown,onpointerenter,onpointerleave,onpointermove,onpointerout,onpointerover,onpointerrawupdate,onpointerup,onpopstate,onprogress,onratechange,onrejectionhandled,onreset,onresize,onscroll,onscrollend,onsearch,onsecuritypolicyviolation,onseeked,onseeking,onselect,onselectionchange,onselectstart,onslotchange,onstalled,onstorage,onsubmit,onsuspend,ontimeupdate,ontoggle,ontransitioncancel,ontransitionend,ontransitionrun,ontransitionstart,onunhandledrejection,onunload,onvolumechange,onwaiting,onwebkitanimationend,onwebkitanimationiteration,onwebkitanimationstart,onwebkittransitionend,onwheel,open,openDatabase,opener,origin,originAgentCluster,outerHeight,outerWidth,pageXOffset,pageYOffset,parent,performance,personalbar,postMessage,print,prompt,queryLocalFonts,queueMicrotask,releaseEvents,reportError,requestAnimationFrame,requestIdleCallback,resizeBy,resizeTo,scheduler,screen,screenLeft,screenTop,screenX,screenY,scroll,scrollBy,scrollTo,scrollX,scrollY,scrollbars,self,sessionStorage,setInterval,setTimeout,sharedStorage,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,speechSynthesis,status,statusbar,stop,structuredClone,styleMedia,toolbar,top,trustedTypes,visualViewport,webkitCancelAnimationFrame,webkitRequestAnimationFrame,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,window"))
 
 	p := Profile{
 		UserAgent: B.Manager.UserAgent,
@@ -84,8 +84,8 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: utils.RandomHash(19),
-			CommonKeys:    hash,
+			ParrentWindow: "13419404057851147340", //utils.RandomHash(19),
+			CommonKeys:    2125906006,
 		},
 		Misc: Misc{
 			UniqueKeys:      "__localeData__,regeneratorRuntime,0,__BILLING_STANDALONE__,webpackChunkdiscord_app,platform,__SECRET_EMOTION__,__SENTRY__,hcaptcha,hcaptchaOnLoad,__timingFunction,DiscordErrors,clearImmediate,__OVERLAY__,grecaptcha,GLOBAL_ENV,setImmediate,1,IntlPolyfill,__DISCORD_WINDOW_ID",
@@ -199,14 +199,16 @@ func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 			"new Promise (<anonymous>)",
 		}
 
-		b, err := json.Marshal(N)
+		
+	}
+
+	b, err := json.Marshal(N)
 		if err != nil {
 			panic(err)
 		}
 
 		_, rand_int := RandHash(b)
 		N.Rand = append(N.Rand, rand_int)
-	}
 
 	return &N, nil
 }
