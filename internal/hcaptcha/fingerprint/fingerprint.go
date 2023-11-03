@@ -79,12 +79,12 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            false,
 		},
 		Hash: Hash{
-			Performance:   "11097854906383886648", //HashString([]byte("navigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
+			Performance:   HashString([]byte("navigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "13419404057851147340", //utils.RandomHash(19),
+			ParrentWindow: utils.RandomHash(19),
 			CommonKeys:    hash,
 		},
 		Misc: Misc{
