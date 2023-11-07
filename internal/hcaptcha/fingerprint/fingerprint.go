@@ -80,12 +80,12 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			PluginsUndefined:            false,
 		},
 		Hash: Hash{
-			Performance:   "2372271609278715010",//utils.RandomHash(19), //HashString([]byte("navigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
+			Performance:   HashString([]byte("navigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
-			ParrentWindow: "13419404057851147340", //utils.RandomHash(19),
+			ParrentWindow: utils.RandomHash(19),
 			CommonKeys:    2125906006,
 		},
 		Misc: Misc{
@@ -190,7 +190,7 @@ func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 			},
 			{
 				3,
-				0.0, //int64(utils.RandomNumber(0, 5)),
+				int64(utils.RandomNumber(0, 5)),
 			},
 		},
 	}
