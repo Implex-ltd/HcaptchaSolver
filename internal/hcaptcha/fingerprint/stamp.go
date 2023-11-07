@@ -40,24 +40,29 @@ func New(bits uint, saltLen uint, extra string) *StampHash {
 	return h
 }
 
-func NewStd() *StampHash {
-	return New(2, 8, "")
+func NewStd(difficulty uint) *StampHash {
+	return New(difficulty, 8, "")
 }
 
 func (h *StampHash) Mint(resource string) (string, error) {
+	version := "1"
+
 	salt, err := h.getSalt()
 	if err != nil {
 		return "", err
 	}
 	date := time.Now().Format(dateFormat)
 	counter := 0
+
 	var stamp string
 	for {
-		stamp = fmt.Sprintf("1:%d:%s:%s:%s:%s:%x",
-			h.bits, date, resource, h.extra, salt, counter)
+		stamp = fmt.Sprintf("%s:%d:%s:%s:%s:%s:%x",
+			version, h.bits/2, date, resource, h.extra, salt, counter)
+
 		if h.checkZeros(stamp) {
 			return stamp, nil
 		}
+
 		counter++
 	}
 }
@@ -86,6 +91,7 @@ func (h *StampHash) getSalt() (string, error) {
 func (h *StampHash) checkZeros(stamp string) bool {
 	h.hasher.Reset()
 	h.hasher.Write([]byte(stamp))
+
 	sum := h.hasher.Sum(nil)
 	sumUint64 := binary.BigEndian.Uint64(sum)
 	sumBits := strconv.FormatUint(sumUint64, 2)
@@ -107,10 +113,7 @@ func (h *StampHash) checkDate(stamp string) bool {
 	return duration.Hours()*2 <= 48
 }
 
-var (
-	H = NewStd()
-)
-
-func GetStamp(data string) (string, error) {
+func GetStamp(difficulty uint, data string) (string, error) {
+	H := NewStd(difficulty*2)
 	return H.Mint(data)
 }

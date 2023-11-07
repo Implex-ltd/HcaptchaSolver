@@ -23,6 +23,9 @@ type Config struct {
 	TurboSt         int
 	HcAccessibility string
 	OneClick        bool
+	Href            string
+	Exec            bool
+	Dr              string
 
 	Logger *zap.Logger
 }
@@ -41,6 +44,9 @@ type Hcap struct {
 
 	Logger  *zap.Logger
 	Manager *fingerprint.Builder
+
+	Sessions     [][]string
+	WidgetIDList []string
 }
 
 type Motion struct {
@@ -182,11 +188,24 @@ type GetData struct {
 	Mu   [][]int64 `json:"mu"`
 	MuMp float64   `json:"mu-mp"`
 
-	Session    []string `json:"session"`
-	WidgetList []string `json:"widgetList"`
-	WidgetID   string   `json:"widgetId"`
-	Href       string   `json:"href"`
-	Prev       Prev     `json:"prev"`
+	Session    [][]string `json:"session"`
+	WidgetList []string   `json:"widgetList"`
+	WidgetID   string     `json:"widgetId"`
+	Href       string     `json:"href"`
+	Prev       Prev       `json:"prev"`
+}
+
+type CheckDataFreeTextEntry struct {
+	St  int64 `json:"st"`
+	Dct int64 `json:"dct"`
+
+	Kd   [][]int64 `json:"kd"`
+	KdMp float64   `json:"kd-mp"`
+	Ku   [][]int64 `json:"ku"`
+	KuMp float64   `json:"ku-mp"`
+
+	TopLevel TopLevel `json:"topLevel"`
+	V        int64    `json:"v"`
 }
 
 type TopLevel struct {

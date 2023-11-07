@@ -12,6 +12,21 @@ type Settings struct {
 
 var (
 	WebsiteSettings = map[string]Settings{
+		/*
+			Epic game
+		*/
+		"b364b1fd-e3d8-4d24-8c41-77a19604b00d": {
+			MinSubmitTime: 3200,
+			MaxSubmitTime: 13000,
+			AlwaysText:    false,
+			Domain:        "www.epicgames.com",
+			Enabled:       false,
+		},
+
+		/*
+		 Discord
+		*/
+
 		// friend req
 		"a9b5fb07-92ff-493f-86fe-352a2803b3df": {
 			MinSubmitTime: 3200,
@@ -42,7 +57,7 @@ var (
 			MaxSubmitTime: 13000,
 			AlwaysText:    true,
 			Domain:        "discord.com",
-			Enabled:       true,
+			Enabled:       false,
 		},
 	}
 )

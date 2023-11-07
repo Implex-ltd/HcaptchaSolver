@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	NORMAL_ADDR = "http://127.0.0.1:4321"
+	NORMAL_ADDR = "http://127.0.0.1:3030"
 )
 
 var (
@@ -58,20 +58,21 @@ var (
 	})
 )
 
-func (c *Hcap) GetHsw(jwt string) (string, error) {
-	for i := 0; i < 5; i++ {
+func (c *Hcap) GetHsw(jwt string, isSubmit bool) (string, error) {
+	for i := 0; i < 10; i++ {
 		req := fasthttp.AcquireRequest()
 
 		switch c.Config.TaskType {
 		case TASKTYPE_ENTERPRISE:
-			n, err := c.Manager.Build(jwt)
+			n, err := c.Manager.Build(jwt, isSubmit)
 			if err != nil {
-				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+				fmt.Println(err)
+				return "", fmt.Errorf("someone poop in the api and we got a error")
 			}
 
 			out, err := json.Marshal(n)
 			if err != nil {
-				return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+				return "", fmt.Errorf("someone poop in the api and we got a error")
 			}
 
 			fp := base64.StdEncoding.EncodeToString(out)
@@ -102,5 +103,5 @@ func (c *Hcap) GetHsw(jwt string) (string, error) {
 		return string(resp.Body()), nil
 	}
 
-	return "", fmt.Errorf("someone poop in the api and we got a shitty error")
+	return "", fmt.Errorf("someone poop in the api and we got a error")
 }

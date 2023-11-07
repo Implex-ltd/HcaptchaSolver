@@ -4,11 +4,13 @@
 
 package events
 
+
 import (
 	"fmt"
 
 	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
+
 
 func (B *EventManager) Event_0() FingerprintEvent {
 	return FingerprintEvent{

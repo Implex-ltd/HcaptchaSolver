@@ -6,13 +6,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/surrealdb/surrealdb.go"
-	"go.uber.org/zap"
-
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/config"
 	"github.com/Implex-ltd/hcsolver/cmd/hcsolver/database"
 	"github.com/Implex-ltd/hcsolver/internal/model"
+	"github.com/gofiber/fiber/v2"
+	"github.com/surrealdb/surrealdb.go"
+	"go.uber.org/zap"
 )
 
 var (
@@ -69,10 +68,11 @@ func CreateUser(c *fiber.Ctx) error {
 	db := database.UserDB
 
 	data, err := db.Create("user", model.User{
-		Balance:            0.0,
-		SolvedHcaptcha:     0,
-		ThreadMaxHcaptcha:  100,
-		ThreadUsedHcaptcha: 0,
+		Balance:               0.0,
+		SolvedHcaptcha:        0,
+		ThreadMaxHcaptcha:     100,
+		ThreadUsedHcaptcha:    0,
+		BypassRestrictedSites: false,
 	})
 
 	if err != nil {
@@ -94,7 +94,7 @@ func GetUser(c *fiber.Ctx) error {
 	id := c.Params("userId")
 
 	if id == "" {
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"success": false,
 			"data":    "invalid user ID",
 		})
@@ -102,7 +102,7 @@ func GetUser(c *fiber.Ctx) error {
 
 	data, err := GetUserByID(id)
 	if err != nil {
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"data":    err.Error(),
 		})
@@ -133,6 +133,40 @@ func AddBalance(c *fiber.Ctx) error {
 
 	user, err := EditUser(data.User, func(u *model.User) {
 		u.Balance += data.Amount
+	})
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"data":    err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"data":    user,
+	})
+}
+
+func SetypassRestricted(c *fiber.Ctx) error {
+	var data BodySetBypass
+
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    "invalid task body",
+		})
+	}
+
+	if !strings.HasPrefix(data.User, "user:") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"data":    "invalid task body",
+		})
+	}
+
+	user, err := EditUser(data.User, func(u *model.User) {
+		u.BypassRestrictedSites = data.Enabled
 	})
 
 	if err != nil {

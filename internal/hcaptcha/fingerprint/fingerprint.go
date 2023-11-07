@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/0xF7A4C6/GoCycle"
-
 	"github.com/Implex-ltd/hcsolver/internal/hcaptcha/fingerprint/events"
 	"github.com/Implex-ltd/hcsolver/internal/utils"
 )
@@ -20,7 +19,7 @@ var (
 	CollectFpArray, _ = GoCycle.NewFromFile("../../assets/cleaned.txt")
 	hcRegex           = regexp.MustCompile(`/captcha/v1/[A-Za-z0-9]+/static/images`)
 	VERSION, _        = checkForUpdate()
-	WASM              = "1.40.7"
+	WASM              = "1.40.10"
 )
 
 func NewFingerprintBuilder(useragent, href string) (*Builder, error) {
@@ -58,6 +57,9 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 
 	B.Manager.UserAgent = B.Manager.Fingerprint.Browser.UserAgent
 
+	//hash, _ := RandHash([]byte("Raven,alert,atob,blur,btoa,caches,cancelAnimationFrame,cancelIdleCallback,captureEvents,chrome,clearInterval,clearTimeout,clientInformation,close,closed,confirm,cookieStore,createImageBitmap,credentialless,crossOriginIsolated,crypto,customElements,devicePixelRatio,document,documentPictureInPicture,external,fence,fetch,find,focus,frameElement,frames,getComputedStyle,getScreenDetails,getSelection,history,indexedDB,innerHeight,innerWidth,isSecureContext,launchQueue,length,localStorage,location,locationbar,matchMedia,menubar,moveBy,moveTo,name,navigation,navigator,onabort,onafterprint,onanimationend,onanimationiteration,onanimationstart,onappinstalled,onauxclick,onbeforeinput,onbeforeinstallprompt,onbeforematch,onbeforeprint,onbeforetoggle,onbeforeunload,onbeforexrselect,onblur,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontentvisibilityautostatechange,oncontextlost,oncontextmenu,oncontextrestored,oncuechange,ondblclick,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,onerror,onfocus,onformdata,ongotpointercapture,onhashchange,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onlanguagechange,onload,onloadeddata,onloadedmetadata,onloadstart,onlostpointercapture,onmessage,onmessageerror,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onoffline,ononline,onpagehide,onpageshow,onpause,onplay,onplaying,onpointercancel,onpointerdown,onpointerenter,onpointerleave,onpointermove,onpointerout,onpointerover,onpointerrawupdate,onpointerup,onpopstate,onprogress,onratechange,onrejectionhandled,onreset,onresize,onscroll,onscrollend,onsearch,onsecuritypolicyviolation,onseeked,onseeking,onselect,onselectionchange,onselectstart,onslotchange,onstalled,onstorage,onsubmit,onsuspend,ontimeupdate,ontoggle,ontransitioncancel,ontransitionend,ontransitionrun,ontransitionstart,onunhandledrejection,onunload,onvolumechange,onwaiting,onwebkitanimationend,onwebkitanimationiteration,onwebkitanimationstart,onwebkittransitionend,onwheel,open,openDatabase,opener,origin,originAgentCluster,outerHeight,outerWidth,pageXOffset,pageYOffset,parent,performance,personalbar,postMessage,print,prompt,queryLocalFonts,queueMicrotask,releaseEvents,reportError,requestAnimationFrame,requestIdleCallback,resizeBy,resizeTo,scheduler,screen,screenLeft,screenTop,screenX,screenY,scroll,scrollBy,scrollTo,scrollX,scrollY,scrollbars,self,sessionStorage,setInterval,setTimeout,sharedStorage,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,speechSynthesis,status,statusbar,stop,structuredClone,styleMedia,toolbar,top,trustedTypes,visualViewport,webkitCancelAnimationFrame,webkitRequestAnimationFrame,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,window"))
+	//hash, _ := RandHash([]byte(utils.RandomString(80)))
+
 	p := Profile{
 		UserAgent: B.Manager.UserAgent,
 		Screen: Screen{
@@ -75,19 +77,21 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			Platform:                    B.Manager.Fingerprint.Browser.Platform,
 			MaxTouchPoints:              B.Manager.Fingerprint.Screen["MaxTouchPoints"].(float64),
 			NotificationQueryPermission: nil,
-			PluginsUndefined:            true,
+			PluginsUndefined:            false,
 		},
 		Hash: Hash{
-			Performance:   utils.RandomHash(19),
+			Performance:   HashString([]byte("navigation:newassets.hcaptcha.comscript:newassets.hcaptcha.comxmlhttprequest:hcaptcha.com")),
 			Canvas:        utils.RandomHash(19),
 			WebGL:         "-1",
 			WebRTC:        "-1",
 			Audio:         "-1",
 			ParrentWindow: utils.RandomHash(19),
+			CommonKeys:    2125906006,
 		},
 		Misc: Misc{
-			UniqueKeys:    "0,IntlPolyfill,hcaptcha,__SECRET_EMOTION__,DiscordSentry,grecaptcha,platform,1,__sentry_instrumentation_handlers__,setImmediate,webpackChunkdiscord_app,2,_,GLOBAL_ENV,clearImmediate,__localeData__,__OVERLAY__,__SENTRY__,regeneratorRuntime,hcaptchaOnLoad,__timingFunction,DiscordErrors,__DISCORD_WINDOW_ID,__BILLING_STANDALONE__",
-			InvUniqueKeys: "__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",
+			UniqueKeys:      "__localeData__,regeneratorRuntime,0,__BILLING_STANDALONE__,webpackChunkdiscord_app,platform,__SECRET_EMOTION__,__SENTRY__,hcaptcha,hcaptchaOnLoad,__timingFunction,DiscordErrors,clearImmediate,__OVERLAY__,grecaptcha,GLOBAL_ENV,setImmediate,1,IntlPolyfill,__DISCORD_WINDOW_ID",
+			InvUniqueKeys:   "__wdata,sessionStorage,localStorage,hsw,_sharedLibs",
+			CommonKeysTails: "chrome,fence,caches,cookieStore,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,launchQueue,sharedStorage,documentPictureInPicture,onbeforematch,getScreenDetails,openDatabase,queryLocalFonts,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,originAgentCluster,credentialless,speechSynthesis,oncontentvisibilityautostatechange,onscrollend,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,Raven", //"__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",
 		},
 	}
 
@@ -95,21 +99,21 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 	return &p, nil
 }
 
-func (B *Builder) Build(jwt string) (*Ndata, error) {
-	Profile, err := B.GenerateProfile()
+func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
+	/*Profile, err := B.GenerateProfile()
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
 	token, err := ParseJWT(jwt)
 	if err != nil {
 		return nil, err
 	}
 
-	/*stamp, err := GetStamp(token.PowData)
+	stamp, err := GetStamp(uint(token.Difficuly), token.PowData)
 	if err != nil {
 		return nil, fmt.Errorf("pow error")
-	}*/
+	}
 
 	V := strings.Split(token.Location, "https://newassets.hcaptcha.com/c/")
 	if len(V) == 1 {
@@ -126,36 +130,39 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 			TimeoutValue:    int64(token.TimeoutValue),
 		},
 		Rand: []float64{
-			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
-			utils.RandomFloat64Precission(0, 1, 100000000000000000.0),
+			// 0.13396570613838654
+			utils.RandomFloat64Precission(0, 1, 10000000000000000.0),
+			//0.0004674382952947198,
 		},
 		Components: Components{
 			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
-			Navigator:                 Profile.Navigator,
-			Screen:                    Profile.Screen,
+			Navigator:                 B.Profile.Navigator,
+			Screen:                    B.Profile.Screen,
 			DevicePixelRatio:          B.Manager.Fingerprint.Screen["DevicePixelRatio"].(float64),
 			HasSessionStorage:         true,
 			HasLocalStorage:           true,
 			HasIndexedDB:              true,
-			WebGlHash:                 Profile.Hash.WebGL,
-			CanvasHash:                Profile.Hash.Canvas,
+			WebGlHash:                 B.Profile.Hash.WebGL,
+			CanvasHash:                B.Profile.Hash.Canvas,
 			HasTouch:                  B.Manager.Fingerprint.Events["107"].(map[string]interface{})["touchEvent"].(bool),
 			NotificationAPIPermission: "Denied",
-			Chrome:                    true, //strings.Contains(B.Manager.Fingerprint.Browser.UserAgent, "Chrome"),
+			Chrome:                    strings.Contains(B.Manager.Fingerprint.Browser.UserAgent, "Chrome"),
 			ToStringLength:            33,
 			ErrFirefox:                nil,
 			RBotScore:                 0,
 			RBotScoreSuspiciousKeys:   []string{},
 			RBotScore2:                0,
-			AudioHash:                 Profile.Hash.Audio,
+			AudioHash:                 B.Profile.Hash.Audio,
 			Extensions: []bool{
 				false,
 			},
-			ParentWinHash:   Profile.Hash.ParrentWindow,
-			WebrtcHash:      Profile.Hash.WebRTC,
-			PerformanceHash: Profile.Hash.Performance,
-			UniqueKeys:      Profile.Misc.UniqueKeys,
-			InvUniqueKeys:   Profile.Misc.InvUniqueKeys,
+			ParentWinHash:   B.Profile.Hash.ParrentWindow,
+			WebrtcHash:      B.Profile.Hash.WebRTC,
+			PerformanceHash: B.Profile.Hash.Performance,
+			UniqueKeys:      B.Profile.Misc.UniqueKeys,
+			InvUniqueKeys:   B.Profile.Misc.InvUniqueKeys,
+			CommonKeysHash:  B.Profile.Hash.CommonKeys,
+			CommonKeysTail:  B.Profile.Misc.CommonKeysTails,
 			Features: Features{
 				PerformanceEntries: true,
 				WebAudio:           true,
@@ -166,26 +173,39 @@ func (B *Builder) Build(jwt string) (*Ndata, error) {
 		},
 		FingerprintEvents:           B.Manager.BuildEvents(),
 		FingerprintSuspiciousEvents: []string{},
-		//Stamp:                       stamp,
-		Href: B.Manager.Href,
+		Stamp:                       stamp,
+		Href:                        B.Manager.Href,
 		Errs: Errs{
 			List: []string{},
 		},
 		StackData: []string{},
-		Perf: [][]int64{
+		Perf: [][]any{
 			{
 				1,
-				int64(utils.RandomNumber(5, 100)),
+				float64(utils.RandomNumber(5, 100)),
 			},
 			{
 				2,
-				int64(utils.RandomNumber(20, 300)),
+				float64(utils.RandomNumber(20, 300)),
 			},
 			{
 				3,
-				0.0, //int64(utils.RandomNumber(0, 5)),
+				int64(utils.RandomNumber(0, 5)),
 			},
 		},
+	}
+
+	if isSubmit {
+		N.StackData = []string{
+			"new Promise (<anonymous>)",
+		}
+		b, err := json.Marshal(N)
+		if err != nil {
+			panic(err)
+		}
+
+		_, rand_int := RandHash(b)
+		N.Rand = append(N.Rand, rand_int)
 	}
 
 	return &N, nil

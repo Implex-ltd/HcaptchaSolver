@@ -1,6 +1,9 @@
 package events
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"math/rand"
+)
 
 func Stringify(data any) string {
 	jsonString, err := json.Marshal(data)
@@ -11,39 +14,49 @@ func Stringify(data any) string {
 	return string(jsonString)
 }
 
+func ShuffleSlice(slice [][]interface{}) {
+	for i := range slice {
+		j := rand.Intn(i + 1)
+		slice[i], slice[j] = slice[j], slice[i]
+	}
+}
+
 func (E *EventManager) BuildEvents() (Events [][]interface{}) {
 	eventsMethods := []func(*EventManager) FingerprintEvent{
-		(*EventManager).Event_0,
 		(*EventManager).Event_3,
-		(*EventManager).Event_107,
+		(*EventManager).Event_1902,
+		(*EventManager).Event_1901,
+		(*EventManager).Event_1101,
+		(*EventManager).Event_1103,
+		(*EventManager).Event_1105,
 		(*EventManager).Event_201,
+		(*EventManager).Event_1107,
 		(*EventManager).Event_211,
+		(*EventManager).Event_3401,
+		(*EventManager).Event_3403,
+		(*EventManager).Event_803,
+		(*EventManager).Event_604,
+		(*EventManager).Event_2801,
+		(*EventManager).Event_2805,
+		(*EventManager).Event_107,
 		(*EventManager).Event_301,
 		(*EventManager).Event_304,
+		(*EventManager).Event_1401,
+		(*EventManager).Event_1402,
+		(*EventManager).Event_1403,
+		(*EventManager).Event_3504,
+		(*EventManager).Event_3501,
+		(*EventManager).Event_3503,
+		(*EventManager).Event_3502,
 		(*EventManager).Event_401,
 		(*EventManager).Event_402,
 		(*EventManager).Event_407,
 		(*EventManager).Event_412,
-		(*EventManager).Event_604,
-		(*EventManager).Event_702,
-		(*EventManager).Event_803,
-		(*EventManager).Event_901,
-		(*EventManager).Event_905,
-		(*EventManager).Event_1101,
-		(*EventManager).Event_1103,
-		(*EventManager).Event_1105,
-		(*EventManager).Event_1107,
-		(*EventManager).Event_1302,
-		(*EventManager).Event_1401,
-		(*EventManager).Event_1402,
-		(*EventManager).Event_1403,
-		(*EventManager).Event_1901,
-		(*EventManager).Event_1902,
-		(*EventManager).Event_1904,
-		(*EventManager).Event_2401,
-		(*EventManager).Event_2402,
-		(*EventManager).Event_2407,
 		(*EventManager).Event_2408,
+		(*EventManager).Event_2402,
+		(*EventManager).Event_2420,
+		(*EventManager).Event_2401,
+		(*EventManager).Event_2407,
 		(*EventManager).Event_2409,
 		(*EventManager).Event_2410,
 		(*EventManager).Event_2411,
@@ -53,17 +66,71 @@ func (E *EventManager) BuildEvents() (Events [][]interface{}) {
 		(*EventManager).Event_2415,
 		(*EventManager).Event_2416,
 		(*EventManager).Event_2417,
-		(*EventManager).Event_2420,
-		(*EventManager).Event_2801,
-		(*EventManager).Event_2805,
+		(*EventManager).Event_901,
+		(*EventManager).Event_905,
+		(*EventManager).Event_1302,
+		(*EventManager).Event_1904,
+		(*EventManager).Event_702,
 		(*EventManager).Event_3210,
 		(*EventManager).Event_3211,
-		(*EventManager).Event_3401,
-		(*EventManager).Event_3403,
-		(*EventManager).Event_3501,
-		(*EventManager).Event_3502,
-		(*EventManager).Event_3503,
-		(*EventManager).Event_3504,
+		(*EventManager).Event_0,
+
+		/*
+			(*EventManager).Event_0,
+			(*EventManager).Event_3,
+			(*EventManager).Event_107,
+			(*EventManager).Event_201,
+			(*EventManager).Event_211,
+			(*EventManager).Event_301,
+			(*EventManager).Event_304,
+			(*EventManager).Event_401,
+			(*EventManager).Event_402,
+			(*EventManager).Event_407,
+			(*EventManager).Event_412,
+			(*EventManager).Event_604,
+			(*EventManager).Event_702,
+			(*EventManager).Event_803,
+			(*EventManager).Event_901,
+			(*EventManager).Event_905,
+			(*EventManager).Event_1101,
+			(*EventManager).Event_1103,
+			(*EventManager).Event_1105,
+			(*EventManager).Event_1107,
+			(*EventManager).Event_1302,
+			(*EventManager).Event_1401,
+			(*EventManager).Event_1402,
+			(*EventManager).Event_1403,
+			(*EventManager).Event_1901,
+			(*EventManager).Event_1902,
+			(*EventManager).Event_1904,
+			(*EventManager).Event_2401,
+			(*EventManager).Event_2402,
+			(*EventManager).Event_2407,
+			(*EventManager).Event_2408,
+			(*EventManager).Event_2409,
+			(*EventManager).Event_2410,
+			(*EventManager).Event_2411,
+			(*EventManager).Event_2412,
+			(*EventManager).Event_2413,
+			(*EventManager).Event_2414,
+			(*EventManager).Event_2415,
+			(*EventManager).Event_2416,
+			(*EventManager).Event_2417,
+			(*EventManager).Event_2420,
+			(*EventManager).Event_2801,
+			(*EventManager).Event_2805,
+			(*EventManager).Event_3210,
+			(*EventManager).Event_3211,
+			(*EventManager).Event_3401,
+			(*EventManager).Event_3403,
+			(*EventManager).Event_3501,
+			(*EventManager).Event_3502,
+			(*EventManager).Event_3503,
+			(*EventManager).Event_3504,
+		*/
+
+		//(*EventManager).Event_3801,
+		//(*EventManager).Event_3802,
 	}
 
 	for _, eventMethod := range eventsMethods {
@@ -74,5 +141,6 @@ func (E *EventManager) BuildEvents() (Events [][]interface{}) {
 		})
 	}
 
+	ShuffleSlice(Events)
 	return Events
 }

@@ -3,7 +3,10 @@ package database
 import (
 	"fmt"
 
+	"github.com/Implex-ltd/hcsolver/internal/model"
+	"github.com/Implex-ltd/hcsolver/internal/utils"
 	"github.com/surrealdb/surrealdb.go"
+
 )
 
 var (
@@ -11,6 +14,55 @@ var (
 	FpDB   *surrealdb.DB
 	UserDB *surrealdb.DB
 )
+
+func mergeAll() {
+	UserDB.Query(`
+	UPDATE user MERGE {
+		settings: {
+			bypass_restricted_sites: false,
+		},
+	};	
+	`, nil)
+}
+
+func showUsers() {
+	req, err := UserDB.Select("user")
+	if err != nil {
+		panic(err)
+	}
+
+	var FingerprintSlice []model.User
+	err = surrealdb.Unmarshal(req, &FingerprintSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, fp := range FingerprintSlice {
+		fmt.Println(fp.BypassRestrictedSites)
+
+	}
+}
+
+func doBackup() {
+	req, err := UserDB.Select("user")
+	if err != nil {
+		panic(err)
+	}
+
+	var FingerprintSlice []model.User
+	err = surrealdb.Unmarshal(req, &FingerprintSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, fp := range FingerprintSlice {
+		line := fmt.Sprintf("%s,%d,%d,%v", fp.ID, fp.Balance, fp.SolvedHcaptcha, fp.BypassRestrictedSites)
+		fmt.Println(line)
+
+		utils.AppendLine(line, "backup.csv")
+	}
+	utils.AppendLine("-----------------------------------------", "backup.csv")
+}
 
 func ConnectDB(Ip, User, Pass string, Port int) {
 	var err error
@@ -62,4 +114,9 @@ func ConnectDB(Ip, User, Pass string, Port int) {
 	if _, err = UserDB.Use("users", "user"); err != nil {
 		panic(err)
 	}
+
+	//mergeAll()
+
+	//showUsers()
+	doBackup()
 }

@@ -4,11 +4,12 @@ import http "github.com/bogdanfinn/fhttp"
 
 var (
 	order = []string{
-		`authority`,
 		`accept`,
+		`accept-encoding`,
 		`accept-language`,
 		`content-length`,
 		`content-type`,
+		`cookie`,
 		`origin`,
 		`referer`,
 		`sec-ch-ua`,
@@ -23,7 +24,6 @@ var (
 
 func (c *Hcap) HeaderCheckSiteConfig() http.Header {
 	return http.Header{
-		`authority`:          {`hcaptcha.com`},
 		`accept`:             {`application/json`},
 		`accept-language`:    {c.Http.BaseHeader.AcceptLanguage},
 		`content-type`:       {`text/plain`},
@@ -43,7 +43,6 @@ func (c *Hcap) HeaderCheckSiteConfig() http.Header {
 
 func (c *Hcap) HeaderGetCaptcha() http.Header {
 	return http.Header{
-		`authority`:          {`hcaptcha.com`},
 		`accept`:             {`application/json`},
 		`accept-language`:    {c.Http.BaseHeader.AcceptLanguage},
 		`content-type`:       {`application/x-www-form-urlencoded`},
@@ -63,7 +62,6 @@ func (c *Hcap) HeaderGetCaptcha() http.Header {
 
 func (c *Hcap) HeaderCheckCaptcha() http.Header {
 	return http.Header{
-		`authority`:          {`hcaptcha.com`},
 		`accept`:             {`*/*`},
 		`accept-language`:    {c.Http.BaseHeader.AcceptLanguage},
 		`content-type`:       {`application/json;charset=UTF-8`},
