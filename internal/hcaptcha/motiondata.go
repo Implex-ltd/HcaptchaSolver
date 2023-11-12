@@ -260,15 +260,6 @@ const (
 	KEY_U      = 85
 )
 
-func shuffleStrings(strings []string) []string {
-    for i := range strings {
-        j := rand.Intn(i + 1)
-        strings[i], strings[j] = strings[j], strings[i]
-    }
-
-    return strings
-}
-
 func genKd(answers []string) ([][]int64, float64) {
 	out := [][]int64{}
 	st := time.Now().UnixNano() / 1e6
@@ -431,7 +422,7 @@ func (c *Hcap) NewMotionData(m *Motion) string {
 	switch m.IsCheck {
 	case true:
 		if c.Config.FreeTextEntry {
-			keyData, meanPeriod  := genKd(shuffleStrings([]string{"oui", "oui", "non"}))
+			keyData, meanPeriod  := genKd(utils.ShuffleStrings([]string{"oui", "oui", "non"}))
 
 			output, _ = json.Marshal(&CheckDataFreeTextEntry{
 				St:       st,

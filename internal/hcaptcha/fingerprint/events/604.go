@@ -6,13 +6,13 @@ package events
 
 import (
 	"fmt"
-	//"log"
+	"log"
 	"strings"
 )
 
 func (B *EventManager) Event_604() FingerprintEvent {
 	event := B.Fingerprint.Events["702"].(map[string]interface{})
-	//log.Println(B.Fingerprint.Browser.UserAgent)
+	log.Println(B.Fingerprint.Browser.UserAgent)
 
 	return FingerprintEvent{
 		604,
