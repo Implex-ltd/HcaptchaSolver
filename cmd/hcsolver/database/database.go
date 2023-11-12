@@ -15,6 +15,7 @@ var (
 	UserDB *surrealdb.DB
 )
 
+// Add new field to all records into the DB.
 func mergeAll() {
 	UserDB.Query(`
 	UPDATE user MERGE {

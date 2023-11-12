@@ -20,7 +20,7 @@ func SetupRoutes(app *fiber.App) {
 
 	api.Use(limiter.New(limiter.Config{
 		Next: func(c *fiber.Ctx) bool {
-			return c.IP() == "127.0.0.1" || c.IP() == "92.149.51.174"
+			return c.IP() == "127.0.0.1"
 		},
 		Max:        config.Config.Ratelimit.APIMax,
 		Expiration: time.Duration(config.Config.Ratelimit.APIExpiration) * time.Second,

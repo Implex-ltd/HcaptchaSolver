@@ -119,8 +119,7 @@ func DecStr(input []string) string {
 	b64rand, _ := strconv.ParseInt(input[2], 16, 64)
 	inputArr := input[3]
 	final := input[0]
-
-	// Step 1: Reverse character substitution
+	
 	decrypted := regexp.MustCompile(fmt.Sprintf("[%v%s]", inputArr, strings.ToLower(inputArr))).ReplaceAllStringFunc(final, func(A string) string {
 		if A == strings.ToUpper(A) {
 			return strings.ToLower(A)
@@ -128,13 +127,11 @@ func DecStr(input []string) string {
 			return strings.ToUpper(A)
 		}
 	})
-
-	// Step 2: Reverse the random Base64 offset
+	
 	b64Len := len(decrypted)
 	reversedB64 := decrypted[b64Len-int(b64rand):] + decrypted[:b64Len-int(b64rand)]
 	decoded, _ := base64.StdEncoding.DecodeString(Reverse(reversedB64))
 
-	// Step 3: Reverse word reversal
 	reversedStr := decode(Reverse(string(decoded)))
 	return reversedStr
 }

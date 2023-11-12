@@ -87,3 +87,19 @@ func AppendLine(text, fileName string) error {
 
 	return nil
 }
+
+func ShuffleStrings(strings []string) []string {
+	for i := range strings {
+		j := rand.Intn(i + 1)
+		strings[i], strings[j] = strings[j], strings[i]
+	}
+
+	return strings
+}
+
+func ShuffleSlice(slice [][]interface{}) {
+	for i := range slice {
+		j := rand.Intn(i + 1)
+		slice[i], slice[j] = slice[j], slice[i]
+	}
+}

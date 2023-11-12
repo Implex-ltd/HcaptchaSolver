@@ -19,20 +19,11 @@ func TestDecStr(t *testing.T) {
 			args: args{
 				input: EncStr("Google Inc. (NVIDIA)"),
 			},
-		},{
+		},
+		{
 			name: "1",
 			args: args{
-				input: EncStr("Google Inc. (NVIDIA)"),
-			},
-		},{
-			name: "1",
-			args: args{
-				input: EncStr("Google Inc. (NVIDIA)"),
-			},
-		},{
-			name: "1",
-			args: args{
-				input: EncStr("Google Inc. (NVIDIA)"),
+				input: []string{"o3IzMxCzM1yjNWUD", "8", "b", "EKSYKCEHOCWTT"},
 			},
 		},
 	}

@@ -4,11 +4,11 @@
 
 package events
 
-import "github.com/Implex-ltd/hcsolver/internal/utils"
+import _ "github.com/Implex-ltd/hcsolver/internal/utils"
 
-func (B *EventManager) Event_3401() FingerprintEvent {
+func (B *EventManager) Event_3401(hash string) FingerprintEvent {
 	return FingerprintEvent{
 		3401,
-		utils.RandomHash(19),
+		hash, //utils.RandomHash(19),
 	}
 }

@@ -22,6 +22,105 @@ var (
 	WASM              = "1.40.10"
 )
 
+var (
+	// get task img
+	KEYS_1_UNIQUE = strings.Join([]string{
+		"__localeData__",
+		"regeneratorRuntime",
+		"0",
+		"__BILLING_STANDALONE__",
+		"webpackChunkdiscord_app",
+		"platform",
+		"__SECRET_EMOTION__",
+		"__SENTRY__",
+		"hcaptcha",
+		"hcaptchaOnLoad",
+		"__timingFunction",
+		"DiscordErrors",
+		"clearImmediate",
+		"__OVERLAY__",
+		"grecaptcha",
+		"GLOBAL_ENV",
+		"setImmediate",
+		"1",
+		"IntlPolyfill",
+		"__DISCORD_WINDOW_ID",
+	}, ",")
+
+	KEYS_1_UNIQUE_INV = strings.Join([]string{
+		"__wdata",
+		"sessionStorage",
+		"localStorage",
+		"hsw",
+		"_sharedLibs",
+	}, ",")
+
+	// get task txt
+	KEYS_2_UNIQUE = strings.Join([]string{
+		"GLOBAL_ENV",
+		"0",
+		"__OVERLAY__",
+		"hcaptcha",
+		"__localeData__",
+		"IntlPolyfill",
+		"__timingFunction",
+		"grecaptcha",
+		"1",
+		"hcaptchaOnLoad",
+		"clearImmediate",
+		"setImmediate",
+		"DiscordErrors",
+		"__BILLING_STANDALONE__",
+		"__DISCORD_WINDOW_ID",
+		"webpackChunkdiscord_app",
+		"__SECRET_EMOTION__",
+		"regeneratorRuntime",
+		"platform",
+		"__SENTRY__",
+	}, ",")
+	KEYS_2_UNIQUE_INV = strings.Join([]string{
+		"sessionStorage",
+		"hsw",
+		"image_label_binary",
+		"__wdata",
+		"_sharedLibs",
+		"localStorage",
+	}, ",")
+
+	// submit task txt
+	KEYS_3_UNIQUE = strings.Join([]string{
+		"__SECRET_EMOTION__",
+		"IntlPolyfill",
+		"regeneratorRuntime",
+		"DiscordErrors",
+		"1",
+		"__localeData__",
+		"hcaptchaOnLoad",
+		"grecaptcha",
+		"__BILLING_STANDALONE__",
+		"clearImmediate",
+		"hcaptcha",
+		"platform",
+		"__timingFunction",
+		"webpackChunkdiscord_app",
+		"__DISCORD_WINDOW_ID",
+		"0",
+		"__SENTRY__",
+		"GLOBAL_ENV",
+		"__OVERLAY__",
+		"setImmediate",
+	}, ",")
+	KEYS_3_UNIQUE_INV = strings.Join([]string{
+		"__wdata",
+		"text_free_entry",
+		"hsw",
+		"image_label_binary",
+		"localStorage",
+		"_sharedLibs",
+		"sessionStorage",
+	}, ",")
+)
+
 func NewFingerprintBuilder(useragent, href string) (*Builder, error) {
 	fp, err := CollectFpArray.Next()
 	if err != nil {
@@ -57,7 +156,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 
 	B.Manager.UserAgent = B.Manager.Fingerprint.Browser.UserAgent
 
-	//hash, _ := RandHash([]byte("Raven,alert,atob,blur,btoa,caches,cancelAnimationFrame,cancelIdleCallback,captureEvents,chrome,clearInterval,clearTimeout,clientInformation,close,closed,confirm,cookieStore,createImageBitmap,credentialless,crossOriginIsolated,crypto,customElements,devicePixelRatio,document,documentPictureInPicture,external,fence,fetch,find,focus,frameElement,frames,getComputedStyle,getScreenDetails,getSelection,history,indexedDB,innerHeight,innerWidth,isSecureContext,launchQueue,length,localStorage,location,locationbar,matchMedia,menubar,moveBy,moveTo,name,navigation,navigator,onabort,onafterprint,onanimationend,onanimationiteration,onanimationstart,onappinstalled,onauxclick,onbeforeinput,onbeforeinstallprompt,onbeforematch,onbeforeprint,onbeforetoggle,onbeforeunload,onbeforexrselect,onblur,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontentvisibilityautostatechange,oncontextlost,oncontextmenu,oncontextrestored,oncuechange,ondblclick,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,onerror,onfocus,onformdata,ongotpointercapture,onhashchange,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onlanguagechange,onload,onloadeddata,onloadedmetadata,onloadstart,onlostpointercapture,onmessage,onmessageerror,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onoffline,ononline,onpagehide,onpageshow,onpause,onplay,onplaying,onpointercancel,onpointerdown,onpointerenter,onpointerleave,onpointermove,onpointerout,onpointerover,onpointerrawupdate,onpointerup,onpopstate,onprogress,onratechange,onrejectionhandled,onreset,onresize,onscroll,onscrollend,onsearch,onsecuritypolicyviolation,onseeked,onseeking,onselect,onselectionchange,onselectstart,onslotchange,onstalled,onstorage,onsubmit,onsuspend,ontimeupdate,ontoggle,ontransitioncancel,ontransitionend,ontransitionrun,ontransitionstart,onunhandledrejection,onunload,onvolumechange,onwaiting,onwebkitanimationend,onwebkitanimationiteration,onwebkitanimationstart,onwebkittransitionend,onwheel,open,openDatabase,opener,origin,originAgentCluster,outerHeight,outerWidth,pageXOffset,pageYOffset,parent,performance,personalbar,postMessage,print,prompt,queryLocalFonts,queueMicrotask,releaseEvents,reportError,requestAnimationFrame,requestIdleCallback,resizeBy,resizeTo,scheduler,screen,screenLeft,screenTop,screenX,screenY,scroll,scrollBy,scrollTo,scrollX,scrollY,scrollbars,self,sessionStorage,setInterval,setTimeout,sharedStorage,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,speechSynthesis,status,statusbar,stop,structuredClone,styleMedia,toolbar,top,trustedTypes,visualViewport,webkitCancelAnimationFrame,webkitRequestAnimationFrame,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,window"))
+	hash, _ := RandHash([]byte("Raven,alert,atob,blur,btoa,caches,cancelAnimationFrame,cancelIdleCallback,captureEvents,chrome,clearInterval,clearTimeout,clientInformation,close,closed,confirm,cookieStore,createImageBitmap,credentialless,crossOriginIsolated,crypto,customElements,devicePixelRatio,document,documentPictureInPicture,external,fence,fetch,find,focus,frameElement,frames,getComputedStyle,getScreenDetails,getSelection,history,indexedDB,innerHeight,innerWidth,isSecureContext,launchQueue,length,localStorage,location,locationbar,matchMedia,menubar,moveBy,moveTo,name,navigation,navigator,onabort,onafterprint,onanimationend,onanimationiteration,onanimationstart,onappinstalled,onauxclick,onbeforeinput,onbeforeinstallprompt,onbeforematch,onbeforeprint,onbeforetoggle,onbeforeunload,onbeforexrselect,onblur,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontentvisibilityautostatechange,oncontextlost,oncontextmenu,oncontextrestored,oncuechange,ondblclick,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,onerror,onfocus,onformdata,ongotpointercapture,onhashchange,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onlanguagechange,onload,onloadeddata,onloadedmetadata,onloadstart,onlostpointercapture,onmessage,onmessageerror,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onoffline,ononline,onpagehide,onpageshow,onpause,onplay,onplaying,onpointercancel,onpointerdown,onpointerenter,onpointerleave,onpointermove,onpointerout,onpointerover,onpointerrawupdate,onpointerup,onpopstate,onprogress,onratechange,onrejectionhandled,onreset,onresize,onscroll,onscrollend,onsearch,onsecuritypolicyviolation,onseeked,onseeking,onselect,onselectionchange,onselectstart,onslotchange,onstalled,onstorage,onsubmit,onsuspend,ontimeupdate,ontoggle,ontransitioncancel,ontransitionend,ontransitionrun,ontransitionstart,onunhandledrejection,onunload,onvolumechange,onwaiting,onwebkitanimationend,onwebkitanimationiteration,onwebkitanimationstart,onwebkittransitionend,onwheel,open,openDatabase,opener,origin,originAgentCluster,outerHeight,outerWidth,pageXOffset,pageYOffset,parent,performance,personalbar,postMessage,print,prompt,queryLocalFonts,queueMicrotask,releaseEvents,reportError,requestAnimationFrame,requestIdleCallback,resizeBy,resizeTo,scheduler,screen,screenLeft,screenTop,screenX,screenY,scroll,scrollBy,scrollTo,scrollX,scrollY,scrollbars,self,sessionStorage,setInterval,setTimeout,sharedStorage,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,speechSynthesis,status,statusbar,stop,structuredClone,styleMedia,toolbar,top,trustedTypes,visualViewport,webkitCancelAnimationFrame,webkitRequestAnimationFrame,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,window"))
 	//hash, _ := RandHash([]byte(utils.RandomString(80)))
 
 	p := Profile{
@@ -86,12 +185,37 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 			WebRTC:        "-1",
 			Audio:         "-1",
 			ParrentWindow: utils.RandomHash(19),
-			CommonKeys:    2125906006,
+			CommonKeys:    hash,
 		},
 		Misc: Misc{
-			UniqueKeys:      "__localeData__,regeneratorRuntime,0,__BILLING_STANDALONE__,webpackChunkdiscord_app,platform,__SECRET_EMOTION__,__SENTRY__,hcaptcha,hcaptchaOnLoad,__timingFunction,DiscordErrors,clearImmediate,__OVERLAY__,grecaptcha,GLOBAL_ENV,setImmediate,1,IntlPolyfill,__DISCORD_WINDOW_ID",
-			InvUniqueKeys:   "__wdata,sessionStorage,localStorage,hsw,_sharedLibs",
-			CommonKeysTails: "chrome,fence,caches,cookieStore,ondevicemotion,ondeviceorientation,ondeviceorientationabsolute,launchQueue,sharedStorage,documentPictureInPicture,onbeforematch,getScreenDetails,openDatabase,queryLocalFonts,showDirectoryPicker,showOpenFilePicker,showSaveFilePicker,originAgentCluster,credentialless,speechSynthesis,oncontentvisibilityautostatechange,onscrollend,webkitRequestFileSystem,webkitResolveLocalFileSystemURL,Raven", //"__wdata,image_label_binary,_sharedLibs,text_free_entry,sessionStorage,hsw,localStorage",
+			UniqueKeys:    KEYS_1_UNIQUE,
+			InvUniqueKeys: KEYS_1_UNIQUE_INV,
+			CommonKeysTails: strings.Join([]string{
+				"chrome",
+				"fence",
+				"caches",
+				"cookieStore",
+				"ondevicemotion",
+				"ondeviceorientation",
+				"ondeviceorientationabsolute",
+				"launchQueue",
+				"sharedStorage",
+				"documentPictureInPicture",
+				"onbeforematch",
+				"getScreenDetails",
+				"queryLocalFonts",
+				"showDirectoryPicker",
+				"showOpenFilePicker",
+				"showSaveFilePicker",
+				"originAgentCluster",
+				"credentialless",
+				"speechSynthesis",
+				"oncontentvisibilityautostatechange",
+				"onscrollend",
+				"webkitRequestFileSystem",
+				"webkitResolveLocalFileSystemURL",
+				"Raven",
+			}, ","),
 		},
 	}
 
@@ -99,7 +223,7 @@ func (B *Builder) GenerateProfile() (*Profile, error) {
 	return &p, nil
 }
 
-func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
+func (B *Builder) Build(jwt string, isSubmit, isText bool) (*Ndata, error) {
 	/*Profile, err := B.GenerateProfile()
 	if err != nil {
 		return nil, err
@@ -130,9 +254,7 @@ func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 			TimeoutValue:    int64(token.TimeoutValue),
 		},
 		Rand: []float64{
-			// 0.13396570613838654
 			utils.RandomFloat64Precission(0, 1, 10000000000000000.0),
-			//0.0004674382952947198,
 		},
 		Components: Components{
 			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
@@ -171,7 +293,7 @@ func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 				Fetch:              true,
 			},
 		},
-		FingerprintEvents:           B.Manager.BuildEvents(),
+		//FingerprintEvents:           B.Manager.BuildEvents(),
 		FingerprintSuspiciousEvents: []string{},
 		Stamp:                       stamp,
 		Href:                        B.Manager.Href,
@@ -190,23 +312,42 @@ func (B *Builder) Build(jwt string, isSubmit bool) (*Ndata, error) {
 			},
 			{
 				3,
-				int64(utils.RandomNumber(0, 5)),
+				0.0,
 			},
 		},
+	}
+
+	// ugly as fuck part made as test to fix
+	if isText {
+		N.Components.InvUniqueKeys = KEYS_2_UNIQUE_INV
+		N.Components.UniqueKeys = KEYS_2_UNIQUE
+
+		N.FingerprintEvents = B.Manager.BuildEvents([]string{"Raven", "_sharedLibs", "hsw", "__wdata", "image_label_binary"}, "14673576476674870845")
+	} else {
+		N.Components.InvUniqueKeys = KEYS_1_UNIQUE_INV
+		N.Components.UniqueKeys = KEYS_1_UNIQUE
+
+		N.FingerprintEvents = B.Manager.BuildEvents([]string{"Raven", "_sharedLibs", "hsw", "__wdata"}, "4226317358175830201")
 	}
 
 	if isSubmit {
 		N.StackData = []string{
 			"new Promise (<anonymous>)",
 		}
-		b, err := json.Marshal(N)
-		if err != nil {
-			panic(err)
-		}
 
-		_, rand_int := RandHash(b)
-		N.Rand = append(N.Rand, rand_int)
+		N.Components.InvUniqueKeys = KEYS_3_UNIQUE_INV
+		N.Components.UniqueKeys = KEYS_3_UNIQUE
+
+		N.FingerprintEvents = B.Manager.BuildEvents([]string{"Raven", "_sharedLibs", "hsw", "__wdata", "image_label_binary", "text_free_entry"}, "2530917404755245142")
 	}
+
+	b, err := json.Marshal(N)
+	if err != nil {
+		panic(err)
+	}
+
+	_, rand_int := RandHash(b)
+	N.Rand = append(N.Rand, rand_int)
 
 	return &N, nil
 }
