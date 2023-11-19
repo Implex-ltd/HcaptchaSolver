@@ -307,7 +307,7 @@ func (c *Hcap) GetChallengeFreeTextEntry(config *SiteConfig) (*Captcha, error) {
 	t := time.Now()
 	body, err := c.Http.Do(cleanhttp.RequestOption{
 		Method: "POST",
-		Url:    fmt.Sprintf("https://hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
+		Url:    fmt.Sprintf("https://api.hcaptcha.com/getcaptcha/%s", c.Config.SiteKey),
 		Body:   strings.NewReader(payload.Encode()),
 		Header: header,
 	})
@@ -399,7 +399,7 @@ func (c *Hcap) CheckCaptcha(captcha *Captcha) (*ResponseCheckCaptcha, error) {
 
 	t := time.Now()
 	body, err := c.Http.Do(cleanhttp.RequestOption{
-		Url:    fmt.Sprintf("https://hcaptcha.com/checkcaptcha/%s/%s", c.Config.SiteKey, captcha.Key),
+		Url:    fmt.Sprintf("https://api.hcaptcha.com/checkcaptcha/%s/%s", c.Config.SiteKey, captcha.Key),
 		Body:   strings.NewReader(string(payload)),
 		Method: "POST",
 		Header: c.HeaderCheckCaptcha(),
