@@ -39,7 +39,7 @@ type Ndata struct {
 }
 
 type Components struct {
-	Version                   string      `json:"version"`
+	//Version                   string      `json:"version"`
 	Navigator                 Navigator   `json:"navigator"`
 	Screen                    Screen      `json:"screen"`
 	DevicePixelRatio          float64     `json:"device_pixel_ratio"`

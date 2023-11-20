@@ -257,7 +257,7 @@ func (B *Builder) Build(jwt string, isSubmit, isText bool) (*Ndata, error) {
 			utils.RandomFloat64Precission(0, 1, 10000000000000000.0),
 		},
 		Components: Components{
-			Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
+			//Version:                   fmt.Sprintf("%v/%v", WASM, V[1]),
 			Navigator:                 B.Profile.Navigator,
 			Screen:                    B.Profile.Screen,
 			DevicePixelRatio:          B.Manager.Fingerprint.Screen["DevicePixelRatio"].(float64),
@@ -293,7 +293,7 @@ func (B *Builder) Build(jwt string, isSubmit, isText bool) (*Ndata, error) {
 				Fetch:              true,
 			},
 		},
-		//FingerprintEvents:           B.Manager.BuildEvents(),
+		FingerprintEvents:           B.Manager.BuildEvents([]string{"Raven", "_sharedLibs", "hsw", "__wdata", "image_label_binary"}, utils.RandomHash(19)),
 		FingerprintSuspiciousEvents: []string{},
 		Stamp:                       stamp,
 		Href:                        B.Manager.Href,
@@ -335,7 +335,7 @@ func (B *Builder) Build(jwt string, isSubmit, isText bool) (*Ndata, error) {
 			"new Promise (<anonymous>)",
 		}
 
-		N.Components.InvUniqueKeys = KEYS_3_UNIQUE_INV
+	N.Components.InvUniqueKeys = KEYS_3_UNIQUE_INV
 		N.Components.UniqueKeys = KEYS_3_UNIQUE
 
 		N.FingerprintEvents = B.Manager.BuildEvents([]string{"Raven", "_sharedLibs", "hsw", "__wdata", "image_label_binary", "text_free_entry"}, "2530917404755245142")
